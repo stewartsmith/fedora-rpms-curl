@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
-Version: 7.13.0
-Release: 2
+Version: 7.13.1
+Release: 1
 License: MPL
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -87,6 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Mon Mar  9 2005 Ivana Varekova <varekova@redhat.com> 7.13.1-1
+- rebuilt (7.13.1)
+
 * Tue Mar  1 2005 Tomas Mraz <tmraz@redhat.com> 7.13.0-2
 - rebuild with openssl-0.9.7e
 
