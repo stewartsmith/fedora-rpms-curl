@@ -1,14 +1,14 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
 Version: 7.9.8
-Release: 1
+Release: 5
 License: MPL
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch0: curl-7.9.5-nousr.patch
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-BuildRequires: openssl-devel
+BuildRequires: openssl-devel, libtool, pkgconfig
 
 %description
 cURL is a tool for getting files from FTP, HTTP, Gopher, Telnet, and
@@ -33,8 +33,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %setup -q 
 %patch0 -p1
+libtoolize --force
+./reconf
 
 %build
+if pkg-config openssl ; then
+	CPPFLAGS=`pkg-config --cflags openssl`; export CPPFLAGS
+	LDFLAGS=`pkg-config --libs openssl`; export LDFLAGS
+fi
 %configure --with-ssl=/usr --enable-ipv6
 %ifarch alpha
 make CFLAGS=""
@@ -45,6 +51,7 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 %makeinstall
+rm -f $RPM_BUILD_ROOT%{_libdir}/libcurl.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -59,7 +66,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %doc CHANGES LEGAL README* 
 %doc docs/BUGS docs/CONTRIBUTE docs/examples docs/FAQ docs/FEATURES docs/INSTALL
-%doc docs/INTERNALS docs/LIBCURL docs/MANUAL docs/RESOURCES
+%doc docs/INTERNALS docs/MANUAL docs/RESOURCES
 %doc docs/TheArtOfHttpScripting docs/TODO
 %{_bindir}/curl
 %{_libdir}/*.so.*
@@ -75,6 +82,20 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Wed Jan 22 2003 Tim Powers <timp@redhat.com>
+- rebuilt
+
+* Tue Jan 21 2003 Joe Orton <jorton@redhat.com> 7.9.8-4
+- don't add -L/usr/lib to 'curl-config --libs' output
+
+* Mon Jan  7 2003 Nalin Dahyabhai <nalin@redhat.com> 7.9.8-3
+- rebuild
+
+* Wed Nov  6 2002 Joe Orton <jorton@redhat.com> 7.9.8-2
+- fix `curl-config --libs` output for libdir!=/usr/lib
+- remove docs/LIBCURL from docs list; remove unpackaged libcurl.la
+- libtoolize and reconf
+
 * Mon Jul 22 2002 Trond Eivind Glomsrød <teg@redhat.com> 7.9.8-1
 - 7.9.8 (# 69473)
 
