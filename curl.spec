@@ -1,14 +1,18 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
-Version: 7.9.8
-Release: 5
+Version: 7.10.6
+Release: 7
 License: MPL
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
-Patch0: curl-7.9.5-nousr.patch
+Source1: LICENSE.openldap
+Patch0: curl-7.10.4-nousr.patch
+Patch1: curl-7.10.4-path.patch
+Patch2: curl-7.10.6-certaltname.patch
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: openssl-devel, libtool, pkgconfig
+Requires: openssl
 
 %description
 cURL is a tool for getting files from FTP, HTTP, Gopher, Telnet, and
@@ -19,7 +23,7 @@ authentication, FTP upload, HTTP post, and file transfer resume.
 
 %package devel
 Group: Development/Libraries
-Requires: %{name} = %{version}-%{release}
+Requires: %{name} = %{version}-%{release}, openssl-devel
 Summary: Files needed for building applications with libcurl.
 
 %description devel
@@ -33,6 +37,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %setup -q 
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
+aclocal
 libtoolize --force
 ./reconf
 
@@ -41,7 +48,7 @@ if pkg-config openssl ; then
 	CPPFLAGS=`pkg-config --cflags openssl`; export CPPFLAGS
 	LDFLAGS=`pkg-config --libs openssl`; export LDFLAGS
 fi
-%configure --with-ssl=/usr --enable-ipv6
+%configure --with-ssl=/usr --enable-ipv6 --with-ca-bundle=%{_datadir}/ssl/certs/ca-bundle.crt
 %ifarch alpha
 make CFLAGS=""
 %else
@@ -51,7 +58,10 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 %makeinstall
-rm -f $RPM_BUILD_ROOT%{_libdir}/libcurl.la
+rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
+
+# don't need curl's copy of the certs; use openssl's
+find ${RPM_BUILD_ROOT} -name ca-bundle.crt -exec rm -f '{}' \;
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -64,13 +74,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc CHANGES LEGAL README* 
+%doc CHANGES README* 
 %doc docs/BUGS docs/CONTRIBUTE docs/examples docs/FAQ docs/FEATURES docs/INSTALL
 %doc docs/INTERNALS docs/MANUAL docs/RESOURCES
 %doc docs/TheArtOfHttpScripting docs/TODO
+%doc docs/LICENSE.openldap
 %{_bindir}/curl
-%{_libdir}/*.so.*
 %{_mandir}/man1/curl.1*
+%{_libdir}/libcurl.so.*
+#%{_datadir}/ssl/certs/ca-bundle.crt
 
 %files devel
 %defattr(-,root,root)
@@ -82,6 +94,50 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Wed Oct 15 2003 Adrian Havill <havill@redhat.com> 7.10.6-7
+- aclocal before libtoolize
+- move OpenLDAP license so it's present as a doc file, present in
+  both the source and binary as per conditions
+
+* Mon Oct 13 2003 Adrian Havill <havill@redhat.com> 7.10.6-6
+- add OpenLDAP copyright notice for usage of code, add OpenLDAP
+  license for this code
+
+* Tue Oct 07 2003 Adrian Havill <havill@redhat.com> 7.10.6-5
+- match serverAltName certs with SSL (#106168)
+
+* Mon Sep 16 2003 Adrian Havill <havill@redhat.com> 7.10.6-4.1
+- bump n-v-r for RHEL
+
+* Mon Sep 16 2003 Adrian Havill <havill@redhat.com> 7.10.6-4
+- restore ca cert bundle (#104400)
+- require openssl, we want to use its ca-cert bundle
+
+* Sun Sep  7 2003 Joe Orton <jorton@redhat.com> 7.10.6-3
+- rebuild
+
+* Fri Sep  5 2003 Joe Orton <jorton@redhat.com> 7.10.6-2.2
+- fix to include libcurl.so
+
+* Mon Aug 25 2003 Adrian Havill <havill@redhat.com> 7.10.6-2.1
+- bump n-v-r for RHEL
+
+* Mon Aug 25 2003 Adrian Havill <havill@redhat.com> 7.10.6-2
+- devel subpkg needs openssl-devel as a Require (#102963)
+
+* Tue Jul 28 2003 Adrian Havill <havill@redhat.com> 7.10.6-1
+- bumped version
+
+* Tue Jul 01 2003 Adrian Havill <havill@redhat.com> 7.10.5-1
+- bumped version
+
+* Wed Jun 04 2003 Elliot Lee <sopwith@redhat.com>
+- rebuilt
+
+* Sat Apr 12 2003 Florian La Roche <Florian.LaRoche@redhat.de>
+- update to 7.10.4
+- adapt nousr patch
+
 * Wed Jan 22 2003 Tim Powers <timp@redhat.com>
 - rebuilt
 
