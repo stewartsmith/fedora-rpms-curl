@@ -1,8 +1,8 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
-Version: 7.8
+Version: 7.9.5
 Release: 1
-Copyright: MPL
+License: MPL
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 URL: http://curl.haxx.se/
@@ -73,6 +73,21 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Fri Mar  8 2002 Trond Eivind Glomsrød <teg@redhat.com> 7.9.5-1
+- 7.9.5
+
+* Tue Feb 26 2002 Trond Eivind Glomsrød <teg@redhat.com> 7.9.3-2
+- Rebuild
+
+* Wed Jan 23 2002 Nalin Dahyabhai <nalin@redhat.com> 7.9.3-1
+- update to 7.9.3
+
+* Wed Jan 09 2002 Tim Powers <timp@redhat.com> 7.9.2-2
+- automated rebuild
+
+* Wed Jan  9 2002 Trond Eivind Glomsrød <teg@redhat.com> 7.9.2-1
+- 7.9.2
+
 * Fri Aug 17 2001 Nalin Dahyabhai <nalin@redhat.com>
 - include curl-config in curl-devel
 - update to 7.8 to fix memory leak and strlcat() symbol pollution from libcurl
