@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
 Version: 7.12.0
-Release: 3
+Release: 4
 License: MPL
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -77,8 +77,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_datadir}/ssl/certs/ca-bundle.crt
 
 %files devel
-%doc docs/examples docs/INTERNALS
 %defattr(-,root,root)
+%doc docs/examples docs/INTERNALS
 %{_bindir}/curl-config
 %{_includedir}/curl
 %{_libdir}/*.a
@@ -87,6 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Wed Sep 29 2004 Adrian Havill <havill@redhat.com> 7.12.0-4
+- move new docs position so defattr gets applied
+
 * Mon Sep 27 2004 Warren Togami <wtogami@redhat.com> 7.12.0-3
 - remove INSTALL, move libcurl docs to -devel
 
