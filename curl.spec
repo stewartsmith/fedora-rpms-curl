@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
-Version: 7.7.2
-Release: 3
+Version: 7.8
+Release: 1
 Copyright: MPL
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -23,7 +23,7 @@ Summary: Files needed for building applications with libcurl.
 
 %description devel
 cURL is a tool for getting files from FTP, HTTP, Gopher, Telnet, and
-Dict servers, using any of the supported protocols.  The curl-devel
+Dict servers, using any of the supported protocols. The curl-devel
 package includes files needed for developing applications which can
 use cURL's capabilities internally.
 
@@ -61,16 +61,22 @@ rm -rf $RPM_BUILD_ROOT
 %doc docs/TheArtOfHttpScripting docs/TODO
 %{_bindir}/curl
 %{_libdir}/*.so.*
-%{_mandir}/man1/*
+%{_mandir}/man1/curl.1*
 
 %files devel
 %defattr(-,root,root)
+%{_bindir}/curl-config
 %{_includedir}/curl
 %{_libdir}/*.a
 %{_libdir}/*.so
+%{_mandir}/man1/curl-config.1*
 %{_mandir}/man3/*
 
 %changelog
+* Fri Aug 17 2001 Nalin Dahyabhai <nalin@redhat.com>
+- include curl-config in curl-devel
+- update to 7.8 to fix memory leak and strlcat() symbol pollution from libcurl
+
 * Wed Jul 18 2001 Crutcher Dunnavant <crutcher@redhat.com>
 - added openssl-devel build req
 
