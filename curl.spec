@@ -1,13 +1,12 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
-Version: 7.12.1
+Version: 7.12.3
 Release: 1
 License: MPL
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch0: curl-7.12.0-nousr.patch
 Patch1: curl-7.10.4-path.patch
-Patch2: curl-7.12.1-proftpd.patch
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: openssl-devel, libtool, pkgconfig, libidn-devel
@@ -22,7 +21,7 @@ authentication, FTP upload, HTTP post, and file transfer resume.
 
 %package devel
 Group: Development/Libraries
-Requires: %{name} = %{version}-%{release}, openssl-devel
+Requires: %{name} = %{version}-%{release}, openssl-devel, libidn-devel
 Summary: Files needed for building applications with libcurl.
 
 %description devel
@@ -37,7 +36,6 @@ rm -rf $RPM_BUILD_ROOT
 %setup -q 
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 aclocal
 libtoolize --force
 ./reconf
@@ -89,6 +87,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Fri Jan 28 2005 Adrian Havill <havill@redhat.com> 7.12.3-1
+- Upgrade to 7.12.3, which uses poll() for FDSETSIZE limit (#134794)
+- require libidn-devel for devel subpkg (#141341)
+- remove proftpd kludge; included upstream
+
 * Wed Oct 06 2004 Adrian Havill <havill@redhat.com> 7.12.1-1
 - upgrade to 7.12.1
 - enable GSSAPI auth (#129353)
