@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
-Version: 7.9.5
-Release: 2
+Version: 7.9.7
+Release: 3
 License: MPL
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -75,6 +75,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Fri Jun 21 2002 Tim Powers <timp@redhat.com>
+- automated rebuild
+
+* Sun May 26 2002 Tim Powers <timp@redhat.com>
+- automated rebuild
+
+* Thu May 16 2002 Trond Eivind Glomsrød <teg@redhat.com> 7.9.7-1
+- 7.9.7
+
+* Wed Apr 24 2002 Trond Eivind Glomsrød <teg@redhat.com> 7.9.6-1
+- 7.9.6
+
 * Thu Mar 21 2002 Trond Eivind Glomsrød <teg@redhat.com> 7.9.5-2
 - Stop the curl-config script from printing -I/usr/include 
   and -L/usr/lib (#59497)
