@@ -1,11 +1,11 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
-Version: 7.10.8
-Release: 2.1
+Version: 7.11.1
+Release: 1
 License: MPL
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
-Patch0: curl-7.10.4-nousr.patch
+Patch0: curl-7.11.1-nousr.patch
 Patch1: curl-7.10.4-path.patch
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
@@ -67,7 +67,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc CHANGES README* 
+%doc CHANGES README* COPYING
 %doc docs/BUGS docs/CONTRIBUTE docs/examples docs/FAQ docs/FEATURES docs/INSTALL
 %doc docs/INTERNALS docs/MANUAL docs/RESOURCES
 %doc docs/TheArtOfHttpScripting docs/TODO
@@ -86,6 +86,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Wed Apr 07 2004 Adrian Havill <havill@redhat.com> 7.11.1-1
+- upgraded; updated nousr patch
+- added COPYING (#115956)
+- 
+
 * Tue Mar 02 2004 Elliot Lee <sopwith@redhat.com>
 - rebuilt
 
