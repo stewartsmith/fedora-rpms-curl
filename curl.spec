@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
-Version: 7.12.3
-Release: 3
+Version: 7.13.0
+Release: 1
 License: MPL
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -87,6 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Sun Feb 13 2005 Florian La Roche <laroche@redhat.com>
+- 7.13.0
+
 * Wed Feb  9 2005 Joe Orton <jorton@redhat.com> 7.12.3-3
 - don't pass /usr to --with-libidn to remove "-L/usr/lib" from
   'curl-config --libs' output on x86_64.
