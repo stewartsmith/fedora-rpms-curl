@@ -1,15 +1,16 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
-Version: 7.12.0
-Release: 4
+Version: 7.12.1
+Release: 1
 License: MPL
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch0: curl-7.12.0-nousr.patch
 Patch1: curl-7.10.4-path.patch
+Patch2: curl-7.12.1-proftpd.patch
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-BuildRequires: openssl-devel, libtool, pkgconfig
+BuildRequires: openssl-devel, libtool, pkgconfig, libidn-devel
 Requires: openssl
 
 %description
@@ -36,6 +37,7 @@ rm -rf $RPM_BUILD_ROOT
 %setup -q 
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 aclocal
 libtoolize --force
 ./reconf
@@ -45,7 +47,7 @@ if pkg-config openssl ; then
 	CPPFLAGS=`pkg-config --cflags openssl`; export CPPFLAGS
 	LDFLAGS=`pkg-config --libs openssl`; export LDFLAGS
 fi
-%configure --with-ssl=/usr --enable-ipv6 --with-ca-bundle=%{_datadir}/ssl/certs/ca-bundle.crt
+%configure --with-ssl=/usr --enable-ipv6 --with-ca-bundle=%{_datadir}/ssl/certs/ca-bundle.crt --with-gssapi=/usr/kerberos --with-libidn=/usr
 make
 
 %install
@@ -87,6 +89,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Wed Oct 06 2004 Adrian Havill <havill@redhat.com> 7.12.1-1
+- upgrade to 7.12.1
+- enable GSSAPI auth (#129353)
+- enable I18N domain names (#134595)
+- workaround for broken ProFTPD SSL auth (#134133). Thanks to
+  Aleksandar Milivojevic
+
 * Wed Sep 29 2004 Adrian Havill <havill@redhat.com> 7.12.0-4
 - move new docs position so defattr gets applied
 
