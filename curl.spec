@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
 Version: 7.12.3
-Release: 1
+Release: 2
 License: MPL
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -45,7 +45,7 @@ if pkg-config openssl ; then
 	CPPFLAGS=`pkg-config --cflags openssl`; export CPPFLAGS
 	LDFLAGS=`pkg-config --libs openssl`; export LDFLAGS
 fi
-%configure --with-ssl=/usr --enable-ipv6 --with-ca-bundle=%{_datadir}/ssl/certs/ca-bundle.crt --with-gssapi=/usr/kerberos --with-libidn=/usr
+%configure --with-ssl=/usr --enable-ipv6 --with-ca-bundle=%{_datadir}/ssl/certs/ca-bundle.crt --with-gssapi=/usr/kerberos --with-libidn
 make
 
 %install
@@ -87,6 +87,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Wed Feb  9 2005 Joe Orton <jorton@redhat.com> 7.12.3-2
+- don't pass /usr to --with-libidn to remove "-L/usr/lib" from
+  'curl-config --libs' output on x86_64.
+
 * Fri Jan 28 2005 Adrian Havill <havill@redhat.com> 7.12.3-1
 - Upgrade to 7.12.3, which uses poll() for FDSETSIZE limit (#134794)
 - require libidn-devel for devel subpkg (#141341)
