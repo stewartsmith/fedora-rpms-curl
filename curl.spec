@@ -1,10 +1,11 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
 Version: 7.9.5
-Release: 1
+Release: 2
 License: MPL
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
+Patch0: curl-7.9.5-nousr.patch
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: openssl-devel
@@ -31,9 +32,10 @@ use cURL's capabilities internally.
 rm -rf $RPM_BUILD_ROOT
 
 %setup -q 
+%patch0 -p1
 
 %build
-%configure --with-ssl=%{_prefix} --enable-ipv6
+%configure --with-ssl=/usr --enable-ipv6
 %ifarch alpha
 make CFLAGS=""
 %else
@@ -73,6 +75,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Thu Mar 21 2002 Trond Eivind Glomsrød <teg@redhat.com> 7.9.5-2
+- Stop the curl-config script from printing -I/usr/include 
+  and -L/usr/lib (#59497)
+
 * Fri Mar  8 2002 Trond Eivind Glomsrød <teg@redhat.com> 7.9.5-1
 - 7.9.5
 
