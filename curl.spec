@@ -1,14 +1,12 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
-Version: 7.10.6
-Release: 7
+Version: 7.10.8
+Release: 2.1
 License: MPL
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
-Source1: LICENSE.openldap
 Patch0: curl-7.10.4-nousr.patch
 Patch1: curl-7.10.4-path.patch
-Patch2: curl-7.10.6-certaltname.patch
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: openssl-devel, libtool, pkgconfig
@@ -38,7 +36,6 @@ rm -rf $RPM_BUILD_ROOT
 %setup -q 
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 aclocal
 libtoolize --force
 ./reconf
@@ -49,11 +46,7 @@ if pkg-config openssl ; then
 	LDFLAGS=`pkg-config --libs openssl`; export LDFLAGS
 fi
 %configure --with-ssl=/usr --enable-ipv6 --with-ca-bundle=%{_datadir}/ssl/certs/ca-bundle.crt
-%ifarch alpha
-make CFLAGS=""
-%else
 make
-%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -78,7 +71,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc docs/BUGS docs/CONTRIBUTE docs/examples docs/FAQ docs/FEATURES docs/INSTALL
 %doc docs/INTERNALS docs/MANUAL docs/RESOURCES
 %doc docs/TheArtOfHttpScripting docs/TODO
-%doc docs/LICENSE.openldap
 %{_bindir}/curl
 %{_mandir}/man1/curl.1*
 %{_libdir}/libcurl.so.*
@@ -94,6 +86,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Tue Mar 02 2004 Elliot Lee <sopwith@redhat.com>
+- rebuilt
+
+* Fri Feb 13 2004 Elliot Lee <sopwith@redhat.com>
+- rebuilt
+
+* Sat Jan 31 2004 Florian La Roche <Florian.LaRoche@redhat.de>
+- update to 7.10.8
+- remove patch2, already upstream
+
 * Wed Oct 15 2003 Adrian Havill <havill@redhat.com> 7.10.6-7
 - aclocal before libtoolize
 - move OpenLDAP license so it's present as a doc file, present in
