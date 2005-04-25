@@ -1,8 +1,8 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
 Version: 7.13.1
-Release: 1
-License: MPL
+Release: 2
+License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch0: curl-7.12.0-nousr.patch
@@ -36,16 +36,19 @@ rm -rf $RPM_BUILD_ROOT
 %setup -q 
 %patch0 -p1
 %patch1 -p1
+
+%build
 aclocal
 libtoolize --force
 ./reconf
 
-%build
 if pkg-config openssl ; then
 	CPPFLAGS=`pkg-config --cflags openssl`; export CPPFLAGS
 	LDFLAGS=`pkg-config --libs openssl`; export LDFLAGS
 fi
-%configure --with-ssl=/usr --enable-ipv6 --with-ca-bundle=%{_datadir}/ssl/certs/ca-bundle.crt --with-gssapi=/usr/kerberos --with-libidn
+%configure --with-ssl=/usr --enable-ipv6 \
+       --with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
+       --with-gssapi=/usr/kerberos --with-libidn
 make
 
 %install
@@ -87,6 +90,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Mon Apr 25 2005 Joe Orton <jorton@redhat.com> 7.13.1-2
+- update to use ca-bundle in /etc/pki
+- mark License as MIT not MPL
+
 * Mon Mar  9 2005 Ivana Varekova <varekova@redhat.com> 7.13.1-1
 - rebuilt (7.13.1)
 
