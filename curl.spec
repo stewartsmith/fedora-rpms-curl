@@ -1,12 +1,13 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
 Version: 7.13.1
-Release: 2
+Release: 3
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch0: curl-7.12.0-nousr.patch
 Patch1: curl-7.10.4-path.patch
+Patch2: curl-7.13.1-auth.patch
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: openssl-devel, libtool, pkgconfig, libidn-devel
@@ -36,6 +37,7 @@ rm -rf $RPM_BUILD_ROOT
 %setup -q 
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1 -b .auth
 
 %build
 aclocal
@@ -90,6 +92,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Tue May 03 2005 Ivana Varekova <varekova@redhat.com> 7.13.1-3
+- fix bug 150768 - curl-7.12.3-2 breaks basic authentication
+  used Daniel Stenberg patch (patch2)
+
 * Mon Apr 25 2005 Joe Orton <jorton@redhat.com> 7.13.1-2
 - update to use ca-bundle in /etc/pki
 - mark License as MIT not MPL
