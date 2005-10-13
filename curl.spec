@@ -1,12 +1,11 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
-Version: 7.14.0
+Version: 7.14.1
 Release: 1
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
-Patch0: curl-7.12.0-nousr.patch
-Patch1: curl-7.10.4-path.patch
+Patch0: curl-7.14.1-nousr.patch
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: openssl-devel, libtool, pkgconfig, libidn-devel
@@ -34,8 +33,7 @@ use cURL's capabilities internally.
 rm -rf $RPM_BUILD_ROOT
 
 %setup -q 
-%patch0 -p1
-%patch1 -p1
+%patch0 -p1 -b .nousr
 
 %build
 aclocal
@@ -90,6 +88,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Thu Oct 13 2005 Ivana Varekova <varekova@redhat.com> 7.14.1-1
+- update to 7.14.1
+
 * Thu Jun 16 2005 Ivana Varekova <varekova@redhat.com> 7.14.0-1
 - rebuild new version 
 
