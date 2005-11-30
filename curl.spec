@@ -1,11 +1,12 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
 Version: 7.15.0
-Release: 2
+Release: 3
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch0: curl-7.14.1-nousr.patch
+Patch1: curl-7.15.0-curl_config-version.patch
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: openssl-devel, libtool, pkgconfig, libidn-devel
@@ -34,6 +35,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %setup -q 
 %patch0 -p1 -b .nousr
+%patch1 -p1 -b .ver
 
 %build
 aclocal
@@ -88,6 +90,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Wed Nov 30 2005 Ivana Varekova <varekova@redhat.com> 7.15.0-3
+- fix curl-config bug 174556 - missing vernum value
+
 * Wed Nov  9 2005 Ivana Varekova <varekova@redhat.com> 7.15.0-2
 - rebuilt
 
