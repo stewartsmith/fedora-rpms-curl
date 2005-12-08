@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
-Version: 7.15.0
-Release: 3
+Version: 7.15.1
+Release: 1
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -86,10 +86,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/curl
 %{_libdir}/*.a
 %{_libdir}/*.so
+%{_libdir}/pkgconfig/*.pc
 %{_mandir}/man1/curl-config.1*
 %{_mandir}/man3/*
 
 %changelog
+* Thu Dec  8 2005 Ivana Varekova <varekova@redhat.com> 7.15.1-1
+- update to 7.15.1 (bug 175191)
+
 * Wed Nov 30 2005 Ivana Varekova <varekova@redhat.com> 7.15.0-3
 - fix curl-config bug 174556 - missing vernum value
 
