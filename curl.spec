@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
 Version: 7.15.1
-Release: 1.2.1
+Release: 2
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -56,6 +56,20 @@ rm -rf $RPM_BUILD_ROOT
 %makeinstall
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
+curlcsuffix=`echo %{_libdir} | sed s,/usr/,,`
+mv  $RPM_BUILD_ROOT%{_bindir}/curl-config $RPM_BUILD_ROOT%{_bindir}/curl-config-$curlcsuffix
+cat > $RPM_BUILD_ROOT%{_bindir}/curl-config  <<EOF
+#!/bin/sh
+if [ -e %{_bindir}/curl-config-lib64 ]; then 
+  exec %{_bindir}/curl-config-lib64 "\$@"
+elif [ -e %{_bindir}/curl-config-* ]; then 
+  curlcfile="\`ls %{_bindir}/curl-config-* | head\`"
+  exec \$curlcfile "\$@" 
+fi 
+EOF
+chmod 755 $RPM_BUILD_ROOT%{_bindir}/curl-config
+
+
 # don't need curl's copy of the certs; use openssl's
 find ${RPM_BUILD_ROOT} -name ca-bundle.crt -exec rm -f '{}' \;
 
@@ -82,7 +96,7 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(-,root,root)
 %doc docs/examples docs/INTERNALS
-%{_bindir}/curl-config
+%{_bindir}/curl-config*
 %{_includedir}/curl
 %{_libdir}/*.a
 %{_libdir}/*.so
@@ -91,6 +105,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Thu Feb 23 2006 Ivana Varekova <varekova@redhat.com> - 7.15.1-2
+- fix multilib problem - #181290 - 
+  curl-devel.i386 not installable together with curl-devel.x86-64
+
 * Fri Feb 10 2006 Jesse Keating <jkeating@redhat.com> - 7.15.1-1.2.1
 - bump again for double-long bug on ppc(64)
 
