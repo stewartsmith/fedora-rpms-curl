@@ -1,12 +1,13 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
-Version: 7.15.1
-Release: 2
+Version: 7.15.3
+Release: 1
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch0: curl-7.14.1-nousr.patch
 Patch1: curl-7.15.0-curl_config-version.patch
+Patch2: curl-7.15.3-multilib.patch
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: openssl-devel, libtool, pkgconfig, libidn-devel
@@ -36,6 +37,7 @@ rm -rf $RPM_BUILD_ROOT
 %setup -q 
 %patch0 -p1 -b .nousr
 %patch1 -p1 -b .ver
+%patch2 -p1 -b .multilib
 
 %build
 aclocal
@@ -55,19 +57,6 @@ make
 rm -rf $RPM_BUILD_ROOT
 %makeinstall
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
-
-curlcsuffix=`echo %{_libdir} | sed s,/usr/,,`
-mv  $RPM_BUILD_ROOT%{_bindir}/curl-config $RPM_BUILD_ROOT%{_bindir}/curl-config-$curlcsuffix
-cat > $RPM_BUILD_ROOT%{_bindir}/curl-config  <<EOF
-#!/bin/sh
-if [ -e %{_bindir}/curl-config-lib64 ]; then 
-  exec %{_bindir}/curl-config-lib64 "\$@"
-elif [ -e %{_bindir}/curl-config-* ]; then 
-  curlcfile="\`ls %{_bindir}/curl-config-* | head\`"
-  exec \$curlcfile "\$@" 
-fi 
-EOF
-chmod 755 $RPM_BUILD_ROOT%{_bindir}/curl-config
 
 
 # don't need curl's copy of the certs; use openssl's
@@ -105,6 +94,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Mon Mar 20 2006 Ivana Varekova <varekova@redhat.com> - 7.15.3-1
+- fix multilib problem using pkg-config
+- update to 7.15.3
+
 * Thu Feb 23 2006 Ivana Varekova <varekova@redhat.com> - 7.15.1-2
 - fix multilib problem - #181290 - 
   curl-devel.i386 not installable together with curl-devel.x86-64
