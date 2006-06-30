@@ -1,6 +1,6 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
-Version: 7.15.3
+Version: 7.15.4
 Release: 1
 License: MIT
 Group: Applications/Internet
@@ -94,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Fri Jul 30 2006 Ivana Varekova <varekova@redhat.com> - 7.15.4-1
+- update to 7.15.4
+
 * Mon Mar 20 2006 Ivana Varekova <varekova@redhat.com> - 7.15.3-1
 - fix multilib problem using pkg-config
 - update to 7.15.3
