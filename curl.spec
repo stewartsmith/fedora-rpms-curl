@@ -1,6 +1,6 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
-Version: 7.15.5
+Version: 7.16.0
 Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
@@ -94,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Mon Oct 30 2006 Jindrich Novy <jnovy@redhat.com> - 7.16.0-1
+- update to curl-7.16.0
+
 * Thu Aug 24 2006 Jindrich Novy <jnovy@redhat.com> - 7.15.5-1.fc6
 - update to curl-7.15.5
 - use %%{?dist}
