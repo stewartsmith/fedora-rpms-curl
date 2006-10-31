@@ -1,15 +1,16 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
 Version: 7.16.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch0: curl-7.14.1-nousr.patch
 Patch1: curl-7.15.0-curl_config-version.patch
 Patch2: curl-7.15.3-multilib.patch
+Patch3: curl-7.16.0-privlibs.patch
 URL: http://curl.haxx.se/
-BuildRoot: %{_tmppath}/%{name}-%{version}-root
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: openssl-devel, libtool, pkgconfig, libidn-devel
 Requires: openssl
 
@@ -22,7 +23,8 @@ authentication, FTP upload, HTTP post, and file transfer resume.
 
 %package devel
 Group: Development/Libraries
-Requires: %{name} = %{version}-%{release}, openssl-devel, libidn-devel
+Requires: %{name} = %{version}-%{release}
+Requires: openssl-devel, libidn-devel, pkgconfig
 Summary: Files needed for building applications with libcurl.
 
 %description devel
@@ -38,6 +40,7 @@ rm -rf $RPM_BUILD_ROOT
 %patch0 -p1 -b .nousr
 %patch1 -p1 -b .ver
 %patch2 -p1 -b .multilib
+%patch3 -p1 -b .privlibs
 
 %build
 aclocal
@@ -94,6 +97,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Tue Oct 31 2006 Jindrich Novy <jnovy@redhat.com> - 7.16.0-2
+- fix BuildRoot
+- add Requires: pkgconfig for curl-devel
+- move LDFLAGS and LIBS to Libs.private in libcurl.pc.in (#213278)
+
 * Mon Oct 30 2006 Jindrich Novy <jnovy@redhat.com> - 7.16.0-1
 - update to curl-7.16.0
 

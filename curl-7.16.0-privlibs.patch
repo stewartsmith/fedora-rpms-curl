@@ -1,0 +1,10 @@
+--- curl-7.16.0/libcurl.pc.in.LIBS_PRIVATE	2004-12-11 12:46:40.000000000 -0600
++++ curl-7.16.0/libcurl.pc.in	2006-10-31 10:05:30.000000000 -0600
+@@ -6,5 +6,6 @@
+ Name: libcurl
+ Description: Library to transfer files with ftp, http, etc.
+ Version: @VERSION@
+-Libs: -L${libdir} -lcurl @LDFLAGS@ @LIBS@
++Libs: -L${libdir} -lcurl 
++Libs.private: @LDFLAGS@ @LIBS@
+ Cflags: -I${includedir}
