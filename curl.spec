@@ -1,7 +1,9 @@
+%define ldap_version 2.3
+
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
 Version: 7.16.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -53,7 +55,9 @@ if pkg-config openssl ; then
 fi
 %configure --with-ssl=/usr --enable-ipv6 \
        --with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
-       --with-gssapi=/usr/kerberos --with-libidn
+       --with-gssapi=/usr/kerberos --with-libidn \
+       --with-ldap-lib=libldap-%{ldap_version}.so.0 \
+       --with-lber-lib=liblber-%{ldap_version}.so.0
 make
 
 %install
@@ -97,6 +101,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Thu Nov 16 2006 Jindrich Novy <jnovy@redhat.com> -7.16.0-3
+- prevent curl from dlopen()ing missing ldap libraries so that
+  ldap:// requests work (#215928)
+
 * Tue Oct 31 2006 Jindrich Novy <jnovy@redhat.com> - 7.16.0-2
 - fix BuildRoot
 - add Requires: pkgconfig for curl-devel
