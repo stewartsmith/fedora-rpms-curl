@@ -1,9 +1,9 @@
 %define ldap_version 2.3
 
-Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
+Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.16.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -36,8 +36,6 @@ package includes files needed for developing applications which can
 use cURL's capabilities internally.
 
 %prep
-rm -rf $RPM_BUILD_ROOT
-
 %setup -q 
 %patch0 -p1 -b .nousr
 %patch1 -p1 -b .ver
@@ -54,10 +52,10 @@ if pkg-config openssl ; then
 	LDFLAGS=`pkg-config --libs openssl`; export LDFLAGS
 fi
 %configure --with-ssl=/usr --enable-ipv6 \
-       --with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
-       --with-gssapi=/usr/kerberos --with-libidn \
-       --with-ldap-lib=libldap-%{ldap_version}.so.0 \
-       --with-lber-lib=liblber-%{ldap_version}.so.0
+	--with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
+	--with-gssapi=/usr/kerberos --with-libidn \
+	--with-ldap-lib=libldap-%{ldap_version}.so.0 \
+	--with-lber-lib=liblber-%{ldap_version}.so.0
 make
 
 %install
@@ -101,6 +99,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Mon Dec 18 2006 Jindrich Novy <jnovy@redhat.com> 7.16.0-4
+- convert spec to UTF-8
+- don't delete BuildRoot in %%prep phase
+- rpmlint fixes
+
 * Thu Nov 16 2006 Jindrich Novy <jnovy@redhat.com> -7.16.0-3
 - prevent curl from dlopen()ing missing ldap libraries so that
   ldap:// requests work (#215928)
@@ -274,7 +277,7 @@ rm -rf $RPM_BUILD_ROOT
 - remove docs/LIBCURL from docs list; remove unpackaged libcurl.la
 - libtoolize and reconf
 
-* Mon Jul 22 2002 Trond Eivind Glomsrød <teg@redhat.com> 7.9.8-1
+* Mon Jul 22 2002 Trond Eivind GlomsrÃ¸d <teg@redhat.com> 7.9.8-1
 - 7.9.8 (# 69473)
 
 * Fri Jun 21 2002 Tim Powers <timp@redhat.com>
@@ -283,20 +286,20 @@ rm -rf $RPM_BUILD_ROOT
 * Sun May 26 2002 Tim Powers <timp@redhat.com>
 - automated rebuild
 
-* Thu May 16 2002 Trond Eivind Glomsrød <teg@redhat.com> 7.9.7-1
+* Thu May 16 2002 Trond Eivind GlomsrÃ¸d <teg@redhat.com> 7.9.7-1
 - 7.9.7
 
-* Wed Apr 24 2002 Trond Eivind Glomsrød <teg@redhat.com> 7.9.6-1
+* Wed Apr 24 2002 Trond Eivind GlomsrÃ¸d <teg@redhat.com> 7.9.6-1
 - 7.9.6
 
-* Thu Mar 21 2002 Trond Eivind Glomsrød <teg@redhat.com> 7.9.5-2
+* Thu Mar 21 2002 Trond Eivind GlomsrÃ¸d <teg@redhat.com> 7.9.5-2
 - Stop the curl-config script from printing -I/usr/include 
   and -L/usr/lib (#59497)
 
-* Fri Mar  8 2002 Trond Eivind Glomsrød <teg@redhat.com> 7.9.5-1
+* Fri Mar  8 2002 Trond Eivind GlomsrÃ¸d <teg@redhat.com> 7.9.5-1
 - 7.9.5
 
-* Tue Feb 26 2002 Trond Eivind Glomsrød <teg@redhat.com> 7.9.3-2
+* Tue Feb 26 2002 Trond Eivind GlomsrÃ¸d <teg@redhat.com> 7.9.3-2
 - Rebuild
 
 * Wed Jan 23 2002 Nalin Dahyabhai <nalin@redhat.com> 7.9.3-1
@@ -305,7 +308,7 @@ rm -rf $RPM_BUILD_ROOT
 * Wed Jan 09 2002 Tim Powers <timp@redhat.com> 7.9.2-2
 - automated rebuild
 
-* Wed Jan  9 2002 Trond Eivind Glomsrød <teg@redhat.com> 7.9.2-1
+* Wed Jan  9 2002 Trond Eivind GlomsrÃ¸d <teg@redhat.com> 7.9.2-1
 - 7.9.2
 
 * Fri Aug 17 2001 Nalin Dahyabhai <nalin@redhat.com>
