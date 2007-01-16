@@ -3,7 +3,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.16.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -89,7 +89,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(-,root,root)
-%doc docs/examples docs/INTERNALS
+%doc docs/examples/*.c docs/examples/Makefile.example docs/INTERNALS
 %{_bindir}/curl-config*
 %{_includedir}/curl
 %{_libdir}/*.a
@@ -99,6 +99,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Tue Jan 16 2007 Jindrich Novy <jnovy@redhat.com> 7.16.0-5
+- don't package generated makefiles for docs/examples to avoid
+  multilib conflicts
+
 * Mon Dec 18 2006 Jindrich Novy <jnovy@redhat.com> 7.16.0-4
 - convert spec to UTF-8
 - don't delete BuildRoot in %%prep phase
