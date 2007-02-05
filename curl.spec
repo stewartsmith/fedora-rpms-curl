@@ -3,7 +3,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.16.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -14,7 +14,6 @@ Patch3: curl-7.16.0-privlibs.patch
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: openssl-devel, libtool, pkgconfig, libidn-devel
-Requires: openssl
 
 %description
 cURL is a tool for getting files from FTP, HTTP, Gopher, Telnet, and
@@ -27,7 +26,7 @@ authentication, FTP upload, HTTP post, and file transfer resume.
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
 Requires: openssl-devel, libidn-devel, pkgconfig
-Summary: Files needed for building applications with libcurl.
+Summary: Files needed for building applications with libcurl
 
 %description devel
 cURL is a tool for getting files from FTP, HTTP, Gopher, Telnet, and
@@ -51,12 +50,12 @@ if pkg-config openssl ; then
 	CPPFLAGS=`pkg-config --cflags openssl`; export CPPFLAGS
 	LDFLAGS=`pkg-config --libs openssl`; export LDFLAGS
 fi
-%configure --with-ssl=/usr --enable-ipv6 \
+%configure --with-ssl=%{_prefix} --enable-ipv6 \
 	--with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
-	--with-gssapi=/usr/kerberos --with-libidn \
+	--with-gssapi=%{_prefix}/kerberos --with-libidn \
 	--with-ldap-lib=libldap-%{ldap_version}.so.0 \
 	--with-lber-lib=liblber-%{ldap_version}.so.0
-make
+make CFLAGS="$RPM_OPT_FLAGS" %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -70,11 +69,9 @@ find ${RPM_BUILD_ROOT} -name ca-bundle.crt -exec rm -f '{}' \;
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
-/sbin/ldconfig
+%post -p /sbin/ldconfig
 
-%postun
-/sbin/ldconfig
+%postun -p /sbin/ldconfig
 
 %files
 %defattr(-,root,root)
@@ -99,6 +96,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Mon Feb  5 2007 Jindrich Novy <jnovy@redhat.com> 7.16.1-2
+- merge review related spec fixes (#225671)
+
 * Mon Jan 29 2007 Jindrich Novy <jnovy@redhat.com> 7.16.1-1
 - update to 7.16.1
 
