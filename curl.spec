@@ -3,7 +3,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.16.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -54,7 +54,8 @@ fi
 	--with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
 	--with-gssapi=%{_prefix}/kerberos --with-libidn \
 	--with-ldap-lib=libldap-%{ldap_version}.so.0 \
-	--with-lber-lib=liblber-%{ldap_version}.so.0
+	--with-lber-lib=liblber-%{ldap_version}.so.0 \
+	--disable-static
 make CFLAGS="$RPM_OPT_FLAGS" %{?_smp_mflags}
 
 %install
@@ -89,13 +90,15 @@ rm -rf $RPM_BUILD_ROOT
 %doc docs/examples/*.c docs/examples/Makefile.example docs/INTERNALS
 %{_bindir}/curl-config*
 %{_includedir}/curl
-%{_libdir}/*.a
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/*.pc
 %{_mandir}/man1/curl-config.1*
 %{_mandir}/man3/*
 
 %changelog
+* Mon Feb 19 2007 Jindrich Novy <jnovy@redhat.com> 7.16.1-3
+- don't create/ship static libraries (#225671)
+
 * Mon Feb  5 2007 Jindrich Novy <jnovy@redhat.com> 7.16.1-2
 - merge review related spec fixes (#225671)
 
