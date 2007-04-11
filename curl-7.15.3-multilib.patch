@@ -1,6 +1,6 @@
---- curl-7.15.1/curl-config.in.pom	2005-09-04 20:15:24.000000000 +0200
-+++ curl-7.15.1/curl-config.in	2006-03-20 14:12:04.485640816 +0100
-@@ -50,7 +50,7 @@
+--- curl-7.16.2/curl-config.in.multilib	2007-02-18 10:41:27.000000000 +0100
++++ curl-7.16.2/curl-config.in	2007-04-11 20:00:16.000000000 +0200
+@@ -71,7 +71,7 @@
  	;;
  
      --cc)
@@ -9,12 +9,21 @@
  	;;
  
      --prefix)
-@@ -143,7 +143,7 @@
+@@ -181,16 +181,7 @@
         	;;
  
      --libs)
--       	echo -L@libdir@ -lcurl @LDFLAGS@ @LIBS@
-+        pkg-config libcurl --libs
-        	;;
+-	if test "X@libdir@" != "X/usr/lib"; then
+-	   CURLLIBDIR="-L@libdir@ "
+-	else
+-	   CURLLIBDIR=""
+-	fi
+-	if test "X@REQUIRE_LIB_DEPS@" = "Xyes"; then
+-	  echo ${CURLLIBDIR}-lcurl @LDFLAGS@ @LIBCURL_LIBS@ @LIBS@
+-	else
+-	  echo ${CURLLIBDIR}-lcurl @LDFLAGS@ @LIBS@
+-	fi
++	pkg-config libcurl --libs
+ 	;;
  
      *)

@@ -2,8 +2,8 @@
 
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
-Version: 7.16.1
-Release: 3%{?dist}
+Version: 7.16.2
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -96,6 +96,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Wed Apr 11 2007 Jindrich Novy <jnovy@redhat.com> 7.16.2-1
+- update to 7.16.2
+
 * Mon Feb 19 2007 Jindrich Novy <jnovy@redhat.com> 7.16.1-3
 - don't create/ship static libraries (#225671)
 
