@@ -3,7 +3,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.16.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -62,6 +62,8 @@ make CFLAGS="$RPM_OPT_FLAGS" %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 %makeinstall
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
+install -d $RPM_BUILD_ROOT/%{_datadir}/aclocal
+install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT/%{_datadir}/aclocal
 
 
 # don't need curl's copy of the certs; use openssl's
@@ -94,8 +96,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*.pc
 %{_mandir}/man1/curl-config.1*
 %{_mandir}/man3/*
+%{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu May 10 2007 Jindrich Novy <jnovy@redhat.com> 7.16.2-2
+- package libcurl.m4 in curl-devel (#239664), thanks to Quy Tonthat
+
 * Wed Apr 11 2007 Jindrich Novy <jnovy@redhat.com> 7.16.2-1
 - update to 7.16.2
 
