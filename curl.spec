@@ -3,7 +3,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.16.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -25,7 +25,7 @@ authentication, FTP upload, HTTP post, and file transfer resume.
 %package devel
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
-Requires: openssl-devel, libidn-devel, pkgconfig
+Requires: openssl-devel, libidn-devel, pkgconfig, automake
 Summary: Files needed for building applications with libcurl
 
 %description devel
@@ -99,6 +99,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri May 11 2007 Jindrich Novy <jnovy@redhat.com> 7.16.2-3
+- add automake BR to curl-devel to fix aclocal dir. ownership,
+  thanks to Patrice Dumas
+
 * Thu May 10 2007 Jindrich Novy <jnovy@redhat.com> 7.16.2-2
 - package libcurl.m4 in curl-devel (#239664), thanks to Quy Tonthat
 
