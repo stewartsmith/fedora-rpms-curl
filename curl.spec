@@ -1,17 +1,17 @@
-%define ldap_version 2.3
+# get the current ldap library version to link against automatically
+%define ldap_version %(readlink %{_libdir}/libldap.so | sed 's,.*libldap-\\([0-9.]*\\)\\.so\\..*,\\1,')
 
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.16.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
-Patch0: curl-7.14.1-nousr.patch
-Patch1: curl-7.15.0-curl_config-version.patch
-Patch2: curl-7.15.3-multilib.patch
-Patch3: curl-7.16.0-privlibs.patch
+Patch1: curl-7.15.3-multilib.patch
+Patch2: curl-7.16.0-privlibs.patch
 URL: http://curl.haxx.se/
+Requires: openssl
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: openssl-devel, libtool, pkgconfig, libidn-devel
 
@@ -36,10 +36,8 @@ use cURL's capabilities internally.
 
 %prep
 %setup -q 
-%patch0 -p1 -b .nousr
-%patch1 -p1 -b .ver
-%patch2 -p1 -b .multilib
-%patch3 -p1 -b .privlibs
+%patch1 -p1 -b .multilib
+%patch2 -p1 -b .privlibs
 
 %build
 aclocal
@@ -51,7 +49,7 @@ if pkg-config openssl ; then
 	LDFLAGS=`pkg-config --libs openssl`; export LDFLAGS
 fi
 %configure --with-ssl=%{_prefix} --enable-ipv6 \
-	--with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
+	--with-ca-bundle=%{buildroot}%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
 	--with-gssapi=%{_prefix}/kerberos --with-libidn \
 	--with-ldap-lib=libldap-%{ldap_version}.so.0 \
 	--with-lber-lib=liblber-%{ldap_version}.so.0 \
@@ -60,7 +58,15 @@ make CFLAGS="$RPM_OPT_FLAGS" %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%makeinstall
+
+make INSTALL="%{__install} -p" \
+        prefix=%{buildroot}%{_prefix} \
+        includedir=%{buildroot}%{_includedir} \
+        libdir=%{buildroot}%{_libdir} \
+        bindir=%{buildroot}%{_bindir} \
+        mandir=%{buildroot}%{_mandir} \
+install
+
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 install -d $RPM_BUILD_ROOT/%{_datadir}/aclocal
 install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT/%{_datadir}/aclocal
@@ -99,6 +105,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Jun 15 2007 Jindrich Novy <jnovy@redhat.com> 7.16.2-4
+- another series of review fixes (#225671),
+  thanks to Paul Horwath
+- check version of ldap library automatically
+- don't use %%makeinstall and preserve timestamps
+- drop useless patches
+
 * Fri May 11 2007 Jindrich Novy <jnovy@redhat.com> 7.16.2-3
 - add automake BR to curl-devel to fix aclocal dir. ownership,
   thanks to Patrice Dumas
