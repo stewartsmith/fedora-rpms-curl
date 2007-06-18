@@ -4,12 +4,13 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.16.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch1: curl-7.15.3-multilib.patch
 Patch2: curl-7.16.0-privlibs.patch
+Patch3: curl-7.16.2-print.patch
 URL: http://curl.haxx.se/
 Requires: openssl
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -38,6 +39,7 @@ use cURL's capabilities internally.
 %setup -q 
 %patch1 -p1 -b .multilib
 %patch2 -p1 -b .privlibs
+%patch3 -p1 -b .print
 
 %build
 aclocal
@@ -105,6 +107,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Jun 18 2007 Jindrich Novy <jnovy@redhat.com> 7.16.2-5
+- don't print like crazy (#236981), backported from upstream CVS
+
 * Fri Jun 15 2007 Jindrich Novy <jnovy@redhat.com> 7.16.2-4
 - another series of review fixes (#225671),
   thanks to Paul Horwath
