@@ -3,14 +3,13 @@
 
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
-Version: 7.16.2
-Release: 5%{?dist}
+Version: 7.16.3
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch1: curl-7.15.3-multilib.patch
 Patch2: curl-7.16.0-privlibs.patch
-Patch3: curl-7.16.2-print.patch
 URL: http://curl.haxx.se/
 Requires: openssl
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -39,35 +38,26 @@ use cURL's capabilities internally.
 %setup -q 
 %patch1 -p1 -b .multilib
 %patch2 -p1 -b .privlibs
-%patch3 -p1 -b .print
 
 %build
-aclocal
-libtoolize --force
-./reconf
-
 if pkg-config openssl ; then
 	CPPFLAGS=`pkg-config --cflags openssl`; export CPPFLAGS
 	LDFLAGS=`pkg-config --libs openssl`; export LDFLAGS
 fi
 %configure --with-ssl=%{_prefix} --enable-ipv6 \
-	--with-ca-bundle=%{buildroot}%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
+	--with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
 	--with-gssapi=%{_prefix}/kerberos --with-libidn \
 	--with-ldap-lib=libldap-%{ldap_version}.so.0 \
 	--with-lber-lib=liblber-%{ldap_version}.so.0 \
 	--disable-static
+sed -i -e 's,-L/usr/lib ,,g;s,-L/usr/lib64 ,,g;s,-L/usr/lib$,,g;s,-L/usr/lib64$,,g' \
+	Makefile libcurl.pc
 make CFLAGS="$RPM_OPT_FLAGS" %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-make INSTALL="%{__install} -p" \
-        prefix=%{buildroot}%{_prefix} \
-        includedir=%{buildroot}%{_includedir} \
-        libdir=%{buildroot}%{_libdir} \
-        bindir=%{buildroot}%{_bindir} \
-        mandir=%{buildroot}%{_mandir} \
-install
+make DESTDIR=$RPM_BUILD_ROOT INSTALL="%{__install} -p" install
 
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 install -d $RPM_BUILD_ROOT/%{_datadir}/aclocal
@@ -98,6 +88,7 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(-,root,root)
 %doc docs/examples/*.c docs/examples/Makefile.example docs/INTERNALS
+%doc docs/CONTRIBUTE
 %{_bindir}/curl-config*
 %{_includedir}/curl
 %{_libdir}/*.so
@@ -107,12 +98,21 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Jun 25 2007 Jindrich Novy <jnovy@redhat.com> 7.16.3-1
+- update to 7.16.3
+- drop .print patch, applied upstream
+- next series of merge review fixes by Paul Howarth
+- remove aclocal stuff, no more needed
+- simplify makefile arguments
+- don't reference standard library paths in libcurl.pc
+- include docs/CONTRIBUTE
+
 * Mon Jun 18 2007 Jindrich Novy <jnovy@redhat.com> 7.16.2-5
 - don't print like crazy (#236981), backported from upstream CVS
 
 * Fri Jun 15 2007 Jindrich Novy <jnovy@redhat.com> 7.16.2-4
 - another series of review fixes (#225671),
-  thanks to Paul Horwath
+  thanks to Paul Howarth
 - check version of ldap library automatically
 - don't use %%makeinstall and preserve timestamps
 - drop useless patches
