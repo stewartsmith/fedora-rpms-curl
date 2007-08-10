@@ -4,12 +4,13 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.16.4
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch1: curl-7.15.3-multilib.patch
 Patch2: curl-7.16.0-privlibs.patch
+Patch3: curl-7.16.4-ftp.patch
 URL: http://curl.haxx.se/
 Requires: openssl
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -38,6 +39,7 @@ use cURL's capabilities internally.
 %setup -q 
 %patch1 -p1 -b .multilib
 %patch2 -p1 -b .privlibs
+%patch3 -p1 -b .ftp
 
 %build
 if pkg-config openssl ; then
@@ -98,6 +100,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Aug 10 2007 Jindrich Novy <jnovy@redhat.com> 7.16.4-2
+- fix anonymous ftp login (#251570), thanks to David Cantrell
+
 * Wed Jul 11 2007 Jindrich Novy <jnovy@redhat.com> 7.16.4-1
 - update to 7.16.4
 
