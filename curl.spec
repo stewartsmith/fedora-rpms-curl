@@ -4,7 +4,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.16.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -14,7 +14,7 @@ Patch3: curl-7.16.4-ftp.patch
 URL: http://curl.haxx.se/
 Requires: openssl
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: openssl-devel, libtool, pkgconfig, libidn-devel
+BuildRequires: libtool, pkgconfig, libidn-devel
 
 %description
 cURL is a tool for getting files from FTP, HTTP, Gopher, Telnet, and
@@ -42,11 +42,11 @@ use cURL's capabilities internally.
 %patch3 -p1 -b .ftp
 
 %build
-if pkg-config openssl ; then
-	CPPFLAGS=`pkg-config --cflags openssl`; export CPPFLAGS
-	LDFLAGS=`pkg-config --libs openssl`; export LDFLAGS
+if pkg-config nss ; then
+	CPPFLAGS=`pkg-config --cflags nss`; export CPPFLAGS
+	LDFLAGS=`pkg-config --libs nss`; export LDFLAGS
 fi
-%configure --with-ssl=%{_prefix} --enable-ipv6 \
+%configure --without-ssl --with-nss=%{_prefix} --enable-ipv6 \
 	--with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
 	--with-gssapi=%{_prefix}/kerberos --with-libidn \
 	--with-ldap-lib=libldap-%{ldap_version}.so.0 \
@@ -100,6 +100,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Aug 27 2007 Jindrich Novy <jnovy@redhat.com> 7.16.4-3
+- don't use openssl, use nss instead
+
 * Fri Aug 10 2007 Jindrich Novy <jnovy@redhat.com> 7.16.4-2
 - fix anonymous ftp login (#251570), thanks to David Cantrell
 
