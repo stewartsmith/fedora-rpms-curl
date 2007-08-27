@@ -12,9 +12,8 @@ Patch1: curl-7.15.3-multilib.patch
 Patch2: curl-7.16.0-privlibs.patch
 Patch3: curl-7.16.4-ftp.patch
 URL: http://curl.haxx.se/
-Requires: openssl
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: libtool, pkgconfig, libidn-devel
+BuildRequires: libtool, pkgconfig, libidn-devel, nss-devel
 
 %description
 cURL is a tool for getting files from FTP, HTTP, Gopher, Telnet, and
@@ -26,7 +25,7 @@ authentication, FTP upload, HTTP post, and file transfer resume.
 %package devel
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
-Requires: openssl-devel, libidn-devel, pkgconfig, automake
+Requires: pkgconfig, automake
 Summary: Files needed for building applications with libcurl
 
 %description devel
