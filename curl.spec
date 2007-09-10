@@ -4,7 +4,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.16.4
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -12,6 +12,7 @@ Patch1: curl-7.15.3-multilib.patch
 Patch2: curl-7.16.0-privlibs.patch
 Patch3: curl-7.16.4-ftp.patch
 Patch4: curl-7.16.4-nsspem.patch
+Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: libtool, pkgconfig, libidn-devel
@@ -102,6 +103,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Sep 10 2007 Jindrich Novy <jnovy@redhat.com> 7.16.4-6
+- provide webclient (#225671)
+
 * Thu Sep  6 2007 Jindrich Novy <jnovy@redhat.com> 7.16.4-5
 - add support for the NSS PKCS#11 pem reader so the command-line is the
   same for both OpenSSL and NSS by Rob Crittenden (rcritten@redhat.com)
