@@ -4,7 +4,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.16.4
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -15,7 +15,7 @@ Patch4: curl-7.16.4-nsspem.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: libtool, pkgconfig, libidn-devel
+BuildRequires: libtool, pkgconfig, libidn-devel, zlib-devel
 BuildRequires: nss-devel >= 3.11.7-7
 
 %description
@@ -103,6 +103,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Sep 17 2007 Jindrich Novy <jnovy@redhat.com> 7.16.4-7
+- add zlib-devel BR to enable gzip compressed transfers in curl (#292211)
+
 * Mon Sep 10 2007 Jindrich Novy <jnovy@redhat.com> 7.16.4-6
 - provide webclient (#225671)
 
