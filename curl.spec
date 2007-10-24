@@ -4,7 +4,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.16.4
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -26,15 +26,24 @@ to work without user interaction or any kind of interactivity. cURL
 offers many useful capabilities, like proxy support, user
 authentication, FTP upload, HTTP post, and file transfer resume.
 
-%package devel
+%package -n libcurl
+Summary: A library for getting files from web servers
 Group: Development/Libraries
-Requires: %{name} = %{version}-%{release}
-Requires: libidn-devel, pkgconfig, automake
-Summary: Files needed for building applications with libcurl
 
-%description devel
+%description -n libcurl
+This package provides a way for applications to use FTP, HTTP, Gopher and
+other servers for getting files.
+
+%package -n libcurl-devel
+Summary: Files needed for building applications with libcurl
+Group: Development/Libraries
+Requires: libcurl = %{version}-%{release}
+Requires: libidn-devel, pkgconfig, automake
+Obsoletes: curl-devel
+
+%description -n libcurl-devel
 cURL is a tool for getting files from FTP, HTTP, Gopher, Telnet, and
-Dict servers, using any of the supported protocols. The curl-devel
+Dict servers, using any of the supported protocols. The libcurl-devel
 package includes files needed for developing applications which can
 use cURL's capabilities internally.
 
@@ -77,9 +86,9 @@ find ${RPM_BUILD_ROOT} -name ca-bundle.crt -exec rm -f '{}' \;
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -p /sbin/ldconfig
+%post -n libcurl -p /sbin/ldconfig
 
-%postun -p /sbin/ldconfig
+%postun -n libcurl -p /sbin/ldconfig
 
 %files
 %defattr(-,root,root)
@@ -89,10 +98,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc docs/TheArtOfHttpScripting docs/TODO
 %{_bindir}/curl
 %{_mandir}/man1/curl.1*
-%{_libdir}/libcurl.so.*
-#%{_datadir}/ssl/certs/ca-bundle.crt
 
-%files devel
+%files -n libcurl
+%{_libdir}/libcurl.so.*
+
+%files -n libcurl-devel
 %defattr(-,root,root)
 %doc docs/examples/*.c docs/examples/Makefile.example docs/INTERNALS
 %doc docs/CONTRIBUTE
@@ -105,6 +115,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Oct 24 2007 Jindrich Novy <jnovy@redhat.com> 7.16.4-9
+- create libcurl and libcurl-devel subpackages (#130251)
+
 * Thu Oct 11 2007 Jindrich Novy <jnovy@redhat.com> 7.16.4-8
 - list features correctly when curl is compiled against NSS (#316191)
 
