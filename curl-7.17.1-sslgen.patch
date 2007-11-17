@@ -1,0 +1,10 @@
+--- curl-7.17.1/lib/sslgen.c.orig	2007-11-16 22:48:48.000000000 -0500
++++ curl-7.17.1/lib/sslgen.c	2007-11-16 22:49:19.000000000 -0500
+@@ -243,6 +243,7 @@
+ #else
+ #ifdef USE_NSS
+   *done = TRUE; /* fallback to BLOCKING */
++  conn->ssl[sockindex].use = TRUE;
+   return Curl_nss_connect(conn, sockindex);
+ #else
+ #ifdef USE_QSOSSL

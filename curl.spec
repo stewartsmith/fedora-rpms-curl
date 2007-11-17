@@ -3,16 +3,15 @@
 
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
-Version: 7.16.4
-Release: 10%{?dist}
+Version: 7.17.1
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch1: curl-7.15.3-multilib.patch
 Patch2: curl-7.16.0-privlibs.patch
-Patch3: curl-7.16.4-ftp.patch
-Patch4: curl-7.16.4-nsspem.patch
-Patch5: curl-7.16.4-curl-config.patch
+Patch3: curl-7.16.4-curl-config.patch
+Patch4: curl-7.17.1-sslgen.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -52,9 +51,8 @@ use cURL's capabilities internally.
 %setup -q 
 %patch1 -p1 -b .multilib
 %patch2 -p1 -b .privlibs
-%patch3 -p1 -b .ftp
-%patch4 -p1 -b .nsspem
-%patch5 -p1 -b .curl-config
+%patch3 -p1 -b .curl-config
+%patch4 -p1 -b .sslgen
 
 %build
 if pkg-config nss ; then
@@ -69,7 +67,7 @@ fi
 	--disable-static
 sed -i -e 's,-L/usr/lib ,,g;s,-L/usr/lib64 ,,g;s,-L/usr/lib$,,g;s,-L/usr/lib64$,,g' \
 	Makefile libcurl.pc
-make CFLAGS="$RPM_OPT_FLAGS" %{?_smp_mflags}
+make CFLAGS="$RPM_OPT_FLAGS -DHAVE_PK11_CREATEGENERICOBJECT" %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -116,6 +114,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Sat Nov 17 2007 Jindrich Novy <jnovy@redhat.com> 7.17.1-1
+- update to curl 7.17.1
+- include patch to enable SSL usage in NSS when a socket is opened
+  nonblocking, thanks to Rob Crittenden (rcritten@redhat.com)
+
 * Wed Oct 24 2007 Jindrich Novy <jnovy@redhat.com> 7.16.4-10
 - correctly provide/obsolete curl-devel (#130251)
 
