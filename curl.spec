@@ -4,7 +4,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.17.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -18,12 +18,13 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: libtool, pkgconfig, libidn-devel, zlib-devel
 BuildRequires: nss-devel >= 3.11.7-7
 
-%description
-cURL is a tool for getting files from FTP, HTTP, Gopher, Telnet, and
-Dict servers, using any of the supported protocols. cURL is designed
-to work without user interaction or any kind of interactivity. cURL
-offers many useful capabilities, like proxy support, user
-authentication, FTP upload, HTTP post, and file transfer resume.
+%description 
+cURL is a tool for getting files from FTP, FTPS, HTTP, HTTPS, SFTP,
+TFTP, TELNET, DICT and FILE servers, using any of the supported
+protocols. cURL is designed to work without user interaction or any kind
+of interactivity. cURL offers many useful capabilities, like proxy
+support, user authentication, FTP upload, HTTP post, and file transfer
+resume.
 
 %package -n libcurl
 Summary: A library for getting files from web servers
@@ -114,6 +115,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Nov 21 2007 Jindrich Novy <jnovy@redhat.com> 7.17.1-2
+- update description to contain complete supported servers list (#393861)
+
 * Sat Nov 17 2007 Jindrich Novy <jnovy@redhat.com> 7.17.1-1
 - update to curl 7.17.1
 - include patch to enable SSL usage in NSS when a socket is opened
