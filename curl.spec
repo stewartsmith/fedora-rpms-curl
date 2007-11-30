@@ -1,10 +1,7 @@
-# get the current ldap library version to link against automatically
-%define ldap_version %(readlink %{_libdir}/libldap.so | sed 's,.*libldap-\\([0-9.]*\\)\\.so\\..*,\\1,')
-
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.17.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -16,15 +13,14 @@ Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: libtool, pkgconfig, libidn-devel, zlib-devel
-BuildRequires: nss-devel >= 3.11.7-7
+BuildRequires: nss-devel >= 3.11.7-7, openldap-devel, krb5-devel
 
-%description 
-cURL is a tool for getting files from FTP, FTPS, HTTP, HTTPS, SFTP,
-TFTP, TELNET, DICT and FILE servers, using any of the supported
-protocols. cURL is designed to work without user interaction or any kind
-of interactivity. cURL offers many useful capabilities, like proxy
-support, user authentication, FTP upload, HTTP post, and file transfer
-resume.
+%description  
+cURL is a tool for getting files from HTTP, FTP, FILE, LDAP, LDAPS,
+DICT, TELNET and TFTP servers, using any of the supported protocols.
+cURL is designed to work without user interaction or any kind of
+interactivity. cURL 5;3~offers many useful capabilities, like proxy support,
+user authentication, FTP upload, HTTP post, and file transfer resume.
 
 %package -n libcurl
 Summary: A library for getting files from web servers
@@ -56,19 +52,14 @@ use cURL's capabilities internally.
 %patch4 -p1 -b .sslgen
 
 %build
-if pkg-config nss ; then
-	CPPFLAGS=`pkg-config --cflags nss`; export CPPFLAGS
-	LDFLAGS=`pkg-config --libs nss`; export LDFLAGS
-fi
+export CPPFLAGS="$(pkg-config --cflags nss) -DHAVE_PK11_CREATEGENERICOBJECT"
 %configure --without-ssl --with-nss=%{_prefix} --enable-ipv6 \
 	--with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
 	--with-gssapi=%{_prefix}/kerberos --with-libidn \
-	--with-ldap-lib=libldap-%{ldap_version}.so.0 \
-	--with-lber-lib=liblber-%{ldap_version}.so.0 \
-	--disable-static
+	--enable-ldaps --disable-static
 sed -i -e 's,-L/usr/lib ,,g;s,-L/usr/lib64 ,,g;s,-L/usr/lib$,,g;s,-L/usr/lib64$,,g' \
 	Makefile libcurl.pc
-make CFLAGS="$RPM_OPT_FLAGS -DHAVE_PK11_CREATEGENERICOBJECT" %{?_smp_mflags}
+make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -115,6 +106,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Nov 30 2007 Jindrich Novy <jnovy@redhat.com> 7.17.1-3
+- drop useless ldap library detection since curl doesn't
+  dlopen()s it but links to it -> BR: openldap-devel
+- enable LDAPS support (#225671), thanks to Paul Howarth
+- BR: krb5-devel to reenable GSSAPI support
+- simplify build process
+- update description
+
 * Wed Nov 21 2007 Jindrich Novy <jnovy@redhat.com> 7.17.1-2
 - update description to contain complete supported servers list (#393861)
 
