@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.17.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -106,6 +106,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Dec  4 2007 Jindrich Novy <jnovy@redhat.com> 7.17.1-4
+- rebuild because of the openldap soname bump
+- remove old nsspem patch
+
 * Fri Nov 30 2007 Jindrich Novy <jnovy@redhat.com> 7.17.1-3
 - drop useless ldap library detection since curl doesn't
   dlopen()s it but links to it -> BR: openldap-devel
