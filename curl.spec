@@ -110,7 +110,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Tue Jan  8 2008 Jindrich Novy <jnovy@redhat.com> 7.17.1-5
 - do not attempt to close a bad socket (#427966),
-  thanks to Caolam McNamara
+  thanks to Caolan McNamara
 
 * Tue Dec  4 2007 Jindrich Novy <jnovy@redhat.com> 7.17.1-4
 - rebuild because of the openldap soname bump
