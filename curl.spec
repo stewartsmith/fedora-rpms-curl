@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.17.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -9,6 +9,7 @@ Patch1: curl-7.15.3-multilib.patch
 Patch2: curl-7.16.0-privlibs.patch
 Patch3: curl-7.16.4-curl-config.patch
 Patch4: curl-7.17.1-sslgen.patch
+Patch5: curl-7.17.1-badsocket.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -50,6 +51,7 @@ use cURL's capabilities internally.
 %patch2 -p1 -b .privlibs
 %patch3 -p1 -b .curl-config
 %patch4 -p1 -b .sslgen
+%patch5 -p1 -b .badsocket
 
 %build
 export CPPFLAGS="$(pkg-config --cflags nss) -DHAVE_PK11_CREATEGENERICOBJECT"
@@ -106,6 +108,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Jan  8 2008 Jindrich Novy <jnovy@redhat.com> 7.17.1-5
+- do not attempt to close a bad socket (#427966),
+  thanks to Caolam McNamara
+
 * Tue Dec  4 2007 Jindrich Novy <jnovy@redhat.com> 7.17.1-4
 - rebuild because of the openldap soname bump
 - remove old nsspem patch
