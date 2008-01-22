@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.17.1
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -37,7 +37,7 @@ Group: Development/Libraries
 Requires: libcurl = %{version}-%{release}
 Requires: libidn-devel, pkgconfig, automake
 Provides: curl-devel = %{version}-%{release}
-Obsoletes: curl-devel < 7.16.4-9
+Obsoletes: curl-devel < %{version}-%{release}
 
 %description -n libcurl-devel
 cURL is a tool for getting files from FTP, HTTP, Gopher, Telnet, and
@@ -108,6 +108,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Jan 22 2008 Jindrich Novy <jnovy@redhat.com> 7.17.1-6
+- fix curl-devel obsoletes so that we don't break F8->F9 upgrade
+  path (#429612)
+
 * Tue Jan  8 2008 Jindrich Novy <jnovy@redhat.com> 7.17.1-5
 - do not attempt to close a bad socket (#427966),
   thanks to Caolan McNamara
