@@ -1,6 +1,7 @@
---- curl-7.16.2/curl-config.in.multilib	2007-02-18 10:41:27.000000000 +0100
-+++ curl-7.16.2/curl-config.in	2007-04-11 20:00:16.000000000 +0200
-@@ -71,7 +71,7 @@
+diff -up curl-7.18.0/curl-config.in.multilib curl-7.18.0/curl-config.in
+--- curl-7.18.0/curl-config.in.multilib	2008-01-10 23:14:02.000000000 +0100
++++ curl-7.18.0/curl-config.in	2008-01-28 21:37:50.000000000 +0100
+@@ -72,7 +72,7 @@
  	;;
  
      --cc)
@@ -9,11 +10,11 @@
  	;;
  
      --prefix)
-@@ -181,16 +181,7 @@
+@@ -189,16 +189,7 @@
         	;;
  
      --libs)
--	if test "X@libdir@" != "X/usr/lib"; then
+-	if test "X@libdir@" != "X/usr/lib" -a "X@libdir@" != "X/usr/lib64"; then
 -	   CURLLIBDIR="-L@libdir@ "
 -	else
 -	   CURLLIBDIR=""
@@ -26,4 +27,4 @@
 +	pkg-config libcurl --libs
  	;;
  
-     *)
+     --static-libs)

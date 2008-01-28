@@ -1,15 +1,14 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
-Version: 7.17.1
-Release: 6%{?dist}
+Version: 7.18.0
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch1: curl-7.15.3-multilib.patch
 Patch2: curl-7.16.0-privlibs.patch
 Patch3: curl-7.16.4-curl-config.patch
-Patch4: curl-7.17.1-sslgen.patch
-Patch5: curl-7.17.1-badsocket.patch
+Patch4: curl-7.17.1-badsocket.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -20,7 +19,7 @@ BuildRequires: nss-devel >= 3.11.7-7, openldap-devel, krb5-devel
 cURL is a tool for getting files from HTTP, FTP, FILE, LDAP, LDAPS,
 DICT, TELNET and TFTP servers, using any of the supported protocols.
 cURL is designed to work without user interaction or any kind of
-interactivity. cURL 5;3~offers many useful capabilities, like proxy support,
+interactivity. cURL offers many useful capabilities, like proxy support,
 user authentication, FTP upload, HTTP post, and file transfer resume.
 
 %package -n libcurl
@@ -50,8 +49,7 @@ use cURL's capabilities internally.
 %patch1 -p1 -b .multilib
 %patch2 -p1 -b .privlibs
 %patch3 -p1 -b .curl-config
-%patch4 -p1 -b .sslgen
-%patch5 -p1 -b .badsocket
+%patch4 -p1 -b .badsocket
 
 %build
 export CPPFLAGS="$(pkg-config --cflags nss) -DHAVE_PK11_CREATEGENERICOBJECT"
@@ -108,6 +106,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Jan 28 2008 Jindrich Novy <jnovy@redhat.com> 7.18.0-1
+- update to curl-7.18.0
+- drop sslgen patch -> applied upstream
+- fix typo in description
+
 * Tue Jan 22 2008 Jindrich Novy <jnovy@redhat.com> 7.17.1-6
 - fix curl-devel obsoletes so that we don't break F8->F9 upgrade
   path (#429612)
