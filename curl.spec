@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl 
 Version: 7.18.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -52,7 +52,7 @@ use cURL's capabilities internally.
 %patch4 -p1 -b .badsocket
 
 %build
-export CPPFLAGS="$(pkg-config --cflags nss) -DHAVE_PK11_CREATEGENERICOBJECT"
+export CPPFLAGS="$(pkg-config --cflags nss) -DHAVE_PK11_CREATEGENERICOBJECT -D_GNU_SOURCE=1"
 %configure --without-ssl --with-nss=%{_prefix} --enable-ipv6 \
 	--with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
 	--with-gssapi=%{_prefix}/kerberos --with-libidn \
@@ -106,6 +106,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Feb 15 2008 Jindrich Novy <jnovy@redhat.com> 7.18.0-2
+- define _GNU_SOURCE so that NI_MAXHOST gets defined from glibc
+
 * Mon Jan 28 2008 Jindrich Novy <jnovy@redhat.com> 7.18.0-1
 - update to curl-7.18.0
 - drop sslgen patch -> applied upstream
