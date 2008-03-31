@@ -1,21 +1,20 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
-Name: curl 
+Name: curl
 Version: 7.18.0
-Release: 2%{?dist}
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch1: curl-7.15.3-multilib.patch
 Patch2: curl-7.16.0-privlibs.patch
-Patch3: curl-7.16.4-curl-config.patch
-Patch4: curl-7.17.1-badsocket.patch
+Patch3: curl-7.17.1-badsocket.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: libtool, pkgconfig, libidn-devel, zlib-devel
 BuildRequires: nss-devel >= 3.11.7-7, openldap-devel, krb5-devel
 
-%description  
+%description
 cURL is a tool for getting files from HTTP, FTP, FILE, LDAP, LDAPS,
 DICT, TELNET and TFTP servers, using any of the supported protocols.
 cURL is designed to work without user interaction or any kind of
@@ -45,11 +44,10 @@ package includes files needed for developing applications which can
 use cURL's capabilities internally.
 
 %prep
-%setup -q 
+%setup -q
 %patch1 -p1 -b .multilib
 %patch2 -p1 -b .privlibs
-%patch3 -p1 -b .curl-config
-%patch4 -p1 -b .badsocket
+%patch3 -p1 -b .badsocket
 
 %build
 export CPPFLAGS="$(pkg-config --cflags nss) -DHAVE_PK11_CREATEGENERICOBJECT -D_GNU_SOURCE=1"
@@ -96,7 +94,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -n libcurl-devel
 %defattr(-,root,root)
 %doc docs/examples/*.c docs/examples/Makefile.example docs/INTERNALS
-%doc docs/CONTRIBUTE
+%doc docs/CONTRIBUTE docs/libcurl/ABI
 %{_bindir}/curl-config*
 %{_includedir}/curl
 %{_libdir}/*.so
@@ -106,6 +104,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Mar 31 2008 Jindrich Novy <jnovy@redhat.com> 7.18.1-1
+- update to curl 7.18.1 (fixes #397911)
+- add ABI docs for libcurl
+- remove --static-libs from curl-config
+- drop curl-config patch, obsoleted by @SSL_ENABLED@ autoconf
+  substitution (#432667)
+
 * Fri Feb 15 2008 Jindrich Novy <jnovy@redhat.com> 7.18.0-2
 - define _GNU_SOURCE so that NI_MAXHOST gets defined from glibc
 

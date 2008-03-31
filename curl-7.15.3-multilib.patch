@@ -1,7 +1,15 @@
 diff -up curl-7.18.0/curl-config.in.multilib curl-7.18.0/curl-config.in
 --- curl-7.18.0/curl-config.in.multilib	2008-01-10 23:14:02.000000000 +0100
-+++ curl-7.18.0/curl-config.in	2008-01-28 21:37:50.000000000 +0100
-@@ -72,7 +72,7 @@
++++ curl-7.18.0/curl-config.in	2008-02-16 06:48:14.000000000 +0100
+@@ -45,7 +45,6 @@
+   --libs      library linking information
+   --prefix    curl install prefix
+   --protocols newline separated list of enabled protocols
+-  --static-libs static libcurl library linking information
+   --version   output version information
+   --vernum    output the version information as a number (hexadecimal)
+ EOF
+@@ -72,7 +71,7 @@
  	;;
  
      --cc)
@@ -10,7 +18,7 @@ diff -up curl-7.18.0/curl-config.in.multilib curl-7.18.0/curl-config.in
  	;;
  
      --prefix)
-@@ -189,16 +189,7 @@
+@@ -189,20 +188,7 @@
         	;;
  
      --libs)
@@ -24,7 +32,11 @@ diff -up curl-7.18.0/curl-config.in.multilib curl-7.18.0/curl-config.in
 -	else
 -	  echo ${CURLLIBDIR}-lcurl @LDFLAGS@ @LIBS@
 -	fi
+-	;;
+-
+-    --static-libs)
+-	echo @libdir@/libcurl.@libext@ @LDFLAGS@ @LIBCURL_LIBS@ @LIBS@
 +	pkg-config libcurl --libs
  	;;
  
-     --static-libs)
+     *)
