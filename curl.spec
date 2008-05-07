@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.18.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -11,7 +11,7 @@ Patch3: curl-7.17.1-badsocket.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: libtool, pkgconfig, libidn-devel, zlib-devel
+BuildRequires: pkgconfig, libidn-devel, zlib-devel
 BuildRequires: nss-devel >= 3.11.7-7, openldap-devel, krb5-devel
 
 %description
@@ -49,14 +49,25 @@ use cURL's capabilities internally.
 %patch2 -p1 -b .privlibs
 %patch3 -p1 -b .badsocket
 
+# Convert docs to UTF-8
+for f in CHANGES README; do
+	iconv -f iso-8859-1 -t utf8 < ${f} > ${f}.utf8
+	mv -f ${f}.utf8 ${f}
+done
+
 %build
-export CPPFLAGS="$(pkg-config --cflags nss) -DHAVE_PK11_CREATEGENERICOBJECT -D_GNU_SOURCE=1"
+export CPPFLAGS="$(pkg-config --cflags nss) -DHAVE_PK11_CREATEGENERICOBJECT"
 %configure --without-ssl --with-nss=%{_prefix} --enable-ipv6 \
 	--with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
 	--with-gssapi=%{_prefix}/kerberos --with-libidn \
 	--enable-ldaps --disable-static
 sed -i -e 's,-L/usr/lib ,,g;s,-L/usr/lib64 ,,g;s,-L/usr/lib$,,g;s,-L/usr/lib64$,,g' \
 	Makefile libcurl.pc
+# Remove bogus rpath
+sed -i \
+	-e 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' \
+	-e 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+
 make %{?_smp_mflags}
 
 %install
@@ -104,6 +115,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed May  7 2008 Jindrich Novy <jnovy@redhat.com> 7.18.1-2
+- spec cleanup, thanks to Paul Howarth (#225671)
+  - drop BR: libtool
+  - convert CHANGES and README to UTF-8
+  - _GNU_SOURCE in CFLAGS is no more needed
+  - remove bogus rpath
+
 * Mon Mar 31 2008 Jindrich Novy <jnovy@redhat.com> 7.18.1-1
 - update to curl 7.18.1 (fixes #397911)
 - add ABI docs for libcurl
