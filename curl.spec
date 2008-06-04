@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.18.1
-Release: 2%{?dist}
+Version: 7.18.2
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -115,6 +115,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Jun  4 2008 Jindrich Novy <jnovy@redhat.com> 7.18.2-1
+- update to 7.18.2
+
 * Wed May  7 2008 Jindrich Novy <jnovy@redhat.com> 7.18.1-2
 - spec cleanup, thanks to Paul Howarth (#225671)
   - drop BR: libtool
