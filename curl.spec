@@ -1,13 +1,14 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.18.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch1: curl-7.15.3-multilib.patch
 Patch2: curl-7.16.0-privlibs.patch
 Patch3: curl-7.17.1-badsocket.patch
+Patch4: curl-7.18.2-nssproxy.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -48,6 +49,7 @@ use cURL's capabilities internally.
 %patch1 -p1 -b .multilib
 %patch2 -p1 -b .privlibs
 %patch3 -p1 -b .badsocket
+%patch4 -p1 -b .nssproxy
 
 # Convert docs to UTF-8
 for f in CHANGES README; do
@@ -115,6 +117,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Jun 18 2008 Jindrich Novy <jnovy@redhat.com> 7.18.2-2
+- fix curl_multi_perform() over a proxy (#450140), thanks to
+  Rob Crittenden
+
 * Wed Jun  4 2008 Jindrich Novy <jnovy@redhat.com> 7.18.2-1
 - update to 7.18.2
 

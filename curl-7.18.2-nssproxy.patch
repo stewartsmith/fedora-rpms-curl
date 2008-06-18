@@ -1,0 +1,13 @@
+diff -up curl-7.18.2/lib/nss.c.nssproxy curl-7.18.2/lib/nss.c
+--- curl-7.18.2/lib/nss.c.nssproxy	2008-05-26 17:02:49.000000000 +0200
++++ curl-7.18.2/lib/nss.c	2008-06-18 07:59:52.000000000 +0200
+@@ -804,6 +804,9 @@ CURLcode Curl_nss_connect(struct connect
+ 
+   curlerr = CURLE_SSL_CONNECT_ERROR;
+ 
++  if (connssl->state == ssl_connection_complete)
++    return CURLE_OK;
++
+   /* FIXME. NSS doesn't support multiple databases open at the same time. */
+   if(!initialized) {
+     initialized = 1;
