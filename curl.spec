@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.18.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -79,13 +79,6 @@ make DESTDIR=$RPM_BUILD_ROOT INSTALL="%{__install} -p" install
 
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
-# Yes, they're the same. Curl accidentally bumped the .soname to .4, it is the same ABI as .3.
-# We'll use a little trickery to get what we need, since a symlink won't properly populate
-# the rpm dependencies. Credit to Nalin Dahyabhai and Casey Dahlin here.
-touch libcurl.so.3.c
-gcc $RPM_OPT_FLAGS -shared -L${RPM_BUILD_ROOT}%{_libdir} -lcurl libcurl.so.3.c -o libcurl.so.3
-install -p libcurl.so.3 $RPM_BUILD_ROOT/%{_libdir}
-
 install -d $RPM_BUILD_ROOT/%{_datadir}/aclocal
 install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT/%{_datadir}/aclocal
 
@@ -125,6 +118,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Aug 22 2008 Tom "spot" Callaway <tcallawa@redhat.com> 7.18.2-5
+- undo mini libcurl.so.3
+
 * Mon Aug 11 2008 Tom "spot" Callaway <tcallawa@redhat.com> 7.18.2-4
 - make miniature library for libcurl.so.3
 
