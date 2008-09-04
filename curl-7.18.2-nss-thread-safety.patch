@@ -1,0 +1,68 @@
+diff -u --recursive curl-7.18.2.orig/lib/nss.c curl-7.18.2/lib/nss.c
+--- curl-7.18.2.orig/lib/nss.c	2008-05-26 11:02:49.000000000 -0400
++++ curl-7.18.2/lib/nss.c	2008-09-03 13:33:32.000000000 -0400
+@@ -73,6 +73,8 @@
+ 
+ PRFileDesc *PR_ImportTCPSocket(PRInt32 osfd);
+ 
++PRLock * nss_initlock = NULL;
++
+ int initialized = 0;
+ 
+ #define HANDSHAKE_TIMEOUT 30
+@@ -718,9 +720,12 @@
+  * @retval 1 SSL initialized successfully
+  */
+ int Curl_nss_init(void)
+-{
+-  if(!initialized)
++{ 
++  /* curl_global_init() is not thread-safe so this test is ok */
++  if (nss_initlock == NULL) {
+     PR_Init(PR_USER_THREAD, PR_PRIORITY_NORMAL, 256);
++    nss_initlock = PR_NewLock();
++  }
+ 
+   /* We will actually initialize NSS later */
+ 
+@@ -730,7 +735,17 @@
+ /* Global cleanup */
+ void Curl_nss_cleanup(void)
+ {
+-  NSS_Shutdown();
++  /* This function isn't required to be threadsafe and this is only done
++   * as a safety feature.
++   */
++  PR_Lock(nss_initlock);
++  if (initialized)
++    NSS_Shutdown();
++  PR_Unlock(nss_initlock);
++
++  PR_DestroyLock(nss_initlock);
++  nss_initlock = NULL;
++
+   initialized = 0;
+ }
+ 
+@@ -805,7 +820,8 @@
+   curlerr = CURLE_SSL_CONNECT_ERROR;
+ 
+   /* FIXME. NSS doesn't support multiple databases open at the same time. */
+-  if(!initialized) {
++  PR_Lock(nss_initlock);
++  if(!initialized && !NSS_IsInitialized()) {
+     initialized = 1;
+ 
+     certDir = getenv("SSL_DIR"); /* Look in $SSL_DIR */
+@@ -829,8 +845,11 @@
+     if(rv != SECSuccess) {
+       infof(conn->data, "Unable to initialize NSS database\n");
+       curlerr = CURLE_SSL_CACERT_BADFILE;
++      PR_Unlock(nss_initlock);
++      initialized = 0;
+       goto error;
+     }
++    PR_Unlock(nss_initlock);
+ 
+     NSS_SetDomesticPolicy();
+ 

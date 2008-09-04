@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.18.2
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -9,6 +9,7 @@ Patch1: curl-7.15.3-multilib.patch
 Patch2: curl-7.16.0-privlibs.patch
 Patch3: curl-7.17.1-badsocket.patch
 Patch4: curl-7.18.2-nssproxy.patch
+Patch5: curl-7.18.2-nss-thread-safety.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -50,6 +51,7 @@ use cURL's capabilities internally.
 %patch2 -p1 -b .privlibs
 %patch3 -p1 -b .badsocket
 %patch4 -p1 -b .nssproxy
+%patch5 -p1 -b .nssthreadsafety
 
 # Convert docs to UTF-8
 for f in CHANGES README; do
@@ -118,6 +120,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Sep 03 2008 Warren Togami <wtogami@redhat.com> 7.18.2-6
+- add thread safety to libcurl NSS cleanup() functions (#459297)
+
 * Fri Aug 22 2008 Tom "spot" Callaway <tcallawa@redhat.com> 7.18.2-5
 - undo mini libcurl.so.3
 
