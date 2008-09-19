@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.18.2
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -120,6 +120,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Sep 09 2008 Jindrich Novy <jnovy@redhat.com> 7.18.2-7
+- update the thread safety patch, thanks to Rob Crittenden (#462217)
+
 * Wed Sep 03 2008 Warren Togami <wtogami@redhat.com> 7.18.2-6
 - add thread safety to libcurl NSS cleanup() functions (#459297)
 
