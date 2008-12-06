@@ -1,0 +1,133 @@
+--- curl-7.18.2/lib/nss.c.orig	2008-12-03 16:39:41.000000000 -0500
++++ curl-7.18.2/lib/nss.c	2008-12-03 18:26:06.000000000 -0500
+@@ -73,6 +73,8 @@
+ 
+ PRFileDesc *PR_ImportTCPSocket(PRInt32 osfd);
+ 
++PRLock * nss_initlock = NULL;
++
+ int initialized = 0;
+ 
+ #define HANDSHAKE_TIMEOUT 30
+@@ -229,6 +231,23 @@
+ }
+ 
+ /*
++ * Get the number of ciphers that are enabled. We use this to determine
++ * if we need to call NSS_SetDomesticPolicy() to enable the default ciphers.
++ */
++static int num_enabled_ciphers() {
++  PRInt32 policy = 0;
++  int count = 0;
++  int i;
++
++  for(i=0; i<ciphernum; i++) {
++    SSL_CipherPolicyGet(cipherlist[i].num, &policy);
++    if(policy)
++      count++;
++  }
++  return count;
++}
++
++/*
+  * Determine whether the nickname passed in is a filename that needs to
+  * be loaded as a PEM or a regular NSS nickname.
+  *
+@@ -719,8 +738,11 @@
+  */
+ int Curl_nss_init(void)
+ {
+-  if(!initialized)
++  /* curl_global_init() is not thread-safe so this test is ok */
++  if (nss_initlock == NULL) {
+     PR_Init(PR_USER_THREAD, PR_PRIORITY_NORMAL, 256);
++    nss_initlock = PR_NewLock();
++  }
+ 
+   /* We will actually initialize NSS later */
+ 
+@@ -730,7 +752,17 @@
+ /* Global cleanup */
+ void Curl_nss_cleanup(void)
+ {
+-  NSS_Shutdown();
++  /* This function isn't required to be threadsafe and this is only done
++   * as a safety feature.
++   */
++  PR_Lock(nss_initlock);
++  if (initialized)
++    NSS_Shutdown();
++  PR_Unlock(nss_initlock);
++
++  PR_DestroyLock(nss_initlock);
++  nss_initlock = NULL;
++
+   initialized = 0;
+ }
+ 
+@@ -801,6 +833,7 @@
+ #endif
+   char *certDir = NULL;
+   int curlerr;
++  int policy;
+ 
+   curlerr = CURLE_SSL_CONNECT_ERROR;
+ 
+@@ -808,9 +841,8 @@
+     return CURLE_OK;
+ 
+   /* FIXME. NSS doesn't support multiple databases open at the same time. */
++  PR_Lock(nss_initlock);
+   if(!initialized) {
+-    initialized = 1;
+-
+     certDir = getenv("SSL_DIR"); /* Look in $SSL_DIR */
+ 
+     if(!certDir) {
+@@ -822,20 +854,25 @@
+         }
+     }
+ 
+-    if(!certDir) {
+-      rv = NSS_NoDB_Init(NULL);
+-    }
+-    else {
+-      rv = NSS_Initialize(certDir, NULL, NULL, "secmod.db",
+-                          NSS_INIT_READONLY);
+-    }
+-    if(rv != SECSuccess) {
+-      infof(conn->data, "Unable to initialize NSS database\n");
+-      curlerr = CURLE_SSL_CACERT_BADFILE;
+-      goto error;
++    if (!NSS_IsInitialized()) {
++        initialized = 1;
++        if(!certDir) {
++          rv = NSS_NoDB_Init(NULL);
++        }
++        else {
++          rv = NSS_Initialize(certDir, NULL, NULL, "secmod.db",
++                              NSS_INIT_READONLY);
++        }
++        if(rv != SECSuccess) {
++          infof(conn->data, "Unable to initialize NSS database\n");
++          curlerr = CURLE_SSL_CACERT_BADFILE;
++          PR_Unlock(nss_initlock);
++          initialized = 0;
++          goto error;
++        }
+     }
+-
+-    NSS_SetDomesticPolicy();
++    if(num_enabled_ciphers() == 0)
++      NSS_SetDomesticPolicy();
+ 
+ #ifdef HAVE_PK11_CREATEGENERICOBJECT
+     configstring = (char *)malloc(PATH_MAX);
+@@ -854,6 +891,7 @@
+     }
+ #endif
+   }
++  PR_Unlock(nss_initlock);
+ 
+   model = PR_NewTCPSocket();
+   if(!model)
