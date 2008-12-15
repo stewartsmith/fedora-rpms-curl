@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.18.2
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -120,6 +120,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Dec 15 2008 Jindrich Novy <jnovy@redhat.com> 7.18.2-9
+- rebuild for f10/rawhide cvs tag clashes
+
 * Sat Dec 06 2008 Jindrich Novy <jnovy@redhat.com> 7.18.2-8
 - use improved NSS patch, thanks to Rob Crittenden (#472489)
 
