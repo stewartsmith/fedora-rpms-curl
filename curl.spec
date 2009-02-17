@@ -1,15 +1,14 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.18.2
-Release: 9%{?dist}
+Version: 7.19.3
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch1: curl-7.15.3-multilib.patch
 Patch2: curl-7.16.0-privlibs.patch
 Patch3: curl-7.17.1-badsocket.patch
-Patch4: curl-7.18.2-nssproxy.patch
-Patch5: curl-7.18.2-nss-init.patch
+Patch4: curl-7.19.3-nss-fix.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -50,8 +49,7 @@ use cURL's capabilities internally.
 %patch1 -p1 -b .multilib
 %patch2 -p1 -b .privlibs
 %patch3 -p1 -b .badsocket
-%patch4 -p1 -b .nssproxy
-%patch5 -p1 -b .nssinit
+%patch4 -p1 -b .nssfix
 
 # Convert docs to UTF-8
 for f in CHANGES README; do
@@ -120,6 +118,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Feb 17 2009 Kamil Dudka <kdudka@redhat.com> 7.19.3-1
+- update to 7.19.3, dropped applied nss patches
+- add patch fixing 7.19.3 curl/nss bugs
+
 * Mon Dec 15 2008 Jindrich Novy <jnovy@redhat.com> 7.18.2-9
 - rebuild for f10/rawhide cvs tag clashes
 

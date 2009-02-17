@@ -1,13 +1,13 @@
-diff -up curl-7.17.1/lib/ftp.c.badsocket curl-7.17.1/lib/ftp.c
---- curl-7.17.1/lib/ftp.c.badsocket	2007-10-27 00:25:19.000000000 +0200
-+++ curl-7.17.1/lib/ftp.c	2008-01-08 15:09:03.000000000 +0100
-@@ -3228,7 +3228,8 @@ static CURLcode Curl_ftp_done(struct con
-     /* Note that we keep "use" set to TRUE since that (next) connection is
-        still requested to use SSL */
+diff -ruNp curl-7.19.3.orig/lib/ftp.c curl-7.19.3/lib/ftp.c
+--- curl-7.19.3.orig/lib/ftp.c	2009-02-11 10:57:33.334280000 +0100
++++ curl-7.19.3/lib/ftp.c	2009-02-11 10:59:43.957585266 +0100
+@@ -3222,7 +3222,8 @@ static CURLcode ftp_done(struct connectd
+       /* Note that we keep "use" set to TRUE since that (next) connection is
+          still requested to use SSL */
+     }
+-    sclose(conn->sock[SECONDARYSOCKET]);
++    if(CURL_SOCKET_BAD != conn->sock[SECONDARYSOCKET])
++      sclose(conn->sock[SECONDARYSOCKET]);
+ 
+     conn->sock[SECONDARYSOCKET] = CURL_SOCKET_BAD;
    }
--  sclose(conn->sock[SECONDARYSOCKET]);
-+  if(CURL_SOCKET_BAD != conn->sock[SECONDARYSOCKET])
-+    sclose(conn->sock[SECONDARYSOCKET]);
- 
-   conn->sock[SECONDARYSOCKET] = CURL_SOCKET_BAD;
- 
