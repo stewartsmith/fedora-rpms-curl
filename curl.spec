@@ -1,14 +1,13 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.4
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch1: curl-7.15.3-multilib.patch
 Patch2: curl-7.16.0-privlibs.patch
 Patch3: curl-7.17.1-badsocket.patch
-Patch4: curl-7.19.4-easy-leak.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -35,6 +34,7 @@ Summary: Files needed for building applications with libcurl
 Group: Development/Libraries
 Requires: libcurl = %{version}-%{release}
 Requires: libidn-devel, pkgconfig, automake
+Requires: libssh2-devel
 Provides: curl-devel = %{version}-%{release}
 Obsoletes: curl-devel < %{version}-%{release}
 
@@ -49,7 +49,6 @@ use cURL's capabilities internally.
 %patch1 -p1 -b .multilib
 %patch2 -p1 -b .privlibs
 %patch3 -p1 -b .badsocket
-%patch4 -p1 -b .easy-leak
 
 # Convert docs to UTF-8
 for f in CHANGES README; do
@@ -118,6 +117,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Mar 06 2009 Jindrich Novy <jnovy@redhat.com> 7.19.4-2
+- drop .easy-leak patch, causes problems in pycurl (#488791)
+- fix libcurl-devel dependencies (#488895)
+
 * Tue Mar 03 2009 Jindrich Novy <jnovy@redhat.com> 7.19.4-1
 - update to 7.19.4 (fixes CVE-2009-0037)
 - fix leak in curl_easy* functions, thanks to Kamil Dudka
