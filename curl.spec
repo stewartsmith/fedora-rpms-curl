@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -34,7 +34,10 @@ Summary: Files needed for building applications with libcurl
 Group: Development/Libraries
 Requires: libcurl = %{version}-%{release}
 Requires: libidn-devel, pkgconfig, automake
+
+# redundant
 Requires: libssh2-devel
+
 Provides: curl-devel = %{version}-%{release}
 Obsoletes: curl-devel < %{version}-%{release}
 
@@ -81,6 +84,29 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 install -d $RPM_BUILD_ROOT/%{_datadir}/aclocal
 install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT/%{_datadir}/aclocal
 
+# Make curl-devel multilib-ready (bug #488922)
+# solution taken from python.spec
+%define _curlbuild32_h curlbuild-32.h
+%define _curlbuild64_h curlbuild-64.h
+
+%ifarch ppc64 s390x x86_64 ia64 alpha sparc64
+%define _curlbuild_h %{_curlbuild64_h}
+%else
+%define _curlbuild_h %{_curlbuild32_h}
+%endif
+mv $RPM_BUILD_ROOT%{_includedir}/curl/curlbuild.h \
+   $RPM_BUILD_ROOT%{_includedir}/curl/%{_curlbuild_h}
+cat > $RPM_BUILD_ROOT%{_includedir}/curl/curlbuild.h << EOF
+#include <bits/wordsize.h>
+
+#if __WORDSIZE == 32
+#include "%{_curlbuild32_h}"
+#elif __WORDSIZE == 64
+#include "%{_curlbuild64_h}"
+#else
+#error "Unknown word size"
+#endif
+EOF
 
 # don't need curl's copy of the certs; use openssl's
 find ${RPM_BUILD_ROOT} -name ca-bundle.crt -exec rm -f '{}' \;
@@ -117,6 +143,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Mar 11 2009 Kamil Dudka <kdudka@redhat.com> 7.19.4-3
+- make curl-devel multilib-ready (bug #488922)
+
 * Fri Mar 06 2009 Jindrich Novy <jnovy@redhat.com> 7.19.4-2
 - drop .easy-leak patch, causes problems in pycurl (#488791)
 - fix libcurl-devel dependencies (#488895)
