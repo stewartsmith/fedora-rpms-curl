@@ -84,7 +84,7 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 install -d $RPM_BUILD_ROOT/%{_datadir}/aclocal
 install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT/%{_datadir}/aclocal
 
-# Make curl-devel multilib-ready (bug #488922)
+# Make libcurl-devel multilib-ready (bug #488922)
 # solution taken from python.spec
 %define _curlbuild32_h curlbuild-32.h
 %define _curlbuild64_h curlbuild-64.h
@@ -144,7 +144,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Mar 11 2009 Kamil Dudka <kdudka@redhat.com> 7.19.4-3
-- make curl-devel multilib-ready (bug #488922)
+- make libcurl-devel multilib-ready (bug #488922)
 
 * Fri Mar 06 2009 Jindrich Novy <jnovy@redhat.com> 7.19.4-2
 - drop .easy-leak patch, causes problems in pycurl (#488791)
