@@ -1,0 +1,39 @@
+diff -ruNp curl-7.19.4.orig/include/curl/curl.h curl-7.19.4/include/curl/curl.h
+--- curl-7.19.4.orig/include/curl/curl.h	2009-03-03 00:05:31.000000000 +0100
++++ curl-7.19.4/include/curl/curl.h	2009-03-10 14:49:47.017943954 +0100
+@@ -1510,7 +1510,7 @@ CURL_EXTERN void curl_free(void *p);
+  * DESCRIPTION
+  *
+  * curl_global_init() should be invoked exactly once for each application that
+- * uses libcurl
++ * uses libcurl and before any call of other libcurl function
+  */
+ CURL_EXTERN CURLcode curl_global_init(long flags);
+ 
+diff -ruNp curl-7.19.4.orig/src/main.c curl-7.19.4/src/main.c
+--- curl-7.19.4.orig/src/main.c	2009-02-17 10:10:21.000000000 +0100
++++ curl-7.19.4/src/main.c	2009-03-10 14:49:50.297971916 +0100
+@@ -3969,6 +3969,12 @@ operate(struct Configurable *config, int
+ 
+   memset(&heads, 0, sizeof(struct OutStruct));
+ 
++  /* initialize curl library - do not call any libcurl functions before */
++  if (main_init() != CURLE_OK) {
++    helpf(config->errors, "error initializing curl library\n");
++    return CURLE_FAILED_INIT;
++  }
++
+ #ifdef CURLDEBUG
+   /* this sends all memory debug messages to a logfile named memdump */
+   env = curlx_getenv("CURL_MEMDEBUG");
+@@ -4015,10 +4021,6 @@ operate(struct Configurable *config, int
+ #endif
+ 
+   /* inits */
+-  if (main_init() != CURLE_OK) {
+-    helpf(config->errors, "error initializing curl library\n");
+-    return CURLE_FAILED_INIT;
+-  }
+   config->postfieldsize = -1;
+   config->showerror=TRUE;
+   config->use_httpget=FALSE;

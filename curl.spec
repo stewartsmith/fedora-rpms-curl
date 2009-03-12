@@ -1,13 +1,14 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.4
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch1: curl-7.15.3-multilib.patch
 Patch2: curl-7.16.0-privlibs.patch
 Patch3: curl-7.17.1-badsocket.patch
+Patch4: curl-7.19.4-tool-leak.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -52,6 +53,7 @@ use cURL's capabilities internally.
 %patch1 -p1 -b .multilib
 %patch2 -p1 -b .privlibs
 %patch3 -p1 -b .badsocket
+%patch4 -p1 -b .toolleak
 
 # Convert docs to UTF-8
 for f in CHANGES README; do
@@ -89,7 +91,7 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT/%{_datadir}/aclocal
 %define _curlbuild32_h curlbuild-32.h
 %define _curlbuild64_h curlbuild-64.h
 
-%ifarch ppc64 s390x x86_64 ia64 alpha sparc64
+%if %{__isa_bits} == 64
 %define _curlbuild_h %{_curlbuild64_h}
 %else
 %define _curlbuild_h %{_curlbuild32_h}
@@ -143,6 +145,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Mar 12 2009 Kamil Dudka <kdudka@redhat.com> 7.19.4-4
+- fix memory leak in src/main.c (accepted by upstream)
+- avoid using %ifarch
+
 * Wed Mar 11 2009 Kamil Dudka <kdudka@redhat.com> 7.19.4-3
 - make libcurl-devel multilib-ready (bug #488922)
 
