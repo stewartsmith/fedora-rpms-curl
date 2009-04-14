@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.4
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -10,6 +10,7 @@ Patch2: curl-7.16.0-privlibs.patch
 Patch3: curl-7.17.1-badsocket.patch
 Patch4: curl-7.19.4-tool-leak.patch
 Patch5: curl-7.19.4-enable-aes.patch
+Patch6: curl-7.19.4-nss-leak.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -37,9 +38,6 @@ Group: Development/Libraries
 Requires: libcurl = %{version}-%{release}
 Requires: libidn-devel, pkgconfig, automake
 
-# redundant
-Requires: libssh2-devel
-
 Provides: curl-devel = %{version}-%{release}
 Obsoletes: curl-devel < %{version}-%{release}
 
@@ -56,6 +54,7 @@ use cURL's capabilities internally.
 %patch3 -p1 -b .badsocket
 %patch4 -p1 -b .toolleak
 %patch5 -p1 -b .enableaes
+%patch6 -p1 -b .nssleak
 
 # Convert docs to UTF-8
 for f in CHANGES README; do
@@ -147,6 +146,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Apr 14 2009 Kamil Dudka <kdudka@redhat.com> 7.19.4-6
+- upstream patch fixing memory leak in lib/nss.c (#453612)
+- remove redundant dependency of libcurl-devel on libssh2-devel
+
 * Wed Mar 18 2009 Kamil Dudka <kdudka@redhat.com> 7.19.4-5
 - enable 6 additional crypto algorithms by default (#436781,
   accepted by upstream)
