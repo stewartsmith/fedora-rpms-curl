@@ -1,0 +1,22 @@
+diff -urNp curl-7.19.4.orig/configure curl-7.19.4/configure
+--- curl-7.19.4.orig/configure	2009-04-21 10:59:47.000000000 +0530
++++ curl-7.19.4/configure	2009-04-21 11:19:13.000000000 +0530
+@@ -16,6 +16,9 @@
+ ## M4sh Initialization.  ##
+ ## --------------------- ##
+ 
++fedora_CPPFLAGS="$CPPFLAGS"
++fedora_CFLAGS="$CFLAGS"
++
+ # Be more Bourne compatible
+ DUALCASE=1; export DUALCASE # for MKS sh
+ if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
+@@ -46881,6 +46884,8 @@ fi
+ 
+ 
+ 
++CFLAGS="$CFLAGS $fedora_CFLAGS"
++CPPFLAGS="$CPPFLAGS $fedora_CPPFLAGS"
+ 
+ squeeze CFLAGS
+ squeeze CPPFLAGS

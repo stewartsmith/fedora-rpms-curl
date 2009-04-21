@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.4
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -11,6 +11,7 @@ Patch3: curl-7.17.1-badsocket.patch
 Patch4: curl-7.19.4-tool-leak.patch
 Patch5: curl-7.19.4-enable-aes.patch
 Patch6: curl-7.19.4-nss-leak.patch
+Patch7: curl-7.19.4-flags.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -55,6 +56,7 @@ use cURL's capabilities internally.
 %patch4 -p1 -b .toolleak
 %patch5 -p1 -b .enableaes
 %patch6 -p1 -b .nssleak
+%patch7 -p1 -b .flags
 
 # Convert docs to UTF-8
 for f in CHANGES README; do
@@ -146,6 +148,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Apr 21 2009 Debarshi Ray <rishi@fedoraproject.org> 7.19.4-7
+- Fixed configure to respect the environment's CFLAGS and CPPFLAGS settings.
+
 * Tue Apr 14 2009 Kamil Dudka <kdudka@redhat.com> 7.19.4-6
 - upstream patch fixing memory leak in lib/nss.c (#453612)
 - remove redundant dependency of libcurl-devel on libssh2-devel
@@ -156,7 +161,7 @@ rm -rf $RPM_BUILD_ROOT
 
 * Thu Mar 12 2009 Kamil Dudka <kdudka@redhat.com> 7.19.4-4
 - fix memory leak in src/main.c (accepted by upstream)
-- avoid using %ifarch
+- avoid using %%ifarch
 
 * Wed Mar 11 2009 Kamil Dudka <kdudka@redhat.com> 7.19.4-3
 - make libcurl-devel multilib-ready (bug #488922)
