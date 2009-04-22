@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.4
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -11,7 +11,7 @@ Patch3: curl-7.17.1-badsocket.patch
 Patch4: curl-7.19.4-tool-leak.patch
 Patch5: curl-7.19.4-enable-aes.patch
 Patch6: curl-7.19.4-nss-leak.patch
-Patch7: curl-7.19.4-flags.patch
+Patch7: curl-7.19.4-debug.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -56,7 +56,7 @@ use cURL's capabilities internally.
 %patch4 -p1 -b .toolleak
 %patch5 -p1 -b .enableaes
 %patch6 -p1 -b .nssleak
-%patch7 -p1 -b .flags
+%patch7 -p1 -b .debug
 
 # Convert docs to UTF-8
 for f in CHANGES README; do
@@ -65,6 +65,7 @@ for f in CHANGES README; do
 done
 
 %build
+autoconf
 export CPPFLAGS="$(pkg-config --cflags nss) -DHAVE_PK11_CREATEGENERICOBJECT"
 %configure --without-ssl --with-nss=%{_prefix} --enable-ipv6 \
 	--with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
@@ -148,6 +149,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Apr 22 2009 Kamil Dudka <kdudka@redhat.com> 7.19.4-8
+- fix configure.ac to not discard -g in CFLAGS (#496778)
+
 * Tue Apr 21 2009 Debarshi Ray <rishi@fedoraproject.org> 7.19.4-7
 - Fixed configure to respect the environment's CFLAGS and CPPFLAGS settings.
 

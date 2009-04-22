@@ -1,0 +1,15 @@
+diff -ruNp curl-7.19.4.orig/configure.ac curl-7.19.4/configure.ac
+--- curl-7.19.4.orig/configure.ac	2009-02-13 15:25:15.000000000 +0100
++++ curl-7.19.4/configure.ac	2009-04-22 11:56:32.171305420 +0200
+@@ -241,7 +241,10 @@ dnl ************************************
+ 
+ CURL_CHECK_COMPILER
+ CURL_SET_COMPILER_BASIC_OPTS
+-CURL_SET_COMPILER_DEBUG_OPTS
++
++dnl do not perturb CFLAGS given by the build system
++dnl CURL_SET_COMPILER_DEBUG_OPTS
++
+ CURL_SET_COMPILER_OPTIMIZE_OPTS
+ CURL_SET_COMPILER_WARNING_OPTS
+ 
