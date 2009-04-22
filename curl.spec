@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.4
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -15,6 +15,7 @@ Patch7: curl-7.19.4-debug.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRequires: autoconf
 BuildRequires: pkgconfig, libidn-devel, zlib-devel, libssh2-devel
 BuildRequires: nss-devel >= 3.11.7-7, openldap-devel, krb5-devel
 
@@ -149,6 +150,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Apr 22 2009 Kamil Dudka <kdudka@redhat.com> 7.19.4-9
+- add missing BuildRequire for autoconf
+
 * Wed Apr 22 2009 Kamil Dudka <kdudka@redhat.com> 7.19.4-8
 - fix configure.ac to not discard -g in CFLAGS (#496778)
 
