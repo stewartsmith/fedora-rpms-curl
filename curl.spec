@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.4
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -13,6 +13,7 @@ Patch5: curl-7.19.4-enable-aes.patch
 Patch6: curl-7.19.4-nss-leak.patch
 Patch7: curl-7.19.4-debug.patch
 Patch8: curl-7.19.4-nss-leak2.patch
+Patch9: curl-7.19.4-infloop.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -60,6 +61,7 @@ use cURL's capabilities internally.
 %patch6 -p1 -b .nssleak
 %patch7 -p1 -b .debug
 %patch8 -p1 -b .nssleak2
+%patch9 -p1 -b .infloop
 
 # Convert docs to UTF-8
 for f in CHANGES README; do
@@ -152,6 +154,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon May 11 2009 Kamil Dudka <kdudka@redhat.com> 7.19.4-11
+- fix infinite loop while loading a private key, thanks to Michael Cronenworth
+  (#453612)
+
 * Mon Apr 27 2009 Kamil Dudka <kdudka@redhat.com> 7.19.4-10
 - fix curl/nss memory leaks while using client certificate (#453612, accepted
   by upstream)
