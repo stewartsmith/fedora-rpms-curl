@@ -1,19 +1,14 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.19.4
-Release: 11%{?dist}
+Version: 7.19.5
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 Patch1: curl-7.15.3-multilib.patch
 Patch2: curl-7.16.0-privlibs.patch
 Patch3: curl-7.17.1-badsocket.patch
-Patch4: curl-7.19.4-tool-leak.patch
-Patch5: curl-7.19.4-enable-aes.patch
-Patch6: curl-7.19.4-nss-leak.patch
-Patch7: curl-7.19.4-debug.patch
-Patch8: curl-7.19.4-nss-leak2.patch
-Patch9: curl-7.19.4-infloop.patch
+Patch4: curl-7.19.4-debug.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -53,15 +48,10 @@ use cURL's capabilities internally.
 
 %prep
 %setup -q
-%patch1 -p1 -b .multilib
-%patch2 -p1 -b .privlibs
-%patch3 -p1 -b .badsocket
-%patch4 -p1 -b .toolleak
-%patch5 -p1 -b .enableaes
-%patch6 -p1 -b .nssleak
-%patch7 -p1 -b .debug
-%patch8 -p1 -b .nssleak2
-%patch9 -p1 -b .infloop
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
 
 # Convert docs to UTF-8
 for f in CHANGES README; do
@@ -154,6 +144,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue May 19 2009 Kamil Dudka <kdudka@redhat.com> 7.19.5-1
+- update to 7.19.5, dropped applied patches
+
 * Mon May 11 2009 Kamil Dudka <kdudka@redhat.com> 7.19.4-11
 - fix infinite loop while loading a private key, thanks to Michael Cronenworth
   (#453612)
