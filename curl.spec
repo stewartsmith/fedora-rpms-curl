@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.5
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -90,7 +90,7 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT/%{_datadir}/aclocal
 %define _curlbuild32_h curlbuild-32.h
 %define _curlbuild64_h curlbuild-64.h
 
-%if %{__isa_bits} == 64
+%if 0%{?__isa_bits} == 64
 %define _curlbuild_h %{_curlbuild64_h}
 %else
 %define _curlbuild_h %{_curlbuild32_h}
@@ -144,6 +144,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Jun 10 2009 Kamil Dudka <kdudka@redhat.com> 7.19.5-2
+- avoid unguarded comparison in the spec file, thanks to R P Herrold (#504857)
+
 * Tue May 19 2009 Kamil Dudka <kdudka@redhat.com> 7.19.5-1
 - update to 7.19.5, dropped applied patches
 
