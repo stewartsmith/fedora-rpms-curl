@@ -1,10 +1,11 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.5
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
+Source2: curlbuild.h
 Patch1: curl-7.15.3-multilib.patch
 Patch2: curl-7.16.0-privlibs.patch
 Patch3: curl-7.17.1-badsocket.patch
@@ -97,17 +98,8 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT/%{_datadir}/aclocal
 %endif
 mv $RPM_BUILD_ROOT%{_includedir}/curl/curlbuild.h \
    $RPM_BUILD_ROOT%{_includedir}/curl/%{_curlbuild_h}
-cat > $RPM_BUILD_ROOT%{_includedir}/curl/curlbuild.h << EOF
-#include <bits/wordsize.h>
 
-#if __WORDSIZE == 32
-#include "%{_curlbuild32_h}"
-#elif __WORDSIZE == 64
-#include "%{_curlbuild64_h}"
-#else
-#error "Unknown word size"
-#endif
-EOF
+install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_includedir}/curl/curlbuild.h
 
 # don't need curl's copy of the certs; use openssl's
 find ${RPM_BUILD_ROOT} -name ca-bundle.crt -exec rm -f '{}' \;
@@ -144,6 +136,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Jun 24 2009 Kamil Dudka <kdudka@redhat.com> 7.19.5-3
+- exclude curlbuild.h content from spec (#504857)
+
 * Wed Jun 10 2009 Kamil Dudka <kdudka@redhat.com> 7.19.5-2
 - avoid unguarded comparison in the spec file, thanks to R P Herrold (#504857)
 
