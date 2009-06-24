@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.5
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -87,14 +87,10 @@ install -d $RPM_BUILD_ROOT/%{_datadir}/aclocal
 install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT/%{_datadir}/aclocal
 
 # Make libcurl-devel multilib-ready (bug #488922)
-# solution taken from python.spec
-%define _curlbuild32_h curlbuild-32.h
-%define _curlbuild64_h curlbuild-64.h
-
 %if 0%{?__isa_bits} == 64
-%define _curlbuild_h %{_curlbuild64_h}
+%define _curlbuild_h curlbuild-64.h
 %else
-%define _curlbuild_h %{_curlbuild32_h}
+%define _curlbuild_h curlbuild-32.h
 %endif
 mv $RPM_BUILD_ROOT%{_includedir}/curl/curlbuild.h \
    $RPM_BUILD_ROOT%{_includedir}/curl/%{_curlbuild_h}
@@ -136,6 +132,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Jun 24 2009 Kamil Dudka <kdudka@redhat.com> 7.19.5-4
+- fix bug introduced by the last build (#504857)
+
 * Wed Jun 24 2009 Kamil Dudka <kdudka@redhat.com> 7.19.5-3
 - exclude curlbuild.h content from spec (#504857)
 
