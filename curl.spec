@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.5
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -14,6 +14,7 @@ Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: autoconf
+BuildRequires: groff
 BuildRequires: pkgconfig, libidn-devel, zlib-devel, libssh2-devel
 BuildRequires: nss-devel >= 3.11.7-7, openldap-devel, krb5-devel
 
@@ -66,7 +67,7 @@ export CPPFLAGS="$(pkg-config --cflags nss) -DHAVE_PK11_CREATEGENERICOBJECT"
 %configure --without-ssl --with-nss=%{_prefix} --enable-ipv6 \
 	--with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
 	--with-gssapi=%{_prefix}/kerberos --with-libidn \
-	--enable-ldaps --disable-static --with-libssh2
+	--enable-ldaps --disable-static --with-libssh2 --enable-manual
 sed -i -e 's,-L/usr/lib ,,g;s,-L/usr/lib64 ,,g;s,-L/usr/lib$,,g;s,-L/usr/lib64$,,g' \
 	Makefile libcurl.pc
 # Remove bogus rpath
@@ -75,6 +76,9 @@ sed -i \
 	-e 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
 make %{?_smp_mflags}
+
+%check
+make %{?_smp_mflags} check
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -132,6 +136,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Jul 02 2009 Kamil Dudka <kdudka@redhat.com> 7.19.5-5
+- run test suite after build
+- enable built-in manual
+
 * Wed Jun 24 2009 Kamil Dudka <kdudka@redhat.com> 7.19.5-4
 - fix bug introduced by the last build (#504857)
 
