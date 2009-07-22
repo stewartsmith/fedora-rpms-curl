@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.5
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -12,6 +12,7 @@ Patch3: curl-7.17.1-badsocket.patch
 Patch4: curl-7.19.4-debug.patch
 Patch5: curl-7.19.5-cc_refcnt-1.patch
 Patch6: curl-7.19.5-cc_refcnt-2.patch
+Patch7: curl-7.19.5-cc.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -58,6 +59,7 @@ use cURL's capabilities internally.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 # Convert docs to UTF-8
 for f in CHANGES README; do
@@ -140,6 +142,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Jul 22 2009 Kamil Dudka <kdudka@redhat.com> 7.19.5-8
+- do not pre-login to all PKCS11 slots, it causes problems with HW tokens
+- try to select client certificate automatically when not specified, thanks
+  to Claes Jakobsson
+
 * Fri Jul 10 2009 Kamil Dudka <kdudka@redhat.com> 7.19.5-7
 - fix SIGSEGV when using NSS client certificates, thanks to Claes Jakobsson
 
