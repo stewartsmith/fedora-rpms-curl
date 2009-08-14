@@ -1,18 +1,15 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.19.5
-Release: 10%{?dist}
+Version: 7.19.6
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
-Patch1: curl-7.15.3-multilib.patch
-Patch2: curl-7.16.0-privlibs.patch
-Patch3: curl-7.17.1-badsocket.patch
-Patch4: curl-7.19.4-debug.patch
-Patch5: curl-7.19.5-cc_refcnt-1.patch
-Patch6: curl-7.19.5-cc_refcnt-2.patch
-Patch7: curl-7.19.5-cc.patch
+Patch1: curl-7.19.6-verifyhost.patch
+Patch101: curl-7.15.3-multilib.patch
+Patch102: curl-7.16.0-privlibs.patch
+Patch103: curl-7.19.4-debug.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -53,13 +50,14 @@ use cURL's capabilities internally.
 
 %prep
 %setup -q
+
+# upstream patches
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
+
+# Fedora patches
+%patch101 -p1
+%patch102 -p1
+%patch103 -p1
 
 # Convert docs to UTF-8
 for f in CHANGES README; do
@@ -142,6 +140,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Aug 14 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-1
+- new upstream release, dropped applied patches
+- changed NSS code to not ignore the value of ssl.verifyhost and produce more
+  verbose error messages (#516056)
+
 * Wed Aug 12 2009 Ville Skyttä <ville.skytta@iki.fi> - 7.19.5-10
 - Use lzma compressed upstream tarball.
 
