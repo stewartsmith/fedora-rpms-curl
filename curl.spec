@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.6
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -17,6 +17,7 @@ BuildRequires: autoconf
 BuildRequires: groff
 BuildRequires: pkgconfig, libidn-devel, zlib-devel, libssh2-devel
 BuildRequires: nss-devel >= 3.11.7-7, openldap-devel, krb5-devel
+Requires: libcurl = %{version}-%{release}
 
 %description
 cURL is a tool for getting files from HTTP, FTP, FILE, LDAP, LDAPS,
@@ -140,6 +141,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Aug 18 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-2
+- let curl package depend on the same version of libcurl
+
 * Fri Aug 14 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-1
 - new upstream release, dropped applied patches
 - changed NSS code to not ignore the value of ssl.verifyhost and produce more
