@@ -1,0 +1,18 @@
+diff -rup curl-7.19.6.orig/lib/ssh.c curl-7.19.6/lib/ssh.c
+--- curl-7.19.6.orig/lib/ssh.c	2009-08-20 15:33:43.007858118 +0200
++++ curl-7.19.6/lib/ssh.c	2009-08-20 15:35:31.806608061 +0200
+@@ -2753,8 +2753,13 @@ ssize_t Curl_sftp_send(struct connectdat
+ 
+   ssh_block2waitfor(conn, (nwrite == LIBSSH2_ERROR_EAGAIN)?TRUE:FALSE);
+ 
+-  if(nwrite == LIBSSH2_ERROR_EAGAIN)
++  if(nwrite == LIBSSH2_ERROR_EAGAIN) {
++    if (conn->proto.sshc.waitfor & KEEP_RECV)
++      /* wait for the socket to become ready */
++      Curl_socket_ready(conn->sock[FIRSTSOCKET], CURL_SOCKET_BAD, 1000);
++
+     return 0;
++  }
+ 
+   return nwrite;
+ }
