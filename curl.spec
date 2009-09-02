@@ -1,16 +1,18 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.6
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 Patch1: curl-7.19.6-verifyhost.patch
+Patch2: curl-7.19.6-nss-cn.patch
+Patch3: curl-7.19.6-poll.patch
+Patch4: curl-7.19.6-autoconf.patch
 Patch101: curl-7.15.3-multilib.patch
 Patch102: curl-7.16.0-privlibs.patch
 Patch103: curl-7.19.4-debug.patch
-Patch201: curl-7.19.6-sftp-poll.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -53,16 +55,18 @@ use cURL's capabilities internally.
 %prep
 %setup -q
 
-# upstream patches
+# upstream patches (already applied)
 %patch1 -p1
+%patch2 -p1
+
+# upstream patches (not yet applied)
+%patch3 -p1
+%patch4 -p1
 
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
-
-# workarounds (not intended to be applied upstream)
-%patch201 -p1
 
 # Convert docs to UTF-8
 for f in CHANGES README; do
@@ -72,8 +76,7 @@ done
 
 %build
 autoconf
-export CPPFLAGS="$(pkg-config --cflags nss) -DHAVE_PK11_CREATEGENERICOBJECT"
-%configure --without-ssl --with-nss=%{_prefix} --enable-ipv6 \
+%configure --without-ssl --with-nss --enable-ipv6 \
 	--with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
 	--with-gssapi=%{_prefix}/kerberos --with-libidn \
 	--enable-ldaps --disable-static --with-libssh2 --enable-manual
@@ -145,6 +148,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Sep 02 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-4
+- use pkg-config to find nss and libssh2 if possible
+- better patch (not only) for SCP/SFTP polling
+- improve error message for not matching common name (#516056)
+
 * Fri Aug 21 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-3
 - avoid tight loop during a sftp upload
 - http://permalink.gmane.org/gmane.comp.web.curl.library/24744
