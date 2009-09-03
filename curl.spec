@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.6
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -18,8 +18,10 @@ URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: autoconf
 BuildRequires: groff
+BuildRequires: openssh-server openssh-clients
 BuildRequires: pkgconfig, libidn-devel, zlib-devel, libssh2-devel
 BuildRequires: nss-devel >= 3.11.7-7, openldap-devel, krb5-devel
+BuildRequires: stunnel
 Requires: libcurl = %{version}-%{release}
 
 %description
@@ -148,6 +150,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Sep 03 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-5
+- cover ssh and stunnel support by the test-suite
+
 * Wed Sep 02 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-4
 - use pkg-config to find nss and libssh2 if possible
 - better patch (not only) for SCP/SFTP polling
