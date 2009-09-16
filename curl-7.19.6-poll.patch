@@ -1,7 +1,53 @@
 diff -rup curl-7.19.6.orig/lib/ssh.c curl-7.19.6/lib/ssh.c
 --- curl-7.19.6.orig/lib/ssh.c	2009-07-25 00:21:50.000000000 +0200
-+++ curl-7.19.6/lib/ssh.c	2009-09-02 15:43:13.337644271 +0200
-@@ -2235,10 +2235,10 @@ static int ssh_perform_getsock(const str
++++ curl-7.19.6/lib/ssh.c	2009-09-16 16:25:59.271054546 +0200
+@@ -1503,6 +1503,9 @@ static CURLcode ssh_statemach_act(struct
+     result = Curl_setup_transfer(conn, -1, -1, FALSE, NULL,
+                                  FIRSTSOCKET, NULL);
+ 
++    /* not set by Curl_setup_transfer to preserve keepon bits */
++    conn->sockfd = conn->writesockfd;
++
+     if(result) {
+       state(conn, SSH_SFTP_CLOSE);
+       sshc->actualcode = result;
+@@ -1914,6 +1917,12 @@ static CURLcode ssh_statemach_act(struct
+   else {
+     result = Curl_setup_transfer(conn, FIRSTSOCKET, data->req.size,
+                                  FALSE, NULL, -1, NULL);
++
++    /* not set by Curl_setup_transfer to preserve keepon bits */
++    conn->writesockfd = conn->sockfd;
++
++    /* FIXME: here should be explained why we need it to start the download */
++    conn->cselect_bits = CURL_CSELECT_IN;
+   }
+   if(result) {
+     state(conn, SSH_SFTP_CLOSE);
+@@ -2034,6 +2043,9 @@ static CURLcode ssh_statemach_act(struct
+     result = Curl_setup_transfer(conn, -1, data->req.size, FALSE, NULL,
+                                  FIRSTSOCKET, NULL);
+ 
++    /* not set by Curl_setup_transfer to preserve keepon bits */
++    conn->sockfd = conn->writesockfd;
++
+     if(result) {
+       state(conn, SSH_SCP_CHANNEL_FREE);
+       sshc->actualcode = result;
+@@ -2083,6 +2095,12 @@ static CURLcode ssh_statemach_act(struct
+     result = Curl_setup_transfer(conn, FIRSTSOCKET,
+                                  bytecount, FALSE, NULL, -1, NULL);
+ 
++    /* not set by Curl_setup_transfer to preserve keepon bits */
++    conn->writesockfd = conn->sockfd;
++
++    /* FIXME: here should be explained why we need it to start the download */
++    conn->cselect_bits = CURL_CSELECT_IN;
++
+     if(result) {
+       state(conn, SSH_SCP_CHANNEL_FREE);
+       sshc->actualcode = result;
+@@ -2235,10 +2253,10 @@ static int ssh_perform_getsock(const str
  
    sock[0] = conn->sock[FIRSTSOCKET];
  
@@ -14,7 +60,7 @@ diff -rup curl-7.19.6.orig/lib/ssh.c curl-7.19.6/lib/ssh.c
      bitmap |= GETSOCK_WRITESOCK(FIRSTSOCKET);
  
    return bitmap;
-@@ -2282,15 +2282,17 @@ static void ssh_block2waitfor(struct con
+@@ -2282,15 +2300,17 @@ static void ssh_block2waitfor(struct con
  {
    struct ssh_conn *sshc = &conn->proto.sshc;
    int dir;
@@ -37,8 +83,19 @@ diff -rup curl-7.19.6.orig/lib/ssh.c curl-7.19.6/lib/ssh.c
    /* no libssh2 directional support so we simply don't know */
 diff -rup curl-7.19.6.orig/lib/transfer.c curl-7.19.6/lib/transfer.c
 --- curl-7.19.6.orig/lib/transfer.c	2009-07-22 22:09:53.000000000 +0200
-+++ curl-7.19.6/lib/transfer.c	2009-09-02 15:43:13.338644150 +0200
-@@ -1884,33 +1884,46 @@ Transfer(struct connectdata *conn)
++++ curl-7.19.6/lib/transfer.c	2009-09-16 16:25:57.195363278 +0200
+@@ -1652,10 +1652,6 @@ CURLcode Curl_readwrite(struct connectda
+ 
+   if((k->keepon & KEEP_RECVBITS) == KEEP_RECV) {
+     fd_read = conn->sockfd;
+-#if defined(USE_LIBSSH2)
+-    if(conn->protocol & (PROT_SCP|PROT_SFTP))
+-      select_res |= CURL_CSELECT_IN;
+-#endif /* USE_LIBSSH2 */
+   } else
+     fd_read = CURL_SOCKET_BAD;
+ 
+@@ -1884,33 +1880,39 @@ Transfer(struct connectdata *conn)
      return CURLE_OK;
  
    while(!done) {
@@ -47,13 +104,6 @@ diff -rup curl-7.19.6.orig/lib/transfer.c curl-7.19.6/lib/transfer.c
 +    curl_socket_t fd_read = conn->sockfd;
 +    curl_socket_t fd_write = conn->writesockfd;
 +    int keepon = k->keepon;
-+
-+#if defined(USE_LIBSSH2)
-+    if(conn->protocol & (PROT_SCP|PROT_SFTP)) {
-+      fd_read = conn->sock[FIRSTSOCKET];
-+      fd_write = conn->sock[FIRSTSOCKET];
-+    }
-+#endif /* USE_LIBSSH2 */
 +
 +    if(conn->waitfor) {
 +      /* if waitfor is set, get the RECV and SEND bits from that but keep the
@@ -95,7 +145,7 @@ diff -rup curl-7.19.6.orig/lib/transfer.c curl-7.19.6/lib/transfer.c
  
 diff -rup curl-7.19.6.orig/lib/urldata.h curl-7.19.6/lib/urldata.h
 --- curl-7.19.6.orig/lib/urldata.h	2009-07-23 00:49:56.000000000 +0200
-+++ curl-7.19.6/lib/urldata.h	2009-09-02 15:43:13.339644227 +0200
++++ curl-7.19.6/lib/urldata.h	2009-09-16 16:25:57.196363391 +0200
 @@ -565,7 +565,6 @@ struct ssh_conn {
    LIBSSH2_CHANNEL *ssh_channel; /* Secure Shell channel handle */
    LIBSSH2_SFTP *sftp_session;   /* SFTP handle */

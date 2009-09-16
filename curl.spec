@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.6
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -150,6 +150,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Sep 16 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-6
+- update polling patch to the latest upstream version
+
 * Thu Sep 03 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-5
 - cover ssh and stunnel support by the test-suite
 
