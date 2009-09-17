@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.6
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -92,7 +92,9 @@ sed -i \
 make %{?_smp_mflags}
 
 %check
-LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir} make %{?_smp_mflags} check
+export LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}
+make %{?_smp_mflags} -C tests
+cd tests && ./runtests.pl -p -v
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -150,6 +152,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Sep 17 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-7
+- make curl test-suite more verbose
+
 * Wed Sep 16 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-6
 - update polling patch to the latest upstream version
 
