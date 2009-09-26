@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.6
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -18,10 +18,17 @@ URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: autoconf
 BuildRequires: groff
-BuildRequires: openssh-server openssh-clients
-BuildRequires: pkgconfig, libidn-devel, zlib-devel, libssh2-devel
-BuildRequires: nss-devel >= 3.11.7-7, openldap-devel, krb5-devel
+BuildRequires: krb5-devel
+BuildRequires: libidn-devel
+BuildRequires: libssh2-devel >= 1.2
+BuildRequires: nss-devel >= 3.11.7-7
+BuildRequires: openldap-devel
+BuildRequires: openssh-clients
+BuildRequires: openssh-server
+BuildRequires: pkgconfig
 BuildRequires: stunnel
+BuildRequires: valgrind
+BuildRequires: zlib-devel
 Requires: libcurl = %{version}-%{release}
 
 %description
@@ -94,7 +101,7 @@ make %{?_smp_mflags}
 %check
 export LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}
 make %{?_smp_mflags} -C tests
-cd tests && ./runtests.pl -p -v
+cd tests && ./runtests.pl -k -p -v
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -152,6 +159,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Sat Sep 26 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-9
+- let curl test-suite use valgrind
+- require libssh2>=1.2 (#525002)
+
 * Mon Sep 21 2009 Chris Weyl <cweyl@alumni.drew.edu> - 7.19.6-8
 - rebuild for libssh2 1.2
 
