@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.6
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -21,7 +21,7 @@ BuildRequires: groff
 BuildRequires: krb5-devel
 BuildRequires: libidn-devel
 BuildRequires: libssh2-devel >= 1.2
-BuildRequires: nss-devel >= 3.11.7-7
+BuildRequires: nss-devel
 BuildRequires: openldap-devel
 BuildRequires: openssh-clients
 BuildRequires: openssh-server
@@ -42,6 +42,10 @@ user authentication, FTP upload, HTTP post, and file transfer resume.
 Summary: A library for getting files from web servers
 Group: Development/Libraries
 
+# libssh2 ABI has been changed since libssh2-1.0
+# this forces update of libssh2 before update of libcurl
+Requires: libssh2 >= 1.2
+
 %description -n libcurl
 This package provides a way for applications to use FTP, HTTP, Gopher and
 other servers for getting files.
@@ -49,8 +53,10 @@ other servers for getting files.
 %package -n libcurl-devel
 Summary: Files needed for building applications with libcurl
 Group: Development/Libraries
+Requires: automake
 Requires: libcurl = %{version}-%{release}
-Requires: libidn-devel, pkgconfig, automake
+Requires: libidn-devel
+Requires: pkgconfig
 
 Provides: curl-devel = %{version}-%{release}
 Obsoletes: curl-devel < %{version}-%{release}
@@ -159,6 +165,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Sun Sep 27 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-10
+- require libssh2>=1.2 properly (#525002)
+
 * Sat Sep 26 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-9
 - let curl test-suite use valgrind
 - require libssh2>=1.2 (#525002)
