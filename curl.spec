@@ -73,8 +73,6 @@ use cURL's capabilities internally.
 # upstream patches (already applied)
 %patch1 -p1
 %patch2 -p1
-
-# upstream patches (not yet applied)
 %patch3 -p1
 %patch4 -p1
 
