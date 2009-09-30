@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.6
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -17,6 +17,7 @@ Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: autoconf
+BuildRequires: c-ares-devel
 BuildRequires: groff
 BuildRequires: krb5-devel
 BuildRequires: libidn-devel
@@ -92,7 +93,7 @@ autoconf
 %configure --without-ssl --with-nss --enable-ipv6 \
 	--with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
 	--with-gssapi=%{_prefix}/kerberos --with-libidn \
-	--enable-ldaps --disable-static --with-libssh2 --enable-manual
+	--enable-ldaps --disable-static --with-libssh2 --enable-manual --enable-ares
 sed -i -e 's,-L/usr/lib ,,g;s,-L/usr/lib64 ,,g;s,-L/usr/lib$,,g;s,-L/usr/lib64$,,g' \
 	Makefile libcurl.pc
 # Remove bogus rpath
@@ -163,6 +164,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Sep 30 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-11
+- build libcurl with c-ares support (#514771)
+
 * Sun Sep 27 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-10
 - require libssh2>=1.2 properly (#525002)
 
