@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.6
-Release: 11%{?dist}
+Release: 12%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -10,6 +10,7 @@ Patch1: curl-7.19.6-verifyhost.patch
 Patch2: curl-7.19.6-nss-cn.patch
 Patch3: curl-7.19.6-poll.patch
 Patch4: curl-7.19.6-autoconf.patch
+Patch5: curl-7.19.6-nss-guenter.patch
 Patch101: curl-7.15.3-multilib.patch
 Patch102: curl-7.16.0-privlibs.patch
 Patch103: curl-7.19.4-debug.patch
@@ -76,6 +77,7 @@ use cURL's capabilities internally.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -164,6 +166,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Oct 06 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-12
+- upstream patch for NSS support written by Guenter Knauf
+
 * Wed Sep 30 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-11
 - build libcurl with c-ares support (#514771)
 
