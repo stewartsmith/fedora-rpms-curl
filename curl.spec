@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.7
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -160,6 +160,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Nov 04 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-2
+- increased release number (CVS problem)
+
 * Wed Nov 04 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-1
 - new upstream release, dropped applied patches
 - workaround for broken TLS servers (#525496, #527771)
