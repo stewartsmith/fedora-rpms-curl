@@ -1,5 +1,7 @@
---- curl-7.19.6.orig/lib/nss.c	2009-10-07 21:41:55.213109928 +0200
-+++ curl-7.19.6/lib/nss.c	2009-10-08 19:48:05.379110326 +0200
+diff --git a/lib/nss.c b/lib/nss.c
+index ea904af..6e8d242 100644
+--- a/lib/nss.c
++++ b/lib/nss.c
 @@ -83,8 +83,6 @@ PRLock * nss_initlock = NULL;
  
  volatile int initialized = 0;
@@ -9,7 +11,7 @@
  typedef struct {
    const char *name;
    int num;
-@@ -947,6 +945,8 @@ CURLcode Curl_nss_connect(struct connect
+@@ -970,6 +968,8 @@ CURLcode Curl_nss_connect(struct connectdata *conn, int sockindex)
    char *certDir = NULL;
    int curlerr;
    const int *cipher_to_enable;
@@ -18,7 +20,7 @@
  
    curlerr = CURLE_SSL_CONNECT_ERROR;
  
-@@ -1040,6 +1040,12 @@ CURLcode Curl_nss_connect(struct connect
+@@ -1063,6 +1063,12 @@ CURLcode Curl_nss_connect(struct connectdata *conn, int sockindex)
      goto error;
    model = SSL_ImportFD(NULL, model);
  
@@ -31,7 +33,7 @@
    if(SSL_OptionSet(model, SSL_SECURITY, PR_TRUE) != SECSuccess)
      goto error;
    if(SSL_OptionSet(model, SSL_HANDSHAKE_AS_SERVER, PR_FALSE) != SECSuccess)
-@@ -1225,9 +1231,8 @@ CURLcode Curl_nss_connect(struct connect
+@@ -1234,9 +1240,8 @@ CURLcode Curl_nss_connect(struct connectdata *conn, int sockindex)
    SSL_SetURL(connssl->handle, conn->host.name);
  
    /* Force the handshake now */
@@ -43,7 +45,7 @@
      if(conn->data->set.ssl.certverifyresult == SSL_ERROR_BAD_CERT_DOMAIN)
        curlerr = CURLE_PEER_FAILED_VERIFICATION;
      else if(conn->data->set.ssl.certverifyresult!=0)
-@@ -1289,27 +1294,12 @@ int Curl_nss_send(struct connectdata *co
+@@ -1288,27 +1293,12 @@ int Curl_nss_send(struct connectdata *conn,  /* connection data */
                    const void *mem,           /* send this data */
                    size_t len)                /* amount to write */
  {
@@ -73,7 +75,7 @@
      return -1;
    }
    return rc; /* number of bytes */
-@@ -1327,15 +1317,8 @@ ssize_t Curl_nss_recv(struct connectdata
+@@ -1326,15 +1316,8 @@ ssize_t Curl_nss_recv(struct connectdata * conn, /* connection data */
                        bool * wouldblock)
  {
    ssize_t nread;
@@ -90,7 +92,7 @@
    *wouldblock = FALSE;
    if(nread < 0) {
      /* failed SSL read */
-@@ -1345,10 +1328,6 @@ ssize_t Curl_nss_recv(struct connectdata
+@@ -1344,10 +1327,6 @@ ssize_t Curl_nss_recv(struct connectdata * conn, /* connection data */
        *wouldblock = TRUE;
        return -1; /* basically EWOULDBLOCK */
      }

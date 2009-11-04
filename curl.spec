@@ -1,18 +1,13 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.19.6
-Release: 13%{?dist}
+Version: 7.19.7
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
-Patch1: curl-7.19.6-verifyhost.patch
-Patch2: curl-7.19.6-nss-cn.patch
-Patch3: curl-7.19.6-poll.patch
-Patch4: curl-7.19.6-autoconf.patch
-Patch5: curl-7.19.6-nss-guenter.patch
-Patch6: curl-7.19.6-nss-warnings.diff
-Patch7: curl-7.19.7-nss-nonblock.diff
+Patch1: curl-7.19.7-nss-nonblock.patch
+Patch2: curl-7.19.7-ssl-retry.patch
 Patch101: curl-7.15.3-multilib.patch
 Patch102: curl-7.16.0-privlibs.patch
 Patch103: curl-7.19.4-debug.patch
@@ -74,21 +69,15 @@ use cURL's capabilities internally.
 %prep
 %setup -q
 
-# upstream patches (already applied)
+# upstream patches (not yet applied)
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-
-# upstream patches (not yet applied)
-%patch7 -p1
 
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
+autoconf
 
 # Convert docs to UTF-8
 for f in CHANGES README; do
@@ -97,7 +86,6 @@ for f in CHANGES README; do
 done
 
 %build
-autoconf
 %configure --without-ssl --with-nss --enable-ipv6 \
 	--with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
 	--with-gssapi=%{_prefix}/kerberos --with-libidn \
@@ -172,6 +160,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Nov 04 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-1
+- new upstream release, dropped applied patches
+- workaround for broken TLS servers (#525496, #527771)
+
 * Wed Oct 14 2009 Kamil Dudka <kdudka@redhat.com> 7.19.6-13
 - fix timeout issues and gcc warnings within lib/nss.c
 

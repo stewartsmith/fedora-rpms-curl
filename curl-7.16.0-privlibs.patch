@@ -1,6 +1,8 @@
---- curl-7.16.2/libcurl.pc.in.privlibs	2007-02-18 10:41:27.000000000 +0100
-+++ curl-7.16.2/libcurl.pc.in	2007-04-11 20:02:34.000000000 +0200
-@@ -33,6 +33,6 @@
+diff --git a/libcurl.pc.in b/libcurl.pc.in
+index 25beadd..d7c0805 100644
+--- a/libcurl.pc.in
++++ b/libcurl.pc.in
+@@ -35,6 +35,6 @@ Name: libcurl
  URL: http://curl.haxx.se/
  Description: Library to transfer files with ftp, http, etc.
  Version: @VERSION@
