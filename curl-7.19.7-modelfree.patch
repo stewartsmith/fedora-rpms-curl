@@ -1,0 +1,12 @@
+diff --git a/lib/nss.c b/lib/nss.c
+index f5c69e6..d1a9d1a 100644
+--- a/lib/nss.c
++++ b/lib/nss.c
+@@ -1265,6 +1265,7 @@ CURLcode Curl_nss_connect(struct connectdata *conn, int sockindex)
+   if(!connssl->handle)
+     goto error;
+   PR_Close(model); /* We don't need this any more */
++  model = NULL;
+ 
+   /* This is the password associated with the cert that we're using */
+   if (data->set.str[STRING_KEY_PASSWD]) {

@@ -1,13 +1,14 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.7
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 Patch1: curl-7.19.7-nss-nonblock.patch
 Patch2: curl-7.19.7-ssl-retry.patch
+Patch3: curl-7.19.7-modelfree.patch
 Patch101: curl-7.15.3-multilib.patch
 Patch102: curl-7.16.0-privlibs.patch
 Patch103: curl-7.19.4-debug.patch
@@ -69,9 +70,10 @@ use cURL's capabilities internally.
 %prep
 %setup -q
 
-# upstream patches (not yet applied)
+# upstream patches (already applied)
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -102,7 +104,7 @@ make %{?_smp_mflags}
 %check
 export LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}
 make %{?_smp_mflags} -C tests
-cd tests && ./runtests.pl -k -p -v
+cd tests && ./runtests.pl -a -k -p -v
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -160,6 +162,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Nov 12 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-3
+- fix crash on doubly closed NSPR descriptor, patch contributed
+  by Kevin Baughman (#534176)
+- new version of patch for broken TLS servers (#525496, #527771)
+
+
 * Wed Nov 04 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-2
 - increased release number (CVS problem)
 
