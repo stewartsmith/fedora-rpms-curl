@@ -167,7 +167,6 @@ rm -rf $RPM_BUILD_ROOT
   by Kevin Baughman (#534176)
 - new version of patch for broken TLS servers (#525496, #527771)
 
-
 * Wed Nov 04 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-2
 - increased release number (CVS problem)
 
