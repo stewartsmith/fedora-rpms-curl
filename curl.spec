@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.7
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -23,11 +23,21 @@ BuildRequires: libidn-devel
 BuildRequires: libssh2-devel >= 1.2
 BuildRequires: nss-devel
 BuildRequires: openldap-devel
-BuildRequires: openssh-clients
-BuildRequires: openssh-server
+
+# SCP/SFTP test suite temporarily disabled (#539444)
+
+#BuildRequires: openssh-clients
+#BuildRequires: openssh-server
+
 BuildRequires: pkgconfig
 BuildRequires: stunnel
+
+# valgrind is not available on some architectures, however it's going to be
+# used only by the test-suite anyway
+%ifnarch s390 s390x
 BuildRequires: valgrind
+%endif
+
 BuildRequires: zlib-devel
 Requires: libcurl = %{version}-%{release}
 
@@ -162,6 +172,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Dec 01 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-4
+- do not require valgrind on s390 and s390x
+- temporarily disabled SCP/SFTP test-suite (#539444)
+
 * Thu Nov 12 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-3
 - fix crash on doubly closed NSPR descriptor, patch contributed
   by Kevin Baughman (#534176)
