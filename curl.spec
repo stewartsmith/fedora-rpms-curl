@@ -148,7 +148,7 @@ rm -rf $RPM_BUILD_ROOT
 %postun -n libcurl -p /sbin/ldconfig
 
 %files
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %doc CHANGES README* COPYING
 %doc docs/BUGS docs/FAQ docs/FEATURES
 %doc docs/MANUAL docs/RESOURCES
@@ -157,10 +157,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/curl.1*
 
 %files -n libcurl
+%defattr(-,root,root,-)
 %{_libdir}/libcurl.so.*
 
 %files -n libcurl-devel
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %doc docs/examples/*.c docs/examples/Makefile.example docs/INTERNALS
 %doc docs/CONTRIBUTE docs/libcurl/ABI
 %{_bindir}/curl-config*
