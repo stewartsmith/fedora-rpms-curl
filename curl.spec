@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.7
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -9,6 +9,7 @@ Source2: curlbuild.h
 Patch1: curl-7.19.7-nss-nonblock.patch
 Patch2: curl-7.19.7-ssl-retry.patch
 Patch3: curl-7.19.7-modelfree.patch
+Patch4: curl-7.19.7-nss-warning.patch
 Patch101: curl-7.15.3-multilib.patch
 Patch102: curl-7.16.0-privlibs.patch
 Patch103: curl-7.19.4-debug.patch
@@ -84,6 +85,7 @@ use cURL's capabilities internally.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -173,6 +175,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Dec 02 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-5
+- avoid use of uninitialized value in lib/nss.c
+
 * Tue Dec 01 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-4
 - do not require valgrind on s390 and s390x
 - temporarily disabled SCP/SFTP test-suite (#539444)
