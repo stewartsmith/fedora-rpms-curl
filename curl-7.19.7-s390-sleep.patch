@@ -1,0 +1,20 @@
+diff --git a/tests/libtest/lib513.c b/tests/libtest/lib513.c
+index b06a3c6..bf14650 100644
+--- a/tests/libtest/lib513.c
++++ b/tests/libtest/lib513.c
+@@ -12,12 +12,15 @@
+ 
+ #include "memdebug.h"
+ 
++#include <unistd.h>
++
+ static size_t read_callback(void *ptr, size_t size, size_t nmemb, void *userp)
+ {
+   (void)ptr;
+   (void)size;
+   (void)nmemb;
+   (void)userp;
++  sleep(2);
+   return CURL_READFUNC_ABORT;
+ }
+ 

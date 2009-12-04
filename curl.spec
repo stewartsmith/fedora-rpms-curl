@@ -13,6 +13,7 @@ Patch4: curl-7.19.7-nss-warning.patch
 Patch101: curl-7.15.3-multilib.patch
 Patch102: curl-7.16.0-privlibs.patch
 Patch103: curl-7.19.4-debug.patch
+Patch104: curl-7.19.7-s390-sleep.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -91,6 +92,10 @@ use cURL's capabilities internally.
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
+
+# http://curl.haxx.se/mail/lib-2009-12/0031.html
+%patch104 -p1
+
 autoconf
 
 # Convert docs to UTF-8
@@ -175,8 +180,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
-* Wed Dec 02 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-5
+* Sat Dec 05 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-5
 - avoid use of uninitialized value in lib/nss.c
+- suppress failure of test513 on s390
 
 * Tue Dec 01 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-4
 - do not require valgrind on s390 and s390x
