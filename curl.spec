@@ -14,6 +14,7 @@ Patch101: curl-7.15.3-multilib.patch
 Patch102: curl-7.16.0-privlibs.patch
 Patch103: curl-7.19.4-debug.patch
 Patch104: curl-7.19.7-s390-sleep.patch
+Patch105: curl-7.19.7-localhost6.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -96,6 +97,9 @@ use cURL's capabilities internally.
 # http://curl.haxx.se/mail/lib-2009-12/0031.html
 %patch104 -p1
 
+# we have localhost6 instead of ip6-localhost as name for ::1
+%patch105 -p1
+
 autoconf
 
 # Convert docs to UTF-8
@@ -120,8 +124,9 @@ make %{?_smp_mflags}
 
 %check
 export LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}
-make %{?_smp_mflags} -C tests
-cd tests && ./runtests.pl -a -k -p -v
+cd tests
+make %{?_smp_mflags}
+./runtests.pl -a -p -v
 
 %install
 rm -rf $RPM_BUILD_ROOT

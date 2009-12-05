@@ -1,20 +1,13 @@
-diff --git a/tests/libtest/lib513.c b/tests/libtest/lib513.c
-index b06a3c6..bf14650 100644
---- a/tests/libtest/lib513.c
-+++ b/tests/libtest/lib513.c
-@@ -12,12 +12,15 @@
+diff --git a/tests/runtests.pl b/tests/runtests.pl
+index a6597b9..c900ad8 100755
+--- a/tests/runtests.pl
++++ b/tests/runtests.pl
+@@ -209,7 +209,7 @@ my $sshdverstr;  # for socks server, ssh daemon version string
+ my $sshderror;   # for socks server, ssh daemon version error
  
- #include "memdebug.h"
+ my $defserverlogslocktimeout = 20; # timeout to await server logs lock removal
+-my $defpostcommanddelay = 0; # delay between command and postcheck sections
++my $defpostcommanddelay = 1; # delay between command and postcheck sections
  
-+#include <unistd.h>
-+
- static size_t read_callback(void *ptr, size_t size, size_t nmemb, void *userp)
- {
-   (void)ptr;
-   (void)size;
-   (void)nmemb;
-   (void)userp;
-+  sleep(2);
-   return CURL_READFUNC_ABORT;
- }
+ my $testnumcheck; # test number, set in singletest sub.
  
