@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.7
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -26,12 +26,8 @@ BuildRequires: libidn-devel
 BuildRequires: libssh2-devel >= 1.2
 BuildRequires: nss-devel
 BuildRequires: openldap-devel
-
-# SCP/SFTP test suite temporarily disabled (#539444)
-
-#BuildRequires: openssh-clients
-#BuildRequires: openssh-server
-
+BuildRequires: openssh-clients
+BuildRequires: openssh-server
 BuildRequires: pkgconfig
 BuildRequires: stunnel
 
@@ -185,6 +181,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Dec 08 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-6
+- make it possible to run test241
+- re-enable SCP/SFTP tests (#539444)
+
 * Sat Dec 05 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-5
 - avoid use of uninitialized value in lib/nss.c
 - suppress failure of test513 on s390
