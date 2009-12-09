@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.7
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -10,6 +10,7 @@ Patch1: curl-7.19.7-nss-nonblock.patch
 Patch2: curl-7.19.7-ssl-retry.patch
 Patch3: curl-7.19.7-modelfree.patch
 Patch4: curl-7.19.7-nss-warning.patch
+Patch5: curl-7.19.7-nss-i686.patch
 Patch101: curl-7.15.3-multilib.patch
 Patch102: curl-7.16.0-privlibs.patch
 Patch103: curl-7.19.4-debug.patch
@@ -86,6 +87,7 @@ use cURL's capabilities internally.
 %patch4 -p1
 
 # Fedora patches
+%patch5 -p1
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
@@ -122,7 +124,10 @@ make %{?_smp_mflags}
 export LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}
 cd tests
 make %{?_smp_mflags}
-./runtests.pl -a -p -v
+
+# use different port range for 32bit and 64bit build, thus make it possible
+# to run both in parallel on the same machine
+./runtests.pl -a -b89%{?__isa_bits} -p -v
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -181,6 +186,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Dec 09 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-7
+- use different port numbers for 32bit and 64bit builds
+- temporary workaround for #545779
+
 * Tue Dec 08 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-6
 - make it possible to run test241
 - re-enable SCP/SFTP tests (#539444)
