@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.7
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -100,6 +100,9 @@ use cURL's capabilities internally.
 
 autoconf
 
+# replace hard wired port numbers in the test suite
+sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ tests/data/test*
+
 # Convert docs to UTF-8
 for f in CHANGES README; do
 	iconv -f iso-8859-1 -t utf8 < ${f} > ${f}.utf8
@@ -127,7 +130,7 @@ make %{?_smp_mflags}
 
 # use different port range for 32bit and 64bit build, thus make it possible
 # to run both in parallel on the same machine
-./runtests.pl -a -b89%{?__isa_bits} -p -v
+./runtests.pl -a -b%{?__isa_bits}90 -p -v
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -186,6 +189,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Dec 09 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-8
+- replace hard wired port numbers in the test suite
+
 * Wed Dec 09 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-7
 - use different port numbers for 32bit and 64bit builds
 - temporary workaround for #545779
