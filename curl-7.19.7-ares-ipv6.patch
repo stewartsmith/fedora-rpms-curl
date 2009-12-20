@@ -1,0 +1,13 @@
+diff --git a/lib/hostares.c b/lib/hostares.c
+index 15f9c84..719efc1 100644
+--- a/lib/hostares.c
++++ b/lib/hostares.c
+@@ -327,7 +327,7 @@ Curl_addrinfo *Curl_getaddrinfo(struct connectdata *conn,
+ 
+   switch(data->set.ip_version) {
+   default:
+-#if ARES_VERSION >= 0x010601
++#if 0
+     family = PF_UNSPEC; /* supported by c-ares since 1.6.1, so for older
+                            c-ares versions this just falls through and defaults
+                            to PF_INET */

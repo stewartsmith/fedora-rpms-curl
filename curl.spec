@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.7
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -16,6 +16,7 @@ Patch102: curl-7.16.0-privlibs.patch
 Patch103: curl-7.19.4-debug.patch
 Patch104: curl-7.19.7-s390-sleep.patch
 Patch105: curl-7.19.7-localhost6.patch
+Patch106: curl-7.19.7-ares-ipv6.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -96,7 +97,13 @@ use cURL's capabilities internally.
 %patch104 -p1
 
 # we have localhost6 instead of ip6-localhost as name for ::1
-%patch105 -p1
+# temporarily disabled (clash with patch #106)
+#%patch105 -p1
+
+# rebuild of cURL against newer c-ares-devel has caused a regression (#548269)
+# this patch reverts back the old behavior of curl-7.19.7-4.fc13
+# NOTE: this is a temporary workaround only
+%patch106 -p1
 
 autoconf
 
@@ -189,6 +196,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Sun Dec 20 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-9
+- temporary workaround for #548269
+  (restored behavior of 7.19.7-4)
+
 * Wed Dec 09 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-8
 - replace hard wired port numbers in the test suite
 
