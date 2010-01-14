@@ -1,4 +1,3 @@
-%define _default_patch_fuzz 2 \n\n
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.7
@@ -199,7 +198,6 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Jan 14 2010 Chris Weyl <cweyl@alumni.drew.edu> 7.19.7-10
 - bump for libssh2 rebuild
-
 
 * Sun Dec 20 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-9
 - temporary workaround for #548269
