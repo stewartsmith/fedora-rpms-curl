@@ -1,7 +1,8 @@
+%define _default_patch_fuzz 2 \n\n
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.7
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -196,6 +197,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Jan 14 2010 Chris Weyl <cweyl@alumni.drew.edu> 7.19.7-10
+- bump for libssh2 rebuild
+
+
 * Sun Dec 20 2009 Kamil Dudka <kdudka@redhat.com> 7.19.7-9
 - temporary workaround for #548269
   (restored behavior of 7.19.7-4)
