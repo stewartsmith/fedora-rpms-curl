@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.19.7
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -10,7 +10,7 @@ Patch1: curl-7.19.7-nss-nonblock.patch
 Patch2: curl-7.19.7-ssl-retry.patch
 Patch3: curl-7.19.7-modelfree.patch
 Patch4: curl-7.19.7-nss-warning.patch
-Patch5: curl-7.19.7-nss-i686.patch
+Patch5: curl-7.19.7-content-disposition.patch
 Patch101: curl-7.15.3-multilib.patch
 Patch102: curl-7.16.0-privlibs.patch
 Patch103: curl-7.19.4-debug.patch
@@ -86,9 +86,9 @@ use cURL's capabilities internally.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 # Fedora patches
-%patch5 -p1
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
@@ -196,6 +196,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Jan 29 2010 Kamil Dudka <kdudka@redhat.com> 7.19.7-11
+- upstream patch adding a new option -J/--remote-header-name
+- dropped temporary workaround for #545779
+
 * Thu Jan 14 2010 Chris Weyl <cweyl@alumni.drew.edu> 7.19.7-10
 - bump for libssh2 rebuild
 
