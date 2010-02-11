@@ -54,6 +54,7 @@ BuildRequires: valgrind
 BuildRequires: zlib-devel
 Requires: libcurl = %{version}-%{release}
 
+# TODO: mention also IMAP(S), POP3(S), SMTP(S) and RTSP protocols
 %description
 cURL is a tool for getting files from HTTP, FTP, FILE, LDAP, LDAPS,
 DICT, TELNET and TFTP servers, using any of the supported protocols.
