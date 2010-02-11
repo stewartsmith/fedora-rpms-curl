@@ -1,22 +1,33 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.19.7
-Release: 11%{?dist}
+Version: 7.20.0
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
-Patch1: curl-7.19.7-nss-nonblock.patch
-Patch2: curl-7.19.7-ssl-retry.patch
-Patch3: curl-7.19.7-modelfree.patch
-Patch4: curl-7.19.7-nss-warning.patch
-Patch5: curl-7.19.7-content-disposition.patch
+
+# patching making libcurl multilib ready (by not installing static libraries)
 Patch101: curl-7.15.3-multilib.patch
+
+# tweak of libcurl.pc
 Patch102: curl-7.16.0-privlibs.patch
+
+# prevent configure script from discarding -g in CFLAGS (#496778)
 Patch103: curl-7.19.4-debug.patch
+
+# suppress occasional failure of curl test-suite on s390; caused more likely
+# by the test-suite infrastructure than (lib)curl itself
 Patch104: curl-7.19.7-s390-sleep.patch
+
+# use localhost6 instead of ip6-localhost in the curl test-suite
 Patch105: curl-7.19.7-localhost6.patch
+
+# rebuild of cURL against newer c-ares-devel has caused a regression (#548269)
+# this patch reverts back the old behavior of curl-7.19.7-4.fc13
+# NOTE: this is a temporary workaround only
 Patch106: curl-7.19.7-ares-ipv6.patch
+
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -81,13 +92,6 @@ use cURL's capabilities internally.
 %prep
 %setup -q
 
-# upstream patches (already applied)
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
@@ -96,13 +100,9 @@ use cURL's capabilities internally.
 # http://curl.haxx.se/mail/lib-2009-12/0031.html
 %patch104 -p1
 
-# we have localhost6 instead of ip6-localhost as name for ::1
 # temporarily disabled (clash with patch #106)
 #%patch105 -p1
 
-# rebuild of cURL against newer c-ares-devel has caused a regression (#548269)
-# this patch reverts back the old behavior of curl-7.19.7-4.fc13
-# NOTE: this is a temporary workaround only
 %patch106 -p1
 
 autoconf
@@ -196,6 +196,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Feb 11 2010 Kamil Dudka <kdudka@redhat.com> 7.20.0-1
+- new upstream release - added support for IMAP(S), POP3(S), SMTP(S) and RTSP
+
 * Fri Jan 29 2010 Kamil Dudka <kdudka@redhat.com> 7.19.7-11
 - upstream patch adding a new option -J/--remote-header-name
 - dropped temporary workaround for #545779

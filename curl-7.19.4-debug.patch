@@ -1,8 +1,8 @@
 diff --git a/configure.ac b/configure.ac
-index e575a20..81a7772 100644
+index 7ca2145..0413332 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -228,7 +228,10 @@ dnl **********************************************************************
+@@ -253,7 +253,10 @@ dnl **********************************************************************
  
  CURL_CHECK_COMPILER
  CURL_SET_COMPILER_BASIC_OPTS

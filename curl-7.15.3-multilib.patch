@@ -1,8 +1,8 @@
 diff --git a/curl-config.in b/curl-config.in
-index 1c439a1..9d675ae 100644
+index d336999..1c5873e 100644
 --- a/curl-config.in
 +++ b/curl-config.in
-@@ -42,7 +42,6 @@ Available values for OPTION include:
+@@ -43,7 +43,6 @@ Available values for OPTION include:
    --libs      library linking information
    --prefix    curl install prefix
    --protocols newline separated list of enabled protocols
@@ -10,7 +10,7 @@ index 1c439a1..9d675ae 100644
    --version   output version information
    --vernum    output the version information as a number (hexadecimal)
  EOF
-@@ -69,7 +68,7 @@ while test $# -gt 0; do
+@@ -70,7 +69,7 @@ while test $# -gt 0; do
  	;;
  
      --cc)
@@ -19,7 +19,7 @@ index 1c439a1..9d675ae 100644
  	;;
  
      --prefix)
-@@ -130,20 +129,7 @@ while test $# -gt 0; do
+@@ -131,20 +130,7 @@ while test $# -gt 0; do
         	;;
  
      --libs)
@@ -40,4 +40,4 @@ index 1c439a1..9d675ae 100644
 +	pkg-config libcurl --libs
  	;;
  
-     *)
+     --configure)
