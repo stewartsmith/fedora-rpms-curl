@@ -10,14 +10,15 @@ Source2: curlbuild.h
 # patching making libcurl multilib ready (by not installing static libraries)
 Patch101: curl-7.15.3-multilib.patch
 
-# tweak of libcurl.pc
-Patch102: curl-7.16.0-privlibs.patch
+# force -lrt when linking the curl tool and test-cases
+Patch102: curl-7.20.0-lrt.patch
 
 # prevent configure script from discarding -g in CFLAGS (#496778)
 Patch103: curl-7.19.4-debug.patch
 
 # suppress occasional failure of curl test-suite on s390; caused more likely
 # by the test-suite infrastructure than (lib)curl itself
+# http://curl.haxx.se/mail/lib-2009-12/0031.html
 Patch104: curl-7.19.7-s390-sleep.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
@@ -31,7 +32,7 @@ Patch106: curl-7.19.7-ares-ipv6.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: autoconf
+BuildRequires: automake
 BuildRequires: c-ares-devel
 BuildRequires: groff
 BuildRequires: krb5-devel
@@ -96,8 +97,6 @@ use cURL's capabilities internally.
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
-
-# http://curl.haxx.se/mail/lib-2009-12/0031.html
 %patch104 -p1
 
 # temporarily disabled (clash with patch #106)
@@ -105,7 +104,7 @@ use cURL's capabilities internally.
 
 %patch106 -p1
 
-autoconf
+autoreconf
 
 # replace hard wired port numbers in the test suite
 sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ tests/data/test*
@@ -198,6 +197,9 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Feb 11 2010 Kamil Dudka <kdudka@redhat.com> 7.20.0-1
 - new upstream release - added support for IMAP(S), POP3(S), SMTP(S) and RTSP
+- dropped patches applied upstream
+- dropped curl-7.16.0-privlibs.patch no longer useful
+- a new patch forcing -lrt when linking the curl tool and test-cases
 
 * Fri Jan 29 2010 Kamil Dudka <kdudka@redhat.com> 7.19.7-11
 - upstream patch adding a new option -J/--remote-header-name
