@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.20.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -28,6 +28,9 @@ Patch105: curl-7.19.7-localhost6.patch
 # this patch reverts back the old behavior of curl-7.19.7-4.fc13
 # NOTE: this is a temporary workaround only
 Patch106: curl-7.19.7-ares-ipv6.patch
+
+# exclude test1112 from the test suite (#565305)
+Patch107: curl-7.20.0-disable-test1112.patch
 
 Provides: webclient
 URL: http://curl.haxx.se/
@@ -104,6 +107,10 @@ use cURL's capabilities internally.
 #%patch105 -p1
 
 %patch106 -p1
+
+# exclude test1112 from the test suite (#565305)
+%patch107 -p1
+rm -f tests/data/test1112
 
 autoreconf
 
@@ -196,6 +203,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Feb 24 2010 Kamil Dudka <kdudka@redhat.com> 7.20.0-2
+- exclude test1112 from the test suite (#565305)
+
 * Thu Feb 11 2010 Kamil Dudka <kdudka@redhat.com> 7.20.0-1
 - new upstream release - added support for IMAP(S), POP3(S), SMTP(S) and RTSP
 - dropped patches applied upstream
