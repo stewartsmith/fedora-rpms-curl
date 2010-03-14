@@ -7,7 +7,7 @@ Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 
-# patching making libcurl multilib ready (by not installing static libraries)
+# patch making libcurl multilib ready (by excluding static libraries)
 Patch101: curl-7.15.3-multilib.patch
 
 # force -lrt when linking the curl tool and test-cases
@@ -40,7 +40,7 @@ BuildRequires: c-ares-devel
 BuildRequires: groff
 BuildRequires: krb5-devel
 BuildRequires: libidn-devel
-BuildRequires: libssh2-devel >= 1.2
+BuildRequires: libssh2-devel
 BuildRequires: nss-devel
 BuildRequires: openldap-devel
 BuildRequires: openssh-clients
@@ -69,10 +69,6 @@ user authentication, FTP upload, HTTP post, and file transfer resume.
 Summary: A library for getting files from web servers
 Group: Development/Libraries
 
-# libssh2 ABI has been changed since libssh2-1.0
-# this forces update of libssh2 before update of libcurl
-Requires: libssh2 >= 1.2
-
 %description -n libcurl
 This package provides a way for applications to use FTP, HTTP, Gopher and
 other servers for getting files.
@@ -82,7 +78,6 @@ Summary: Files needed for building applications with libcurl
 Group: Development/Libraries
 Requires: automake
 Requires: libcurl = %{version}-%{release}
-Requires: libidn-devel
 Requires: pkgconfig
 
 Provides: curl-devel = %{version}-%{release}
@@ -128,8 +123,7 @@ done
 	--with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
 	--with-gssapi=%{_prefix}/kerberos --with-libidn \
 	--enable-ldaps --disable-static --with-libssh2 --enable-manual --enable-ares
-sed -i -e 's,-L/usr/lib ,,g;s,-L/usr/lib64 ,,g;s,-L/usr/lib$,,g;s,-L/usr/lib64$,,g' \
-	Makefile libcurl.pc
+
 # Remove bogus rpath
 sed -i \
 	-e 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' \
@@ -166,9 +160,6 @@ mv $RPM_BUILD_ROOT%{_includedir}/curl/curlbuild.h \
    $RPM_BUILD_ROOT%{_includedir}/curl/%{_curlbuild_h}
 
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_includedir}/curl/curlbuild.h
-
-# don't need curl's copy of the certs; use openssl's
-find ${RPM_BUILD_ROOT} -name ca-bundle.crt -exec rm -f '{}' \;
 
 %clean
 rm -rf $RPM_BUILD_ROOT
