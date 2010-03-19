@@ -222,7 +222,7 @@ rm -rf $RPM_BUILD_ROOT
 * Fri Mar 19 2010 Kamil Dudka <kdudka@redhat.com> 7.20.0-3
 - throw CURLE_SSL_CERTPROBLEM in case peer rejects a certificate (#565972)
 - valgrind temporarily disabled (#574889)
-- kerberos installation prefix has changed
+- kerberos installation prefix has been changed
 
 * Wed Feb 24 2010 Kamil Dudka <kdudka@redhat.com> 7.20.0-2
 - exclude test1112 from the test suite (#565305)
