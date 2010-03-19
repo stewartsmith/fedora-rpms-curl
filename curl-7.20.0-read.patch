@@ -1,0 +1,70 @@
+From 5ec0b463ea3e788e20d381ae97302f5965b1d4c5 Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Thu, 18 Mar 2010 22:06:14 +0100
+Subject: [PATCH 1/2] Curl_read: do not silently ingore an error
+
+thrown from Curl_ssl_recv()
+
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ lib/sendf.c  |    6 ++++--
+ lib/sslgen.c |   10 +++++-----
+ 2 files changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/lib/sendf.c b/lib/sendf.c
+index 359f43d..a366fd1 100644
+--- a/lib/sendf.c
++++ b/lib/sendf.c
+@@ -538,9 +538,11 @@ int Curl_read(struct connectdata *conn, /* connection data */
+   if(conn->ssl[num].state == ssl_connection_complete) {
+     nread = Curl_ssl_recv(conn, num, buffertofill, bytesfromsocket);
+ 
+-    if(nread == -1) {
++    if(nread == -1)
+       return -1; /* -1 from Curl_ssl_recv() means EWOULDBLOCK */
+-    }
++    else if(nread == -2)
++      /* -2 from Curl_ssl_recv() means a true error, not EWOULDBLOCK */
++      return CURLE_RECV_ERROR;
+   }
+   else if(Curl_ssh_enabled(conn, (PROT_SCP|PROT_SFTP))) {
+     if(conn->protocol & PROT_SCP)
+diff --git a/lib/sslgen.c b/lib/sslgen.c
+index 9167bf7..78ff8a3 100644
+--- a/lib/sslgen.c
++++ b/lib/sslgen.c
+@@ -399,7 +399,7 @@ struct curl_slist *Curl_ssl_engines_list(struct SessionHandle *data)
+   return curlssl_engines_list(data);
+ }
+ 
+-/* return number of sent (non-SSL) bytes */
++/* return number of sent (non-SSL) bytes; -1 on error */
+ ssize_t Curl_ssl_send(struct connectdata *conn,
+                       int sockindex,
+                       const void *mem,
+@@ -411,8 +411,8 @@ ssize_t Curl_ssl_send(struct connectdata *conn,
+ /* return number of received (decrypted) bytes */
+ 
+ /*
+- * If the read would block (EWOULDBLOCK) we return -1. Otherwise we return
+- * a regular CURLcode value.
++ * If the read would block (EWOULDBLOCK) we return -1. If an error occurs during
++ * the read, we return -2. Otherwise we return the count of bytes transfered.
+  */
+ ssize_t Curl_ssl_recv(struct connectdata *conn, /* connection data */
+                       int sockindex,            /* socketindex */
+@@ -425,9 +425,9 @@ ssize_t Curl_ssl_recv(struct connectdata *conn, /* connection data */
+   nread = curlssl_recv(conn, sockindex, mem, len, &block);
+   if(nread == -1) {
+     if(!block)
+-      return 0; /* this is a true error, not EWOULDBLOCK */
++      return -2; /* this is a true error, not EWOULDBLOCK */
+     else
+-      return -1;
++      return -1; /* EWOULDBLOCK */
+   }
+ 
+   return nread;
+-- 
+1.7.0.2
+

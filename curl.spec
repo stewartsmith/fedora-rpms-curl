@@ -1,11 +1,17 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.20.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
+
+# http://permalink.gmane.org/gmane.comp.web.curl.library/27110
+Patch0: curl-7.20.0-read.patch
+
+# http://permalink.gmane.org/gmane.comp.web.curl.library/27111
+Patch1: curl-7.20.0-cc-err.patch
 
 # patch making libcurl multilib ready (by excluding static libraries)
 Patch101: curl-7.15.3-multilib.patch
@@ -48,11 +54,11 @@ BuildRequires: openssh-server
 BuildRequires: pkgconfig
 BuildRequires: stunnel
 
-# valgrind is not available on some architectures, however it's going to be
-# used only by the test-suite anyway
-%ifnarch s390 s390x
-BuildRequires: valgrind
-%endif
+# valgrind temporarily disabled (#574889)
+# # valgrind is not available on s390(x)
+# %ifnarch s390 s390x
+# BuildRequires: valgrind
+# %endif
 
 BuildRequires: zlib-devel
 Requires: libcurl = %{version}-%{release}
@@ -92,6 +98,10 @@ use cURL's capabilities internally.
 %prep
 %setup -q
 
+# upstream patches (not yet applied)
+%patch0 -p1
+%patch1 -p1
+
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
@@ -114,25 +124,40 @@ sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ tests/data/test*
 
 # Convert docs to UTF-8
 for f in CHANGES README; do
-	iconv -f iso-8859-1 -t utf8 < ${f} > ${f}.utf8
-	mv -f ${f}.utf8 ${f}
+    iconv -f iso-8859-1 -t utf8 < ${f} > ${f}.utf8
+    mv -f ${f}.utf8 ${f}
 done
 
 %build
-%configure --without-ssl --with-nss --enable-ipv6 \
-	--with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
-	--with-gssapi=%{_prefix}/kerberos --with-libidn \
-	--enable-ldaps --disable-static --with-libssh2 --enable-manual --enable-ares
+%configure --disable-static \
+    --enable-ares \
+    --enable-ipv6 \
+    --enable-ldaps \
+    --enable-manual \
+    --with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
+    --with-gssapi \
+    --with-libidn \
+    --with-libssh2 \
+    --without-ssl --with-nss
+
+# uncomment to turn off optimizations
+# find -name Makefile | xargs sed -i 's/-O2/-O0/'
 
 # Remove bogus rpath
 sed -i \
-	-e 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' \
-	-e 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+    -e 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' \
+    -e 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
 make %{?_smp_mflags}
 
 %check
 export LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}
+
+# uncomment to use the non-stripped library in tests
+# LD_PRELOAD=`find -name \*.so`
+# LD_PRELOAD=`readlink -f $LD_PRELOAD`
+# export LD_PRELOAD
+
 cd tests
 make %{?_smp_mflags}
 
@@ -194,6 +219,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Mar 19 2010 Kamil Dudka <kdudka@redhat.com> 7.20.0-3
+- throw CURLE_SSL_CERTPROBLEM in case peer rejects a certificate (#565972)
+- valgrind temporarily disabled (#574889)
+- kerberos installation prefix has changed
+
 * Wed Feb 24 2010 Kamil Dudka <kdudka@redhat.com> 7.20.0-2
 - exclude test1112 from the test suite (#565305)
 
