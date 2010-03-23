@@ -1,23 +1,8 @@
-From df39ccc590abcfa275907ce8ed259fb11da33623 Mon Sep 17 00:00:00 2001
-From: Kamil Dudka <kdudka@redhat.com>
-Date: Thu, 18 Mar 2010 22:07:21 +0100
-Subject: [PATCH 2/2] throw CURLE_SSL_CERTPROBLEM in case peer rejects a cert
-
-... supported only by NSS for now. It may be extended for OpenSSL at
-some point if anybody helps with deciphering of its error codes.
-
-Signed-off-by: Kamil Dudka <kdudka@redhat.com>
----
- lib/nss.c     |   30 ++++++++++++++++++++++++++++--
- lib/sendf.c   |   18 ++++++++++++------
- lib/urldata.h |    3 +++
- 3 files changed, 43 insertions(+), 8 deletions(-)
-
 diff --git a/lib/nss.c b/lib/nss.c
-index 9dd84a2..a5523dc 100644
+index 2366c57..2c029c4 100644
 --- a/lib/nss.c
 +++ b/lib/nss.c
-@@ -1341,6 +1341,29 @@ CURLcode Curl_nss_connect(struct connectdata *conn, int sockindex)
+@@ -1337,6 +1337,29 @@ error:
    return curlerr;
  }
  
@@ -47,7 +32,7 @@ index 9dd84a2..a5523dc 100644
  /* return number of sent (non-SSL) bytes */
  int Curl_nss_send(struct connectdata *conn,  /* connection data */
                    int sockindex,             /* socketindex */
-@@ -1352,7 +1375,9 @@ int Curl_nss_send(struct connectdata *conn,  /* connection data */
+@@ -1348,7 +1371,9 @@ int Curl_nss_send(struct connectdata *conn,  /* connection data */
    rc = PR_Send(conn->ssl[sockindex].handle, mem, (int)len, 0, -1);
  
    if(rc < 0) {
@@ -58,7 +43,7 @@ index 9dd84a2..a5523dc 100644
      return -1;
    }
    return rc; /* number of bytes */
-@@ -1381,7 +1406,8 @@ ssize_t Curl_nss_recv(struct connectdata * conn, /* connection data */
+@@ -1377,7 +1402,8 @@ ssize_t Curl_nss_recv(struct connectdata * conn, /* connection data */
        *wouldblock = TRUE;
        return -1; /* basically EWOULDBLOCK */
      }
@@ -129,6 +114,3 @@ index d03146a..c24a450 100644
  #ifdef USE_SSLEAY
    /* these ones requires specific SSL-types */
    SSL_CTX* ctx;
--- 
-1.7.0.2
-

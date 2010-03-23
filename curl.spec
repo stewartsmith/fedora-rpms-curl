@@ -1,17 +1,20 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.20.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 
+# bz #576252
+Patch0: curl-7.20.0-m4-typo.patch
+
 # http://permalink.gmane.org/gmane.comp.web.curl.library/27110
-Patch0: curl-7.20.0-read.patch
+Patch1: curl-7.20.0-read.patch
 
 # http://permalink.gmane.org/gmane.comp.web.curl.library/27111
-Patch1: curl-7.20.0-cc-err.patch
+Patch2: curl-7.20.0-cc-err.patch
 
 # patch making libcurl multilib ready (by excluding static libraries)
 Patch101: curl-7.15.3-multilib.patch
@@ -98,9 +101,19 @@ use cURL's capabilities internally.
 %prep
 %setup -q
 
-# upstream patches (not yet applied)
+# Convert docs to UTF-8
+# NOTE: we do this _before_ applying of all patches, which are already UTF-8
+for f in CHANGES README; do
+    iconv -f iso-8859-1 -t utf8 < ${f} > ${f}.utf8
+    mv -f ${f}.utf8 ${f}
+done
+
+# upstream patches (already applied)
 %patch0 -p1
 %patch1 -p1
+
+# upstream patches (not yet applied)
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -121,12 +134,6 @@ autoreconf
 
 # replace hard wired port numbers in the test suite
 sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ tests/data/test*
-
-# Convert docs to UTF-8
-for f in CHANGES README; do
-    iconv -f iso-8859-1 -t utf8 < ${f} > ${f}.utf8
-    mv -f ${f}.utf8 ${f}
-done
 
 %build
 %configure --disable-static \
@@ -219,6 +226,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Mar 23 2010 Kamil Dudka <kdudka@redhat.com> 7.20.0-4
+- add missing quote in libcurl.m4 (#576252)
+
 * Fri Mar 19 2010 Kamil Dudka <kdudka@redhat.com> 7.20.0-3
 - throw CURLE_SSL_CERTPROBLEM in case peer rejects a certificate (#565972)
 - valgrind temporarily disabled (#574889)
