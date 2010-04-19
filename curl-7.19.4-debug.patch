@@ -1,8 +1,11 @@
+ configure.ac |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
 diff --git a/configure.ac b/configure.ac
-index 7ca2145..0413332 100644
+index 2d394e1..39cc418 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -253,7 +253,10 @@ dnl **********************************************************************
+@@ -252,7 +252,10 @@ dnl **********************************************************************
  
  CURL_CHECK_COMPILER
  CURL_SET_COMPILER_BASIC_OPTS

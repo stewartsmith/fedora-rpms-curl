@@ -1,8 +1,11 @@
+ lib/hostares.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 diff --git a/lib/hostares.c b/lib/hostares.c
-index 7cc24de..46e0f8a 100644
+index 01b2142..ceda98e 100644
 --- a/lib/hostares.c
 +++ b/lib/hostares.c
-@@ -381,7 +381,7 @@ Curl_addrinfo *Curl_getaddrinfo(struct connectdata *conn,
+@@ -380,7 +380,7 @@ Curl_addrinfo *Curl_getaddrinfo(struct connectdata *conn,
  
    switch(data->set.ip_version) {
    default:

@@ -1,8 +1,12 @@
+ src/Makefile.am           |    2 +-
+ tests/libtest/Makefile.am |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
 diff --git a/src/Makefile.am b/src/Makefile.am
-index e993bc3..af9b315 100644
+index 3672458..890893d 100644
 --- a/src/Makefile.am
 +++ b/src/Makefile.am
-@@ -47,7 +47,7 @@ bin_PROGRAMS = curl
+@@ -46,7 +46,7 @@ bin_PROGRAMS = curl
  
  include Makefile.inc
  
@@ -12,10 +16,10 @@ index e993bc3..af9b315 100644
  BUILT_SOURCES = hugehelp.c
  CLEANFILES = hugehelp.c
 diff --git a/tests/libtest/Makefile.am b/tests/libtest/Makefile.am
-index 1941cd8..8491b94 100644
+index 70b0f12..6512ce4 100644
 --- a/tests/libtest/Makefile.am
 +++ b/tests/libtest/Makefile.am
-@@ -55,7 +55,7 @@ EXTRA_DIST = test75.pl test307.pl test610.pl test613.pl test1013.pl	\
+@@ -54,7 +54,7 @@ EXTRA_DIST = test75.pl test307.pl test610.pl test613.pl test1013.pl	\
  test1022.pl Makefile.inc
  
  # Dependencies (may need to be overriden)

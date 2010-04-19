@@ -1,8 +1,11 @@
+ tests/runtests.pl |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
 diff --git a/tests/runtests.pl b/tests/runtests.pl
-index d4e9072..fb32c78 100755
+index 6e3b5b9..75386b8 100755
 --- a/tests/runtests.pl
 +++ b/tests/runtests.pl
-@@ -222,7 +222,7 @@ my $sshdverstr;  # for socks server, ssh daemon version string
+@@ -221,7 +221,7 @@ my $sshdverstr;  # for socks server, ssh daemon version string
  my $sshderror;   # for socks server, ssh daemon version error
  
  my $defserverlogslocktimeout = 20; # timeout to await server logs lock removal
