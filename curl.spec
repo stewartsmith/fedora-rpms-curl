@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.20.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -24,10 +24,8 @@ Patch104: curl-7.19.7-s390-sleep.patch
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch105: curl-7.19.7-localhost6.patch
 
-# rebuild of cURL against newer c-ares-devel has caused a regression (#548269)
-# this patch reverts back the old behavior of curl-7.19.7-4.fc13
-# NOTE: this is a temporary workaround only
-Patch106: curl-7.19.7-ares-ipv6.patch
+# experimentally enabled threaded DNS lookup
+Patch106: curl-7.20.1-threaded-dns.patch
 
 # exclude test1112 from the test suite (#565305)
 Patch107: curl-7.20.0-disable-test1112.patch
@@ -36,7 +34,6 @@ Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: automake
-BuildRequires: c-ares-devel
 BuildRequires: groff
 BuildRequires: krb5-devel
 BuildRequires: libidn-devel
@@ -48,11 +45,10 @@ BuildRequires: openssh-server
 BuildRequires: pkgconfig
 BuildRequires: stunnel
 
-# valgrind temporarily disabled (#574889)
-# # valgrind is not available on s390(x)
-# %ifnarch s390 s390x
-# BuildRequires: valgrind
-# %endif
+# valgrind is not available on s390(x)
+%ifnarch s390 s390x
+BuildRequires: valgrind
+%endif
 
 BuildRequires: zlib-devel
 Requires: libcurl = %{version}-%{release}
@@ -104,10 +100,7 @@ done
 %patch102 -p1
 %patch103 -p1
 %patch104 -p1
-
-# temporarily disabled (clash with patch #106)
-#%patch105 -p1
-
+%patch105 -p1
 %patch106 -p1
 
 # exclude test1112 from the test suite (#565305)
@@ -121,7 +114,6 @@ sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ tests/data/test*
 
 %build
 %configure --disable-static \
-    --enable-ares \
     --enable-ipv6 \
     --enable-ldaps \
     --enable-manual \
@@ -142,7 +134,8 @@ sed -i \
 make %{?_smp_mflags}
 
 %check
-export LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}
+LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}
+export LD_LIBRARY_PATH
 
 # uncomment to use the non-stripped library in tests
 # LD_PRELOAD=`find -name \*.so`
@@ -210,6 +203,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Apr 20 2010 Kamil Dudka <kdudka@redhat.com> 7.20.1-2
+- experimentally enabled threaded DNS lookup
+
 * Mon Apr 19 2010 Kamil Dudka <kdudka@redhat.com> 7.20.1-1
 - new upstream release
 
