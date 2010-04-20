@@ -1,11 +1,11 @@
- configure.ac |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+ configure.ac |   14 +++++++++++++-
+ 1 files changed, 13 insertions(+), 1 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 39cc418..7e31459 100644
+index 39cc418..4892fda 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -2285,6 +2285,17 @@ AM_CONDITIONAL(USE_MANUAL, test x"$USE_MANUAL" = x1)
+@@ -2285,6 +2285,18 @@ AM_CONDITIONAL(USE_MANUAL, test x"$USE_MANUAL" = x1)
  CURL_CHECK_LIB_ARES
  AM_CONDITIONAL(USE_EMBEDDED_ARES, test x$embedded_ares = xyes)
  
@@ -16,6 +16,7 @@ index 39cc418..7e31459 100644
 +    AC_CHECK_LIB(pthread, pthread_create,
 +      [ AC_MSG_NOTICE([using POSIX threaded DNS lookup])
 +        AC_DEFINE(USE_THREADS_POSIX, 1, [if you want POSIX threaded DNS lookup])
++        USE_THREADS_POSIX=1
 +      ],
 +      [ CFLAGS="$save_CFLAGS"])
 +  ])
@@ -23,3 +24,12 @@ index 39cc418..7e31459 100644
  dnl ************************************************************
  dnl disable verbose text strings
  dnl
+@@ -2478,7 +2490,7 @@ fi
+ if test "x$HAVE_LIBZ" = "x1"; then
+   SUPPORT_FEATURES="$SUPPORT_FEATURES libz"
+ fi
+-if test "x$USE_ARES" = "x1"; then
++if test "x$USE_ARES" = "x1" -o "x$USE_THREADS_POSIX" = "x1"; then
+   SUPPORT_FEATURES="$SUPPORT_FEATURES AsynchDNS"
+ fi
+ if test "x$IDN_ENABLED" = "x1"; then
