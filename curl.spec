@@ -7,6 +7,9 @@ Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 
+# experimentally enabled threaded DNS lookup
+Patch1: curl-7.20.1-threaded-dns-multi.patch
+
 # patch making libcurl multilib ready (by excluding static libraries)
 Patch101: curl-7.15.3-multilib.patch
 
@@ -94,6 +97,9 @@ for f in CHANGES README; do
     iconv -f iso-8859-1 -t utf8 < ${f} > ${f}.utf8
     mv -f ${f}.utf8 ${f}
 done
+
+# upstream patches (not yet applied)
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
