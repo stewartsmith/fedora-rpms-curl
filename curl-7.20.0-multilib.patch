@@ -22,7 +22,7 @@ index ebda129..b404827 100644
  	;;
  
      --prefix)
-@@ -130,20 +129,7 @@ while test $# -gt 0; do
+@@ -130,25 +129,12 @@ while test $# -gt 0; do
         	;;
  
      --libs)
@@ -44,3 +44,20 @@ index ebda129..b404827 100644
  	;;
  
      --configure)
+-      echo @CONFIGURE_OPTIONS@
+-    ;;
++	pkg-config libcurl --variable=configure_options | sed 's/^"//;s/"$//'
++	;;
+ 
+     *)
+         echo "unknown option: $1"
+--- a/libcurl.pc.in
++++ b/libcurl.pc.in
+@@ -29,6 +29,7 @@ libdir=@libdir@
+ includedir=@includedir@
+ supported_protocols="@SUPPORT_PROTOCOLS@"
+ supported_features="@SUPPORT_FEATURES@"
++configure_options=@CONFIGURE_OPTIONS@
+ 
+ Name: libcurl
+ URL: http://curl.haxx.se/

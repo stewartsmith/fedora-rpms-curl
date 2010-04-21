@@ -13,8 +13,8 @@ Patch0: curl-7.20.0-e32fe30.patch
 # experimentally enabled threaded DNS lookup
 Patch1: curl-7.20.1-threaded-dns-multi.patch
 
-# patch making libcurl multilib ready (by excluding static libraries)
-Patch101: curl-7.15.3-multilib.patch
+# patch making libcurl multilib ready
+Patch101: curl-7.20.0-multilib.patch
 
 # force -lrt when linking the curl tool and test-cases
 Patch102: curl-7.20.0-lrt.patch
@@ -215,8 +215,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
-* Tue Apr 20 2010 Kamil Dudka <kdudka@redhat.com> 7.20.1-2
+* Wed Apr 21 2010 Kamil Dudka <kdudka@redhat.com> 7.20.1-2
 - experimentally enabled threaded DNS lookup
+- make curl-config multilib ready again (#584107)
 
 * Mon Apr 19 2010 Kamil Dudka <kdudka@redhat.com> 7.20.1-1
 - new upstream release
