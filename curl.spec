@@ -7,6 +7,9 @@ Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 
+# upstream commit e32fe30d0cf7c1f7045ac0bd29322e7fb4feb5c8
+Patch0: curl-7.20.0-e32fe30.patch
+
 # experimentally enabled threaded DNS lookup
 Patch1: curl-7.20.1-threaded-dns-multi.patch
 
@@ -97,6 +100,9 @@ for f in CHANGES README; do
     iconv -f iso-8859-1 -t utf8 < ${f} > ${f}.utf8
     mv -f ${f}.utf8 ${f}
 done
+
+# revert an upstream commit which breaks Fedora builds
+%patch0 -p1 -R
 
 # upstream patches (not yet applied)
 %patch1 -p1
