@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.20.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -25,7 +25,7 @@ Patch103: curl-7.19.4-debug.patch
 # suppress occasional failure of curl test-suite on s390; caused more likely
 # by the test-suite infrastructure than (lib)curl itself
 # http://curl.haxx.se/mail/lib-2009-12/0031.html
-Patch104: curl-7.19.7-s390-sleep.patch
+Patch104: curl-7.20.1-test-delay.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch105: curl-7.19.7-localhost6.patch
@@ -215,6 +215,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Apr 22 2010 Paul Howarth <paul@city-fan.org> 7.20.1-3
+- replace Rawhide s390-sleep patch with a more targeted patch adding a
+  delay after tests 513 and 514 rather than after all tests
+
 * Wed Apr 21 2010 Kamil Dudka <kdudka@redhat.com> 7.20.1-2
 - experimentally enabled threaded DNS lookup
 - make curl-config multilib ready again (#584107)
