@@ -1,4 +1,4 @@
-From 157f20fd2ce7d8519b863e57f3d77d17fb41bc9c Mon Sep 17 00:00:00 2001
+From 82e9b78a388ab539c8784cd853adf6e4a97d52c5 Mon Sep 17 00:00:00 2001
 From: Kamil Dudka <kdudka@redhat.com>
 Date: Sat, 24 Apr 2010 23:21:13 +0200
 Subject: [PATCH] nss: fix SSL handshake timeout underflow

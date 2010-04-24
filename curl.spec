@@ -13,8 +13,8 @@ Patch0: curl-7.20.0-e32fe30.patch
 # upstream commit d487ade72c5f31703ce097e8460e0225fad80348
 Patch1: curl-7.20.1-d487ade.patch
 
-# upstream commit 157f20fd2ce7d8519b863e57f3d77d17fb41bc9c
-Patch2: curl-7.20.1-157f20f.patch
+# upstream commit 82e9b78a388ab539c8784cd853adf6e4a97d52c5
+Patch2: curl-7.20.1-82e9b78.patch
 
 # patch making libcurl multilib ready
 Patch101: curl-7.20.0-multilib.patch
