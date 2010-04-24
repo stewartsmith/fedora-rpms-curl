@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.20.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -10,8 +10,11 @@ Source2: curlbuild.h
 # upstream commit e32fe30d0cf7c1f7045ac0bd29322e7fb4feb5c8
 Patch0: curl-7.20.0-e32fe30.patch
 
-# experimentally enabled threaded DNS lookup
-Patch1: curl-7.20.1-threaded-dns-multi.patch
+# upstream commit d487ade72c5f31703ce097e8460e0225fad80348
+Patch1: curl-7.20.1-d487ade.patch
+
+# upstream commit 157f20fd2ce7d8519b863e57f3d77d17fb41bc9c
+Patch2: curl-7.20.1-157f20f.patch
 
 # patch making libcurl multilib ready
 Patch101: curl-7.20.0-multilib.patch
@@ -104,8 +107,9 @@ done
 # revert an upstream commit which breaks Fedora builds
 %patch0 -p1 -R
 
-# upstream patches (not yet applied)
+# upstream patches (already applied)
 %patch1 -p1
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -215,6 +219,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Sat Apr 24 2010 Kamil Dudka <kdudka@redhat.com> 7.20.1-4
+- upstream patch preventing failure of test536 with threaded DNS resolver
+- upstream patch preventing SSL handshake timeout underflow
+
 * Thu Apr 22 2010 Paul Howarth <paul@city-fan.org> 7.20.1-3
 - replace Rawhide s390-sleep patch with a more targeted patch adding a
   delay after tests 513 and 514 rather than after all tests
