@@ -1,11 +1,12 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.20.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
+Source3: hide_selinux.c
 
 # upstream commit e32fe30d0cf7c1f7045ac0bd29322e7fb4feb5c8
 Patch0: curl-7.20.0-e32fe30.patch
@@ -156,10 +157,15 @@ export LD_LIBRARY_PATH
 # uncomment to use the non-stripped library in tests
 # LD_PRELOAD=`find -name \*.so`
 # LD_PRELOAD=`readlink -f $LD_PRELOAD`
-# export LD_PRELOAD
 
 cd tests
 make %{?_smp_mflags}
+
+# make it possible to start a testing OpenSSH server with SELinux
+# in the enforcing mode (#521087)
+gcc -o hide_selinux.so -shared %{SOURCE3}
+LD_PRELOAD="`readlink -f ./hide_selinux.so`:$LD_PRELOAD"
+export LD_PRELOAD
 
 # use different port range for 32bit and 64bit build, thus make it possible
 # to run both in parallel on the same machine
@@ -219,6 +225,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Apr 28 2010 Kamil Dudka <kdudka@redhat.com> 7.20.1-5
+- make it possible to start a testing OpenSSH server when building with SELinux
+  in the enforcing mode (#521087)
+
 * Sat Apr 24 2010 Kamil Dudka <kdudka@redhat.com> 7.20.1-4
 - upstream patch preventing failure of test536 with threaded DNS resolver
 - upstream patch preventing SSL handshake timeout underflow
