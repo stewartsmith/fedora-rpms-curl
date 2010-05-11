@@ -25,6 +25,7 @@ Patch3: curl-7.20.1-crl.patch
 
 # rhbz #581926 - test-case
 #   http://curl.haxx.se/mail/lib-2010-04/0214.html
+#   (the CA pass phrase used in the patch is 'libcurl')
 Patch4: curl-7.20.1-crl-test.patch
 
 # patch making libcurl multilib ready
