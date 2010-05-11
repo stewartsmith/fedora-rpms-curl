@@ -1,0 +1,853 @@
+ tests/certs/EdelCurlRoot-ca.cacert  |  106 +++++++++++++++++-----------------
+ tests/certs/EdelCurlRoot-ca.cnf     |   11 ++++
+ tests/certs/EdelCurlRoot-ca.crt     |  106 +++++++++++++++++-----------------
+ tests/certs/EdelCurlRoot-ca.csr     |   24 ++++----
+ tests/certs/EdelCurlRoot-ca.key     |   56 +++++++++---------
+ tests/certs/Server-localhost-sv.crl |   12 ++++
+ tests/certs/Server-localhost-sv.crt |   84 +++++++++++++-------------
+ tests/certs/Server-localhost-sv.csr |   14 ++--
+ tests/certs/Server-localhost-sv.key |   26 ++++----
+ tests/certs/Server-localhost-sv.pem |  110 +++++++++++++++++-----------------
+ tests/certs/scripts/genserv.sh      |   12 ++++-
+ tests/data/Makefile.am              |    2 +-
+ tests/data/test313                  |   39 ++++++++++++
+ 13 files changed, 337 insertions(+), 265 deletions(-)
+
+diff --git a/tests/certs/EdelCurlRoot-ca.cacert b/tests/certs/EdelCurlRoot-ca.cacert
+index c5154a4..7f59717 100644
+--- a/tests/certs/EdelCurlRoot-ca.cacert
++++ b/tests/certs/EdelCurlRoot-ca.cacert
+@@ -2,15 +2,15 @@ Certificate:
+     Data:
+         Version: 3 (0x2)
+         Serial Number:
+-            0b:5c:fb:79:f2:09
++            0b:95:4c:80:9f:5b
+         Signature Algorithm: sha1WithRSAEncryption
+         Issuer:
+             countryName               = NN
+             organizationName          = Edel Curl Arctic Illudium Research Cloud
+             commonName                = Nothern Nowhere Trust Anchor
+         Validity
+-            Not Before: Aug  4 15:06:44 2009 GMT
+-            Not After : Jan  7 15:06:44 2026 GMT
++            Not Before: May 11 13:56:03 2010 GMT
++            Not After : Oct 14 13:56:03 2026 GMT
+         Subject:
+             countryName               = NN
+             organizationName          = Edel Curl Arctic Illudium Research Cloud
+@@ -19,24 +19,24 @@ Certificate:
+             Public Key Algorithm: rsaEncryption
+                 Public-Key: (2048 bit)
+                 Modulus:
+-                    00:bd:b7:e7:70:4c:17:0d:0f:e6:a4:ed:81:0b:26:
+-                    a9:d2:16:f6:2a:9c:87:6d:8e:7e:e2:71:98:89:41:
+-                    97:d7:62:0b:c7:92:35:e5:09:0a:b4:67:06:59:c5:
+-                    3b:2f:ae:6c:ff:68:6c:af:46:a3:1f:7e:32:5a:08:
+-                    c4:6e:65:5c:c2:9f:99:11:4e:28:dc:37:98:d0:ab:
+-                    66:13:35:c6:bd:3c:6f:65:e2:5d:c2:59:21:80:68:
+-                    c0:85:eb:7e:a2:58:99:04:45:c3:f7:4c:39:83:fa:
+-                    5c:6e:6a:a0:ff:45:b7:2f:7a:bb:bb:7f:3d:2b:cb:
+-                    57:5f:09:24:c5:77:96:5d:1b:56:56:9a:48:51:0a:
+-                    f5:67:0f:67:8d:0d:82:c7:84:bf:b5:c5:f8:cd:71:
+-                    2f:92:cb:e8:94:96:28:04:3a:c2:2c:38:e4:9e:3c:
+-                    1b:89:9f:70:b6:02:b6:97:5e:2e:c1:5a:a7:af:86:
+-                    c2:b7:65:dc:83:8d:e7:85:72:a7:d1:f0:ba:ea:11:
+-                    dc:bd:7c:b5:68:89:82:15:2b:b5:91:f0:70:f5:fa:
+-                    e4:8c:21:fe:e7:8f:a3:16:5d:ee:a8:ff:a8:0e:22:
+-                    1f:3e:27:25:f5:f1:a0:55:16:f7:c2:02:79:fb:c9:
+-                    ac:fd:d1:ca:6e:65:3e:97:cf:f0:df:c9:b9:c4:0a:
+-                    87:c1
++                    00:f7:7b:9b:a6:1a:3a:f9:95:6b:4f:a6:39:53:1a:
++                    e3:4e:66:f4:61:e2:f1:66:c9:62:02:29:ab:09:04:
++                    44:d2:18:89:99:23:55:68:0c:94:a7:37:8b:98:a6:
++                    91:a4:79:5e:4b:ad:62:9d:ce:a8:6b:10:66:7a:9a:
++                    36:a9:0a:7e:01:d4:5a:79:e7:31:5a:2f:2b:ed:bb:
++                    17:a6:6e:cd:72:53:ba:dd:f0:97:dd:6c:71:e6:6e:
++                    f7:48:4c:fc:21:26:72:0c:1c:ca:59:03:ce:97:2d:
++                    91:c6:df:dc:96:77:34:26:18:ff:2c:4e:f1:be:34:
++                    2b:7a:6c:39:3b:75:14:d8:8d:cc:58:3b:8f:92:cd:
++                    d6:08:cc:e2:98:5f:6b:c0:15:59:bf:f2:9e:7d:06:
++                    4c:f1:80:e2:1f:11:a5:1a:94:4a:d9:f2:6b:70:85:
++                    68:b7:ce:b5:e3:d1:f1:cf:61:c6:87:6f:f2:44:b8:
++                    f0:d9:84:33:61:5f:7e:5b:3b:30:56:d6:a6:4c:55:
++                    f4:e6:2e:58:56:f6:fb:ec:6b:58:45:f4:d0:14:04:
++                    6b:52:67:da:d5:83:8d:3f:b9:d7:49:c6:37:56:0f:
++                    55:8c:67:a3:98:4b:68:de:0b:c8:15:98:9c:ce:a5:
++                    d0:84:30:26:56:04:96:71:dd:ee:49:8f:44:b6:32:
++                    6c:3b
+                 Exponent: 65537 (0x10001)
+         X509v3 extensions:
+             X509v3 Basic Constraints: critical
+@@ -44,42 +44,42 @@ Certificate:
+             X509v3 Key Usage: critical
+                 Certificate Sign, CRL Sign
+             X509v3 Subject Key Identifier: 
+-                12:6B:24:D2:4A:68:B7:A1:B0:1C:CD:BF:D6:4C:CC:40:5B:7F:E0:40
++                68:5C:61:AF:9D:48:32:44:2B:D6:33:97:71:7A:B1:FA:34:C8:CA:98
+     Signature Algorithm: sha1WithRSAEncryption
+-        66:1e:56:86:7d:87:99:f9:9a:d9:fb:fe:9c:bf:9e:d9:90:07:
+-        da:9a:33:0f:72:6b:44:00:df:85:f0:ff:ed:c5:06:1c:1c:ff:
+-        4e:94:7d:6f:6c:7e:82:1a:82:bc:fe:ac:02:c5:1d:d0:1f:a8:
+-        e3:2d:a2:8d:43:8e:73:8a:b0:a4:da:0b:1d:7e:1c:e9:35:93:
+-        29:6d:05:9f:6d:6c:0e:09:ee:9c:1a:15:fe:8a:5e:19:d8:da:
+-        a0:6b:2a:d5:1d:fa:0c:af:63:55:41:42:ec:dd:3c:b0:6e:1f:
+-        66:67:c5:28:fd:23:1b:a6:42:98:49:f5:33:58:7b:5a:91:c7:
+-        9c:66:1f:53:cc:8b:79:11:a9:fa:a3:b8:5e:e1:d1:12:97:ec:
+-        5e:4d:c9:77:4c:03:0c:e8:80:33:57:da:d4:ce:af:c5:1b:f5:
+-        96:47:d4:68:da:83:3c:45:ee:84:b4:82:94:cd:65:2c:41:f1:
+-        45:3d:19:9b:da:7a:54:04:e4:39:b1:b5:2a:15:29:b8:99:6d:
+-        30:73:12:bc:7d:e3:79:f2:12:aa:e1:d7:d1:83:c4:bb:0c:bb:
+-        a1:36:37:84:38:de:7c:3a:d7:c8:4f:6b:d9:cb:80:2b:29:27:
+-        bd:c3:de:a5:2a:11:6d:b6:09:59:e6:d7:49:ae:52:89:28:3b:
+-        af:f0:bd:86
++        19:4f:d8:53:8a:6e:e7:f6:b2:ca:38:c0:15:c0:3b:82:86:10:
++        2d:dc:de:7a:20:9f:c7:9d:a0:13:3e:2c:3e:5e:71:62:2a:6f:
++        52:5b:74:95:53:3e:61:f0:d7:ce:a0:5e:83:5d:96:4c:96:33:
++        2a:34:de:7f:77:59:a3:94:04:98:e1:14:c0:cc:09:55:8e:41:
++        76:cf:25:8a:4d:90:d4:e2:99:e1:b6:38:15:cf:6f:c5:f4:c6:
++        e8:03:23:35:b2:14:20:67:40:b5:74:13:e3:e8:1e:4a:7e:06:
++        a3:0a:59:1f:f3:21:d7:20:a4:30:3d:9a:64:5c:db:77:47:a1:
++        92:b7:41:45:d6:25:a0:51:ca:1f:bc:66:72:b9:0e:1a:8b:f4:
++        dd:4b:12:9f:ec:11:3f:f8:1b:2a:3f:c1:6f:bc:ca:4c:af:e0:
++        aa:53:41:79:aa:4e:e3:4e:70:13:31:2c:2d:f6:2c:03:1a:ef:
++        f2:86:02:8d:e0:05:ca:3d:10:39:23:b3:3f:aa:ea:a6:78:cd:
++        19:f7:b5:00:a6:88:7b:94:cf:75:c2:ec:0a:10:50:d7:a8:05:
++        cd:38:45:16:17:1f:4d:06:67:66:dc:46:e7:30:4f:b2:80:54:
++        ef:98:71:35:1f:62:2e:8e:7d:13:88:f9:32:c2:5d:88:ca:21:
++        19:25:43:88
+ -----BEGIN CERTIFICATE-----
+-MIIDkDCCAnigAwIBAgIGC1z7efIJMA0GCSqGSIb3DQEBBQUAMGcxCzAJBgNVBAYT
++MIIDkDCCAnigAwIBAgIGC5VMgJ9bMA0GCSqGSIb3DQEBBQUAMGcxCzAJBgNVBAYT
+ Ak5OMTEwLwYDVQQKDChFZGVsIEN1cmwgQXJjdGljIElsbHVkaXVtIFJlc2VhcmNo
+ IENsb3VkMSUwIwYDVQQDDBxOb3RoZXJuIE5vd2hlcmUgVHJ1c3QgQW5jaG9yMB4X
+-DTA5MDgwNDE1MDY0NFoXDTI2MDEwNzE1MDY0NFowZzELMAkGA1UEBhMCTk4xMTAv
++DTEwMDUxMTEzNTYwM1oXDTI2MTAxNDEzNTYwM1owZzELMAkGA1UEBhMCTk4xMTAv
+ BgNVBAoMKEVkZWwgQ3VybCBBcmN0aWMgSWxsdWRpdW0gUmVzZWFyY2ggQ2xvdWQx
+ JTAjBgNVBAMMHE5vdGhlcm4gTm93aGVyZSBUcnVzdCBBbmNob3IwggEiMA0GCSqG
+-SIb3DQEBAQUAA4IBDwAwggEKAoIBAQC9t+dwTBcND+ak7YELJqnSFvYqnIdtjn7i
+-cZiJQZfXYgvHkjXlCQq0ZwZZxTsvrmz/aGyvRqMffjJaCMRuZVzCn5kRTijcN5jQ
+-q2YTNca9PG9l4l3CWSGAaMCF636iWJkERcP3TDmD+lxuaqD/Rbcveru7fz0ry1df
+-CSTFd5ZdG1ZWmkhRCvVnD2eNDYLHhL+1xfjNcS+Sy+iUligEOsIsOOSePBuJn3C2
+-AraXXi7BWqevhsK3ZdyDjeeFcqfR8LrqEdy9fLVoiYIVK7WR8HD1+uSMIf7nj6MW
+-Xe6o/6gOIh8+JyX18aBVFvfCAnn7yaz90cpuZT6Xz/DfybnECofBAgMBAAGjQjBA
+-MA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBQSayTS
+-Smi3obAczb/WTMxAW3/gQDANBgkqhkiG9w0BAQUFAAOCAQEAZh5Whn2Hmfma2fv+
+-nL+e2ZAH2pozD3JrRADfhfD/7cUGHBz/TpR9b2x+ghqCvP6sAsUd0B+o4y2ijUOO
+-c4qwpNoLHX4c6TWTKW0Fn21sDgnunBoV/opeGdjaoGsq1R36DK9jVUFC7N08sG4f
+-ZmfFKP0jG6ZCmEn1M1h7WpHHnGYfU8yLeRGp+qO4XuHREpfsXk3Jd0wDDOiAM1fa
+-1M6vxRv1lkfUaNqDPEXuhLSClM1lLEHxRT0Zm9p6VATkObG1KhUpuJltMHMSvH3j
+-efISquHX0YPEuwy7oTY3hDjefDrXyE9r2cuAKyknvcPepSoRbbYJWebXSa5SiSg7
+-r/C9hg==
++SIb3DQEBAQUAA4IBDwAwggEKAoIBAQD3e5umGjr5lWtPpjlTGuNOZvRh4vFmyWIC
++KasJBETSGImZI1VoDJSnN4uYppGkeV5LrWKdzqhrEGZ6mjapCn4B1Fp55zFaLyvt
++uxembs1yU7rd8JfdbHHmbvdITPwhJnIMHMpZA86XLZHG39yWdzQmGP8sTvG+NCt6
++bDk7dRTYjcxYO4+SzdYIzOKYX2vAFVm/8p59BkzxgOIfEaUalErZ8mtwhWi3zrXj
++0fHPYcaHb/JEuPDZhDNhX35bOzBW1qZMVfTmLlhW9vvsa1hF9NAUBGtSZ9rVg40/
++uddJxjdWD1WMZ6OYS2jeC8gVmJzOpdCEMCZWBJZx3e5Jj0S2Mmw7AgMBAAGjQjBA
++MA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBRoXGGv
++nUgyRCvWM5dxerH6NMjKmDANBgkqhkiG9w0BAQUFAAOCAQEAGU/YU4pu5/ayyjjA
++FcA7goYQLdzeeiCfx52gEz4sPl5xYipvUlt0lVM+YfDXzqBeg12WTJYzKjTef3dZ
++o5QEmOEUwMwJVY5Bds8lik2Q1OKZ4bY4Fc9vxfTG6AMjNbIUIGdAtXQT4+geSn4G
++owpZH/Mh1yCkMD2aZFzbd0ehkrdBRdYloFHKH7xmcrkOGov03UsSn+wRP/gbKj/B
++b7zKTK/gqlNBeapO405wEzEsLfYsAxrv8oYCjeAFyj0QOSOzP6rqpnjNGfe1AKaI
++e5TPdcLsChBQ16gFzThFFhcfTQZnZtxG5zBPsoBU75hxNR9iLo59E4j5MsJdiMoh
++GSVDiA==
+ -----END CERTIFICATE-----
+diff --git a/tests/certs/EdelCurlRoot-ca.cnf b/tests/certs/EdelCurlRoot-ca.cnf
+new file mode 100644
+index 0000000..ba99881
+--- /dev/null
++++ b/tests/certs/EdelCurlRoot-ca.cnf
+@@ -0,0 +1,11 @@
++[ ca ]
++default_ca = EdelCurlRoot
++
++[ EdelCurlRoot ]
++database = EdelCurlRoot-ca.db
++certificate = EdelCurlRoot-ca.crt
++private_key = EdelCurlRoot-ca.key
++crlnumber = EdelCurlRoot-ca.cnt
++default_md = sha1
++default_days = 365
++default_crl_days = 30
+diff --git a/tests/certs/EdelCurlRoot-ca.crt b/tests/certs/EdelCurlRoot-ca.crt
+index c5154a4..7f59717 100644
+--- a/tests/certs/EdelCurlRoot-ca.crt
++++ b/tests/certs/EdelCurlRoot-ca.crt
+@@ -2,15 +2,15 @@ Certificate:
+     Data:
+         Version: 3 (0x2)
+         Serial Number:
+-            0b:5c:fb:79:f2:09
++            0b:95:4c:80:9f:5b
+         Signature Algorithm: sha1WithRSAEncryption
+         Issuer:
+             countryName               = NN
+             organizationName          = Edel Curl Arctic Illudium Research Cloud
+             commonName                = Nothern Nowhere Trust Anchor
+         Validity
+-            Not Before: Aug  4 15:06:44 2009 GMT
+-            Not After : Jan  7 15:06:44 2026 GMT
++            Not Before: May 11 13:56:03 2010 GMT
++            Not After : Oct 14 13:56:03 2026 GMT
+         Subject:
+             countryName               = NN
+             organizationName          = Edel Curl Arctic Illudium Research Cloud
+@@ -19,24 +19,24 @@ Certificate:
+             Public Key Algorithm: rsaEncryption
+                 Public-Key: (2048 bit)
+                 Modulus:
+-                    00:bd:b7:e7:70:4c:17:0d:0f:e6:a4:ed:81:0b:26:
+-                    a9:d2:16:f6:2a:9c:87:6d:8e:7e:e2:71:98:89:41:
+-                    97:d7:62:0b:c7:92:35:e5:09:0a:b4:67:06:59:c5:
+-                    3b:2f:ae:6c:ff:68:6c:af:46:a3:1f:7e:32:5a:08:
+-                    c4:6e:65:5c:c2:9f:99:11:4e:28:dc:37:98:d0:ab:
+-                    66:13:35:c6:bd:3c:6f:65:e2:5d:c2:59:21:80:68:
+-                    c0:85:eb:7e:a2:58:99:04:45:c3:f7:4c:39:83:fa:
+-                    5c:6e:6a:a0:ff:45:b7:2f:7a:bb:bb:7f:3d:2b:cb:
+-                    57:5f:09:24:c5:77:96:5d:1b:56:56:9a:48:51:0a:
+-                    f5:67:0f:67:8d:0d:82:c7:84:bf:b5:c5:f8:cd:71:
+-                    2f:92:cb:e8:94:96:28:04:3a:c2:2c:38:e4:9e:3c:
+-                    1b:89:9f:70:b6:02:b6:97:5e:2e:c1:5a:a7:af:86:
+-                    c2:b7:65:dc:83:8d:e7:85:72:a7:d1:f0:ba:ea:11:
+-                    dc:bd:7c:b5:68:89:82:15:2b:b5:91:f0:70:f5:fa:
+-                    e4:8c:21:fe:e7:8f:a3:16:5d:ee:a8:ff:a8:0e:22:
+-                    1f:3e:27:25:f5:f1:a0:55:16:f7:c2:02:79:fb:c9:
+-                    ac:fd:d1:ca:6e:65:3e:97:cf:f0:df:c9:b9:c4:0a:
+-                    87:c1
++                    00:f7:7b:9b:a6:1a:3a:f9:95:6b:4f:a6:39:53:1a:
++                    e3:4e:66:f4:61:e2:f1:66:c9:62:02:29:ab:09:04:
++                    44:d2:18:89:99:23:55:68:0c:94:a7:37:8b:98:a6:
++                    91:a4:79:5e:4b:ad:62:9d:ce:a8:6b:10:66:7a:9a:
++                    36:a9:0a:7e:01:d4:5a:79:e7:31:5a:2f:2b:ed:bb:
++                    17:a6:6e:cd:72:53:ba:dd:f0:97:dd:6c:71:e6:6e:
++                    f7:48:4c:fc:21:26:72:0c:1c:ca:59:03:ce:97:2d:
++                    91:c6:df:dc:96:77:34:26:18:ff:2c:4e:f1:be:34:
++                    2b:7a:6c:39:3b:75:14:d8:8d:cc:58:3b:8f:92:cd:
++                    d6:08:cc:e2:98:5f:6b:c0:15:59:bf:f2:9e:7d:06:
++                    4c:f1:80:e2:1f:11:a5:1a:94:4a:d9:f2:6b:70:85:
++                    68:b7:ce:b5:e3:d1:f1:cf:61:c6:87:6f:f2:44:b8:
++                    f0:d9:84:33:61:5f:7e:5b:3b:30:56:d6:a6:4c:55:
++                    f4:e6:2e:58:56:f6:fb:ec:6b:58:45:f4:d0:14:04:
++                    6b:52:67:da:d5:83:8d:3f:b9:d7:49:c6:37:56:0f:
++                    55:8c:67:a3:98:4b:68:de:0b:c8:15:98:9c:ce:a5:
++                    d0:84:30:26:56:04:96:71:dd:ee:49:8f:44:b6:32:
++                    6c:3b
+                 Exponent: 65537 (0x10001)
+         X509v3 extensions:
+             X509v3 Basic Constraints: critical
+@@ -44,42 +44,42 @@ Certificate:
+             X509v3 Key Usage: critical
+                 Certificate Sign, CRL Sign
+             X509v3 Subject Key Identifier: 
+-                12:6B:24:D2:4A:68:B7:A1:B0:1C:CD:BF:D6:4C:CC:40:5B:7F:E0:40
++                68:5C:61:AF:9D:48:32:44:2B:D6:33:97:71:7A:B1:FA:34:C8:CA:98
+     Signature Algorithm: sha1WithRSAEncryption
+-        66:1e:56:86:7d:87:99:f9:9a:d9:fb:fe:9c:bf:9e:d9:90:07:
+-        da:9a:33:0f:72:6b:44:00:df:85:f0:ff:ed:c5:06:1c:1c:ff:
+-        4e:94:7d:6f:6c:7e:82:1a:82:bc:fe:ac:02:c5:1d:d0:1f:a8:
+-        e3:2d:a2:8d:43:8e:73:8a:b0:a4:da:0b:1d:7e:1c:e9:35:93:
+-        29:6d:05:9f:6d:6c:0e:09:ee:9c:1a:15:fe:8a:5e:19:d8:da:
+-        a0:6b:2a:d5:1d:fa:0c:af:63:55:41:42:ec:dd:3c:b0:6e:1f:
+-        66:67:c5:28:fd:23:1b:a6:42:98:49:f5:33:58:7b:5a:91:c7:
+-        9c:66:1f:53:cc:8b:79:11:a9:fa:a3:b8:5e:e1:d1:12:97:ec:
+-        5e:4d:c9:77:4c:03:0c:e8:80:33:57:da:d4:ce:af:c5:1b:f5:
+-        96:47:d4:68:da:83:3c:45:ee:84:b4:82:94:cd:65:2c:41:f1:
+-        45:3d:19:9b:da:7a:54:04:e4:39:b1:b5:2a:15:29:b8:99:6d:
+-        30:73:12:bc:7d:e3:79:f2:12:aa:e1:d7:d1:83:c4:bb:0c:bb:
+-        a1:36:37:84:38:de:7c:3a:d7:c8:4f:6b:d9:cb:80:2b:29:27:
+-        bd:c3:de:a5:2a:11:6d:b6:09:59:e6:d7:49:ae:52:89:28:3b:
+-        af:f0:bd:86
++        19:4f:d8:53:8a:6e:e7:f6:b2:ca:38:c0:15:c0:3b:82:86:10:
++        2d:dc:de:7a:20:9f:c7:9d:a0:13:3e:2c:3e:5e:71:62:2a:6f:
++        52:5b:74:95:53:3e:61:f0:d7:ce:a0:5e:83:5d:96:4c:96:33:
++        2a:34:de:7f:77:59:a3:94:04:98:e1:14:c0:cc:09:55:8e:41:
++        76:cf:25:8a:4d:90:d4:e2:99:e1:b6:38:15:cf:6f:c5:f4:c6:
++        e8:03:23:35:b2:14:20:67:40:b5:74:13:e3:e8:1e:4a:7e:06:
++        a3:0a:59:1f:f3:21:d7:20:a4:30:3d:9a:64:5c:db:77:47:a1:
++        92:b7:41:45:d6:25:a0:51:ca:1f:bc:66:72:b9:0e:1a:8b:f4:
++        dd:4b:12:9f:ec:11:3f:f8:1b:2a:3f:c1:6f:bc:ca:4c:af:e0:
++        aa:53:41:79:aa:4e:e3:4e:70:13:31:2c:2d:f6:2c:03:1a:ef:
++        f2:86:02:8d:e0:05:ca:3d:10:39:23:b3:3f:aa:ea:a6:78:cd:
++        19:f7:b5:00:a6:88:7b:94:cf:75:c2:ec:0a:10:50:d7:a8:05:
++        cd:38:45:16:17:1f:4d:06:67:66:dc:46:e7:30:4f:b2:80:54:
++        ef:98:71:35:1f:62:2e:8e:7d:13:88:f9:32:c2:5d:88:ca:21:
++        19:25:43:88
+ -----BEGIN CERTIFICATE-----
+-MIIDkDCCAnigAwIBAgIGC1z7efIJMA0GCSqGSIb3DQEBBQUAMGcxCzAJBgNVBAYT
++MIIDkDCCAnigAwIBAgIGC5VMgJ9bMA0GCSqGSIb3DQEBBQUAMGcxCzAJBgNVBAYT
+ Ak5OMTEwLwYDVQQKDChFZGVsIEN1cmwgQXJjdGljIElsbHVkaXVtIFJlc2VhcmNo
+ IENsb3VkMSUwIwYDVQQDDBxOb3RoZXJuIE5vd2hlcmUgVHJ1c3QgQW5jaG9yMB4X
+-DTA5MDgwNDE1MDY0NFoXDTI2MDEwNzE1MDY0NFowZzELMAkGA1UEBhMCTk4xMTAv
++DTEwMDUxMTEzNTYwM1oXDTI2MTAxNDEzNTYwM1owZzELMAkGA1UEBhMCTk4xMTAv
+ BgNVBAoMKEVkZWwgQ3VybCBBcmN0aWMgSWxsdWRpdW0gUmVzZWFyY2ggQ2xvdWQx
+ JTAjBgNVBAMMHE5vdGhlcm4gTm93aGVyZSBUcnVzdCBBbmNob3IwggEiMA0GCSqG
+-SIb3DQEBAQUAA4IBDwAwggEKAoIBAQC9t+dwTBcND+ak7YELJqnSFvYqnIdtjn7i
+-cZiJQZfXYgvHkjXlCQq0ZwZZxTsvrmz/aGyvRqMffjJaCMRuZVzCn5kRTijcN5jQ
+-q2YTNca9PG9l4l3CWSGAaMCF636iWJkERcP3TDmD+lxuaqD/Rbcveru7fz0ry1df
+-CSTFd5ZdG1ZWmkhRCvVnD2eNDYLHhL+1xfjNcS+Sy+iUligEOsIsOOSePBuJn3C2
+-AraXXi7BWqevhsK3ZdyDjeeFcqfR8LrqEdy9fLVoiYIVK7WR8HD1+uSMIf7nj6MW
+-Xe6o/6gOIh8+JyX18aBVFvfCAnn7yaz90cpuZT6Xz/DfybnECofBAgMBAAGjQjBA
+-MA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBQSayTS
+-Smi3obAczb/WTMxAW3/gQDANBgkqhkiG9w0BAQUFAAOCAQEAZh5Whn2Hmfma2fv+
+-nL+e2ZAH2pozD3JrRADfhfD/7cUGHBz/TpR9b2x+ghqCvP6sAsUd0B+o4y2ijUOO
+-c4qwpNoLHX4c6TWTKW0Fn21sDgnunBoV/opeGdjaoGsq1R36DK9jVUFC7N08sG4f
+-ZmfFKP0jG6ZCmEn1M1h7WpHHnGYfU8yLeRGp+qO4XuHREpfsXk3Jd0wDDOiAM1fa
+-1M6vxRv1lkfUaNqDPEXuhLSClM1lLEHxRT0Zm9p6VATkObG1KhUpuJltMHMSvH3j
+-efISquHX0YPEuwy7oTY3hDjefDrXyE9r2cuAKyknvcPepSoRbbYJWebXSa5SiSg7
+-r/C9hg==
++SIb3DQEBAQUAA4IBDwAwggEKAoIBAQD3e5umGjr5lWtPpjlTGuNOZvRh4vFmyWIC
++KasJBETSGImZI1VoDJSnN4uYppGkeV5LrWKdzqhrEGZ6mjapCn4B1Fp55zFaLyvt
++uxembs1yU7rd8JfdbHHmbvdITPwhJnIMHMpZA86XLZHG39yWdzQmGP8sTvG+NCt6
++bDk7dRTYjcxYO4+SzdYIzOKYX2vAFVm/8p59BkzxgOIfEaUalErZ8mtwhWi3zrXj
++0fHPYcaHb/JEuPDZhDNhX35bOzBW1qZMVfTmLlhW9vvsa1hF9NAUBGtSZ9rVg40/
++uddJxjdWD1WMZ6OYS2jeC8gVmJzOpdCEMCZWBJZx3e5Jj0S2Mmw7AgMBAAGjQjBA
++MA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBRoXGGv
++nUgyRCvWM5dxerH6NMjKmDANBgkqhkiG9w0BAQUFAAOCAQEAGU/YU4pu5/ayyjjA
++FcA7goYQLdzeeiCfx52gEz4sPl5xYipvUlt0lVM+YfDXzqBeg12WTJYzKjTef3dZ
++o5QEmOEUwMwJVY5Bds8lik2Q1OKZ4bY4Fc9vxfTG6AMjNbIUIGdAtXQT4+geSn4G
++owpZH/Mh1yCkMD2aZFzbd0ehkrdBRdYloFHKH7xmcrkOGov03UsSn+wRP/gbKj/B
++b7zKTK/gqlNBeapO405wEzEsLfYsAxrv8oYCjeAFyj0QOSOzP6rqpnjNGfe1AKaI
++e5TPdcLsChBQ16gFzThFFhcfTQZnZtxG5zBPsoBU75hxNR9iLo59E4j5MsJdiMoh
++GSVDiA==
+ -----END CERTIFICATE-----
+diff --git a/tests/certs/EdelCurlRoot-ca.csr b/tests/certs/EdelCurlRoot-ca.csr
+index 3a25911..e8e19a1 100644
+--- a/tests/certs/EdelCurlRoot-ca.csr
++++ b/tests/certs/EdelCurlRoot-ca.csr
+@@ -2,16 +2,16 @@
+ MIICrDCCAZQCAQAwZzELMAkGA1UEBhMCTk4xMTAvBgNVBAoMKEVkZWwgQ3VybCBB
+ cmN0aWMgSWxsdWRpdW0gUmVzZWFyY2ggQ2xvdWQxJTAjBgNVBAMMHE5vdGhlcm4g
+ Tm93aGVyZSBUcnVzdCBBbmNob3IwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+-AoIBAQC9t+dwTBcND+ak7YELJqnSFvYqnIdtjn7icZiJQZfXYgvHkjXlCQq0ZwZZ
+-xTsvrmz/aGyvRqMffjJaCMRuZVzCn5kRTijcN5jQq2YTNca9PG9l4l3CWSGAaMCF
+-636iWJkERcP3TDmD+lxuaqD/Rbcveru7fz0ry1dfCSTFd5ZdG1ZWmkhRCvVnD2eN
+-DYLHhL+1xfjNcS+Sy+iUligEOsIsOOSePBuJn3C2AraXXi7BWqevhsK3ZdyDjeeF
+-cqfR8LrqEdy9fLVoiYIVK7WR8HD1+uSMIf7nj6MWXe6o/6gOIh8+JyX18aBVFvfC
+-Ann7yaz90cpuZT6Xz/DfybnECofBAgMBAAGgADANBgkqhkiG9w0BAQsFAAOCAQEA
+-IFe5QoGVnUvCDOvZPMFmnclBgPVpTYB/twQEK3VoKnTbWj78LL6IGJLoqS7l+wnW
+-5PLYGjNwR7atIw1pnq6i+GglV5USXRMCNfB0NYLEZdfIUKwIQia2sidmv1gHDXbW
+-oCh33kwizd8K0pCivtS60p7PfrjyKuj0qcdwFLuW6sa9ks4mswsykPJFFWseln6U
+-YlFNOX2OWSNnoadLVgTxhIuSr7rXHVza01sNvH/tXKO0J4gfK7TctZpNsl4tnWx8
+-6wjXe55aQqokjdfe92mPKClMuiXJTLPkM4tPN1Wau3qYw+BAb038z+j8FL8n7CEU
+-n3WlmMJ7tmkd3NShPejqZQ==
++AoIBAQD3e5umGjr5lWtPpjlTGuNOZvRh4vFmyWICKasJBETSGImZI1VoDJSnN4uY
++ppGkeV5LrWKdzqhrEGZ6mjapCn4B1Fp55zFaLyvtuxembs1yU7rd8JfdbHHmbvdI
++TPwhJnIMHMpZA86XLZHG39yWdzQmGP8sTvG+NCt6bDk7dRTYjcxYO4+SzdYIzOKY
++X2vAFVm/8p59BkzxgOIfEaUalErZ8mtwhWi3zrXj0fHPYcaHb/JEuPDZhDNhX35b
++OzBW1qZMVfTmLlhW9vvsa1hF9NAUBGtSZ9rVg40/uddJxjdWD1WMZ6OYS2jeC8gV
++mJzOpdCEMCZWBJZx3e5Jj0S2Mmw7AgMBAAGgADANBgkqhkiG9w0BAQsFAAOCAQEA
++5Iax/Nx8yhosQk0lnIq+hvsFWP0b1W2uHJOsaHq250j+LGX5vtDI2/TTr85cR9vx
++H8GWYoP19i2/shZawmy4pnatNMoTraV6HT1e/pzHz+LrhYGsQUvtqQoa2BXBSUgv
++b3hpi7BXXIz9FJ25q6plbZYr4RzCs24pcLWhZZ+cCWNhJVStLoPcB0oNYT4kodw4
++tUoF3BTULf/Q/HTVOqalTV7Q8OpgFjyTD+W4tayDWaXOgIaWvU4P5HUMx775sOre
++oqXTpzeaZzjHohmUjIDdvT+Y1dNqB+YmDm3Zq3e3uMmj9Pk3KwDwm5t04tFMyXKv
++TZAxYSKK1x4x7778p+LcCA==
+ -----END CERTIFICATE REQUEST-----
+diff --git a/tests/certs/EdelCurlRoot-ca.key b/tests/certs/EdelCurlRoot-ca.key
+index 244aea1..88f1b60 100644
+--- a/tests/certs/EdelCurlRoot-ca.key
++++ b/tests/certs/EdelCurlRoot-ca.key
+@@ -1,30 +1,30 @@
+ -----BEGIN ENCRYPTED PRIVATE KEY-----
+-MIIFDjBABgkqhkiG9w0BBQ0wMzAbBgkqhkiG9w0BBQwwDgQIUbvkhX/UejoCAggA
+-MBQGCCqGSIb3DQMHBAhyTjz68mGb9gSCBMjeTO0EBH03MKmIHaDTPzJyJO4jyqQS
+-WJw6j+nYXHLQ3/PDh431GIQatN6Hpp14e+y/PZEl68jB8cxVCpiGO+JLT7ov4zlU
+-nLsCwSn7lmFeylrlZYOnP//3JVfEwcO3E22y6Ay3RKm5UYKTYoCXwkIC7xockF4+
+-E3xq2bRYD4OGrb77srqU2puPie0otfm3dpkZk5FKY/9knygufqO0HoC6y1swPT0q
+-ykOst064UGFG36IiISVImoYeOQ2kY0fo3bBtC7QGhCiid0cOXZOUZD7I+Vz7UPJo
+-XUtM0s9V1uer/DrDREFrCG/GfwNDhrhqXM4AsJQwPi8FV4KK+rHOFCg0FOPAlGff
+-UMArHp81ZmM9T6SWmWFGdmJPNz0jp7HPmzYt3rXQc88qk0iig+A42SMqj6otMPuJ
+-st/0Sm+GzRHjbgV0Jh2zPpTwzznLj8NjHCtmSWijFZZbylEvr3klzLdnva5c75pw
+-Qhqbe3ZkNaRkJvxWlIvd8qrE4rix34M5ZN1gm4+y5kE8gYjMF8KdBwxfsSkobL48
+-i2NpaROvFhewE9IaoJ8bAVJA9KpHZBftWaZFJ7S7h0Vdhw0KRVFZYQiz6xqma4Xp
+-yp4EopNdffuEXxQOQiAsHyhnBsPGoMTUpCQAfL1v90+SIs0FG6faClk3L6EyATXW
+-pLQURbocUJYr6hyxY62Y1pc3TVlspIv/kukKtwq7iuvD5mFgmGumSI/pq2jfKo02
+-aFSPTNVEidFvJJVr0HVIwPVmuMRs0Lr0t8Txih4NIzTITR4tPwaIwhi0Qi3VanNG
+-TY9oevkclxiNbP9OQfIP6CMHNnAzLhOm+vbwlkCAqcFo0KjzGJb4NhyAxYpUZ7U3
+-NGoNVQ7haF/Frz5PxAGl5l57qLI4pHsknrZsKxiTKpSy5l3melj3Zk0R2jXN9uJX
+-Z3FYG6R7Zbnt8gbXw1dqteLo07ObS7OwULqAJlboqporOtvWKhqPTPeNFP7HCdHJ
+-uFBVQJwWGD8QBcZ1k591JcFY7vPWHdQF7ku+EEs7dEeNBUS28Baw5qoiXRBWsD7B
+-Y3D4QaAZF64rqvtIlhDZBzmrUZ1KqJDX1B9I2pf7D6bbxL0wYiVTRQeoDV7eGZXF
+-0+tMbHgZ/CmAsOx0sdcR0BkigQMGh9HHtDs4gRJsf/RjzkKJQD28FfJxqvRYDYFd
+-8PSL7/DPipTUxvALuKWX/cRR/kVDEvt3AXJqAJsb3Xf/NloicieQ5QCy2LXwU4rQ
+-pBur7YFHw2VfT/HU8Jdd3yoXJPRBy9bAGFXojtBT6cuCcyBrUwrFo/nfiirK1WAd
+-krIL1/kUNKy34b/Yp2/BNuo+QrDP7tJNWVO7pVs1eNFs45en0GNR1tsaIxN95MwX
+-vw4g4vMNMkpEPdLCPkjCYuW6mqkxT7ED3LAEsOBljcjkaId4QVS2TZv9V+izeHx8
+-OGYmyJB5d2N/v1gwBSq7h+xx7bG/hByJ+7hGR3J9+3HEN/TYFPqjIofA8sBZ6Emt
+-oICblaS4xlmWwb8iSdo38yDWVaemmuW3zpCLfCR3RFT8aV9u1eahYWuU0/kgn2QB
+-GvaavsdlahZl+f0uqf67TDWxTDkeQuiiRwy3UCnooxDLclq3YM9yWP4wbq9xNn4d
+-G+0=
++MIIFDjBABgkqhkiG9w0BBQ0wMzAbBgkqhkiG9w0BBQwwDgQIa1F7CGGp8jQCAggA
++MBQGCCqGSIb3DQMHBAhm8pVoPm/LFwSCBMiCDupDCg5KbPkSttKaEGvp5xVa/Ysz
++M3I/bXUmtJQKU5nu3glWKWRbzElCc2dcZmSOQ0JFOF8sc+Cp2EadczTlH20iPpZM
++r1Fszw9R3Dj3PEopHsk1xd1M7ITLsY3W849zoLpYUxKM3p7RLq95BjlS0KH44oGY
++4+0Npo9/hywfGxxMTWYAj+bdiYDe1n20RWPEdwJqP1Ubhm8GoMD48DfxS7EMB2Lm
++kPtqEtcPIki9FKWNaoYznUfvorgyLHYYT+8FM1gZtQlL2a2e/YXuMMFHhqytcxe/
++MfBY7UJw9f7metyDVCsobOV0yg5fBgLyk5SnZniAe+qZ4WV+W9/OeAsLPJCLaocF
++Dqe5FLd61iBG42kVx7dg8CwouMCR+5gGE6EeHe8aeleWWneFw5mODMeyyD6HWyJO
++s9DJISp4Jm4ZV/XggfP4Y/T2cWPQwPGdq4wSwQ4fVJpe7w6S0AggUW5X69R9nrHz
++2V2bz8jlyKad4FxCthoOQ01KGcjZEo/cFeHBsN4xSEwDj0clAPfMbZOHlUPbvMgH
++qgdOMV9TiR2VcpzmBLVrgnlFbmhnJlB6MdoXQMNcy6DXqgiNIPzn5lHPM8Lrg1zB
++Y92XVSMFa4Fy+eFo/81Oy6DIOlNdKq1hXTkix8rE/ArWTWboo/iSq8QvolFN3d0T
++S5H0btosC/PB+niZj/v9gu4NHX0vJtWG+/4EXa057DUD/3ukS9l+eMN9lHbOLfdF
++zcBCg539aZa4yWWNsNQ1MXVY16/ThT3u+tvOnO8hp12SGxiO5VdltTa5DiyCBhbx
++GO27/N1OGxIAcvSQp1hZ8Wkh5PJuRwuxQnc7aMfBhQaJDQ2/6QB+PMiIaa06zcEM
++Ybv48d603a2QkvY+3xKVC/ClO+TKMIL7kCV85U3N/pkm+6eNrKTkydisvJE+1+05
++ESct5Uyht+Q0wwcGZgAKgZMJSS0J7wQeqymhzUb0+e0mOzjZq+u868MbQQecgMAI
++BQ5zEy59CrC/9vACtkN9rVy5GyKBpJvRFUjTJXs3/NubluzSqUVfia0TsWvi8h1k
+++yGI+biWiq3vAHn3jwLORrVZaUvQM6jzEXDrCaDHEA0Y7bNZn9iJr85OMn1/NZwJ
++wZhyMQqI/5JVW/vK2KfRfNgErgg8HB8kyAtsPpbTY05jc18fRqXsyDGGNJvAhbAX
++UaoHoEhapiqa/TkMYPAOZfLiZeWv6OizE5wIOwyWHLMmJ+ZE49Anz6o8/QyLiP4f
++75QvRGTACaH6CvN11SYjQ41QI7iImZ7sqf1a/Keru92g7K4ASollANnSaY9Qf3RG
++j4BGVvl7l5DkQqQY3To2dOaktrw4sDsDMxxhHKkuDdvkFwq913o2Spp/FhsSm1bx
++7oFlLhmutp0u7sIBLrrd1q/pwj65x32rrqwS5QFNP2TUrlgOULy/W3cQslIdUlyz
++GwJ6UstewWTvUOSAogEKqEHWcZ6ggcmTtS9DV+l0iUj9NdQLkcT2K2lE16reH4ES
++wj+KvFGVNTpm6+5cFgfG9b3SZGgLHRdduHI+cYE+m4BAv9Expj2fOYA5MhnpFCW5
++LeFS55FO7V9b5w2bp98Z4XFZDyZQ7d+t2FhIjiVMj509iC3HNRo5sSz6sEfIcdji
++YP8=
+ -----END ENCRYPTED PRIVATE KEY-----
+diff --git a/tests/certs/Server-localhost-sv.crl b/tests/certs/Server-localhost-sv.crl
+new file mode 100644
+index 0000000..b9ae83c
+--- /dev/null
++++ b/tests/certs/Server-localhost-sv.crl
+@@ -0,0 +1,12 @@
++-----BEGIN X509 CRL-----
++MIIB2zCBxAIBATANBgkqhkiG9w0BAQUFADBnMQswCQYDVQQGEwJOTjExMC8GA1UE
++CgwoRWRlbCBDdXJsIEFyY3RpYyBJbGx1ZGl1bSBSZXNlYXJjaCBDbG91ZDElMCMG
++A1UEAwwcTm90aGVybiBOb3doZXJlIFRydXN0IEFuY2hvchcNMTAwNTExMTM1ODE5
++WhcNMTAwNjEwMTM1ODE5WjAZMBcCBguVTJWIPRcNMTAwNTExMTM1ODE2WqAOMAww
++CgYDVR0UBAMCAQEwDQYJKoZIhvcNAQEFBQADggEBAOhaSUKNpNiHXQGUFCIto1Uc
++aGl7M8GP2xcP0iuwmxEBeG1Hca5Xu+4nDkd/oc3dRhM9xqX6SN6xo+V2kvNqXB5H
++v38LZ4SLA+1Ol9wua/1DgDpA6XxTSiLSTG34nw+M1748vfBX+H2Hn/ACeKs9RzHm
++Jkyo1CcEesfhtXurapRJg7Vrvsr9tzHxXYl3WzuFn+VAb6RTvljj1kAwNCh8KC5f
+++gBzMW+EHrmPd2cL7Togapb0HNMY7UQyEBoWDGz/nlzrfdWQoIPvwsS0YUGdnjnt
++51Yg+Q8MaulgIGFvM3fFqnQ3RiCbXCgmfkgdgPeckCKhLsSpwZCF9B4IAm01o5Y=
++-----END X509 CRL-----
+diff --git a/tests/certs/Server-localhost-sv.crt b/tests/certs/Server-localhost-sv.crt
+index f78e3c0..6abc1d6 100644
+--- a/tests/certs/Server-localhost-sv.crt
++++ b/tests/certs/Server-localhost-sv.crt
+@@ -2,15 +2,15 @@ Certificate:
+     Data:
+         Version: 3 (0x2)
+         Serial Number:
+-            0b:5d:0a:89:a5:41
++            0b:95:4c:95:88:3d
+         Signature Algorithm: sha1WithRSAEncryption
+         Issuer:
+             countryName               = NN
+             organizationName          = Edel Curl Arctic Illudium Research Cloud
+             commonName                = Nothern Nowhere Trust Anchor
+         Validity
+-            Not Before: Aug  4 22:07:52 2009 GMT
+-            Not After : Oct 21 22:07:52 2017 GMT
++            Not Before: May 11 13:58:14 2010 GMT
++            Not After : Jul 28 13:58:14 2018 GMT
+         Subject:
+             countryName               = NN
+             organizationName          = Edel Curl Arctic Illudium Research Cloud
+@@ -19,15 +19,15 @@ Certificate:
+             Public Key Algorithm: rsaEncryption
+                 Public-Key: (1024 bit)
+                 Modulus:
+-                    00:d3:6f:53:ed:32:a1:69:20:22:6e:5c:69:34:3d:
+-                    8f:14:65:61:c8:f7:99:15:ec:a9:51:43:87:7a:b0:
+-                    4b:65:c5:c2:7c:e4:4a:f0:c7:25:42:19:ec:ec:84:
+-                    5a:62:a0:4e:de:f9:2d:86:aa:e5:b2:b9:f7:e8:1f:
+-                    5d:c6:8d:07:b1:83:54:92:a8:65:5d:2c:e6:3b:e0:
+-                    f3:0e:ae:b2:72:05:4c:dd:85:90:16:bc:1f:03:59:
+-                    23:76:be:e0:38:ee:21:05:37:d0:01:31:7d:1f:3c:
+-                    f5:fd:78:56:cd:cb:86:bb:d1:e8:07:73:a6:90:f9:
+-                    3b:7e:9d:85:bc:3c:2a:78:49
++                    00:bd:d4:3e:83:f3:fe:d3:5c:3d:d9:62:b8:84:78:
++                    bd:83:bd:0c:82:81:12:21:ec:4d:69:48:08:14:fc:
++                    b0:ac:35:ac:8f:08:a5:86:70:1f:a0:7e:fc:e0:b5:
++                    e8:41:a5:4f:cb:0f:a6:fa:36:57:3a:70:92:a8:0e:
++                    d5:45:98:1a:af:5e:a1:c9:e4:c5:92:30:3b:2f:f8:
++                    af:c2:ed:90:a4:e9:37:87:8d:62:2f:46:e1:50:39:
++                    0f:c0:99:6b:c2:8a:d0:c6:df:fc:16:6b:93:f5:ec:
++                    26:24:8e:38:7f:37:72:72:ec:9c:da:a6:99:0c:e4:
++                    1a:12:af:2e:b0:d8:4b:43:ff
+                 Exponent: 65537 (0x10001)
+         X509v3 extensions:
+             X509v3 Subject Alternative Name: 
+@@ -37,45 +37,45 @@ Certificate:
+             X509v3 Extended Key Usage: 
+                 TLS Web Server Authentication
+             X509v3 Subject Key Identifier: 
+-                53:59:CB:8D:67:CD:E7:63:E2:E5:DD:F0:F8:E1:82:ED:A8:10:38:A3
++                2D:E2:77:05:7D:AF:9A:65:01:D1:D7:8B:81:A1:24:99:D9:1D:51:F9
+             X509v3 Authority Key Identifier: 
+-                keyid:12:6B:24:D2:4A:68:B7:A1:B0:1C:CD:BF:D6:4C:CC:40:5B:7F:E0:40
++                keyid:68:5C:61:AF:9D:48:32:44:2B:D6:33:97:71:7A:B1:FA:34:C8:CA:98
+ 
+             X509v3 Basic Constraints: critical
+                 CA:FALSE
+     Signature Algorithm: sha1WithRSAEncryption
+-        06:3f:b8:df:8e:20:9d:cd:cd:bc:a9:88:eb:2d:f8:e6:f0:15:
+-        fa:14:9c:5f:55:bc:8f:68:40:aa:d2:51:03:ab:09:ee:ee:a6:
+-        d7:8f:32:9a:75:0b:41:35:71:bf:d9:35:03:dd:fd:e5:7d:45:
+-        db:e5:9a:16:14:14:c7:98:a5:c5:b9:4d:81:3a:0c:f9:e0:97:
+-        71:d0:f3:a0:5d:84:ba:83:a8:d8:a0:98:bf:12:48:42:f0:1b:
+-        8a:58:80:16:62:69:bb:96:5a:ce:ac:02:fa:cb:cd:20:30:d0:
+-        fb:23:3a:d3:7b:75:03:c8:c1:20:9e:24:90:d2:61:00:85:63:
+-        e2:f9:a7:52:50:e2:0d:3b:61:f9:b1:d5:5f:64:dd:cb:38:7b:
+-        05:8d:b7:f9:08:8e:bf:d3:02:13:e7:34:fa:3d:bb:af:d7:aa:
+-        de:79:28:f4:ae:87:f5:49:85:42:c7:af:8b:a0:94:ed:21:de:
+-        36:e6:38:a3:0f:75:cf:68:10:48:1d:7d:9b:a2:88:86:bd:b5:
+-        fe:95:4a:c8:fe:77:6b:0a:47:79:ab:d6:35:ea:53:4f:8f:3a:
+-        ba:e1:4c:00:57:b8:99:f9:21:5d:d2:ad:d9:c7:fa:bf:71:73:
+-        49:5d:0b:2c:fd:02:37:94:3c:3e:d7:ef:72:c5:e3:f3:14:9f:
+-        58:27:2a:aa
++        09:2e:e4:98:6f:a4:c5:53:d6:af:8f:d3:42:5d:b7:66:a8:ae:
++        f6:55:06:cb:09:ca:f5:3f:8d:65:92:73:7e:06:05:ff:05:2e:
++        2b:55:a3:44:12:32:1b:ee:e8:74:8b:a8:4a:c1:0c:80:5e:b1:
++        74:a2:00:eb:63:ec:6d:09:f2:67:12:b0:67:0f:20:e0:c4:15:
++        9a:8a:ef:73:0a:e0:d1:e1:2b:68:e3:cb:76:61:59:a2:c5:97:
++        26:00:72:14:4c:52:0f:83:7a:08:61:b1:83:ad:fb:40:85:e8:
++        77:29:91:aa:c3:ad:d2:0d:7f:30:2d:43:88:fd:51:84:b9:eb:
++        52:5d:ca:e2:75:82:93:cf:a8:00:0f:15:f8:e3:80:9e:e4:f2:
++        2c:ba:58:df:7d:89:44:32:cc:36:ed:ea:1a:94:c7:3d:62:8e:
++        2a:52:7e:3a:79:f3:cd:f0:e0:b7:27:9f:b0:aa:cb:76:cf:13:
++        34:f8:3a:15:f2:70:8c:ef:5b:a9:9b:06:49:1a:b1:39:45:07:
++        5e:7e:98:a0:df:0c:ed:9a:cf:41:21:65:8e:03:e5:ea:19:04:
++        39:f6:c3:09:d0:fe:8d:60:5d:d2:7a:98:ae:b8:2d:53:77:f5:
++        e5:de:34:93:92:22:32:18:88:ce:6d:47:bf:cf:b1:0f:75:65:
++        37:ef:26:66
+ -----BEGIN CERTIFICATE-----
+-MIIDQTCCAimgAwIBAgIGC10KiaVBMA0GCSqGSIb3DQEBBQUAMGcxCzAJBgNVBAYT
++MIIDQTCCAimgAwIBAgIGC5VMlYg9MA0GCSqGSIb3DQEBBQUAMGcxCzAJBgNVBAYT
+ Ak5OMTEwLwYDVQQKDChFZGVsIEN1cmwgQXJjdGljIElsbHVkaXVtIFJlc2VhcmNo
+ IENsb3VkMSUwIwYDVQQDDBxOb3RoZXJuIE5vd2hlcmUgVHJ1c3QgQW5jaG9yMB4X
+-DTA5MDgwNDIyMDc1MloXDTE3MTAyMTIyMDc1MlowVDELMAkGA1UEBhMCTk4xMTAv
++DTEwMDUxMTEzNTgxNFoXDTE4MDcyODEzNTgxNFowVDELMAkGA1UEBhMCTk4xMTAv
+ BgNVBAoMKEVkZWwgQ3VybCBBcmN0aWMgSWxsdWRpdW0gUmVzZWFyY2ggQ2xvdWQx
+ EjAQBgNVBAMMCWxvY2FsaG9zdDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA
+-029T7TKhaSAiblxpND2PFGVhyPeZFeypUUOHerBLZcXCfORK8MclQhns7IRaYqBO
+-3vkthqrlsrn36B9dxo0HsYNUkqhlXSzmO+DzDq6ycgVM3YWQFrwfA1kjdr7gOO4h
+-BTfQATF9Hzz1/XhWzcuGu9HoB3OmkPk7fp2FvDwqeEkCAwEAAaOBiTCBhjAUBgNV
++vdQ+g/P+01w92WK4hHi9g70MgoESIexNaUgIFPywrDWsjwilhnAfoH784LXoQaVP
++yw+m+jZXOnCSqA7VRZgar16hyeTFkjA7L/ivwu2QpOk3h41iL0bhUDkPwJlrworQ
++xt/8FmuT9ewmJI44fzdycuyc2qaZDOQaEq8usNhLQ/8CAwEAAaOBiTCBhjAUBgNV
+ HREEDTALgglsb2NhbGhvc3QwCwYDVR0PBAQDAgUgMBMGA1UdJQQMMAoGCCsGAQUF
+-BwMBMB0GA1UdDgQWBBRTWcuNZ83nY+Ll3fD44YLtqBA4ozAfBgNVHSMEGDAWgBQS
+-ayTSSmi3obAczb/WTMxAW3/gQDAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3DQEBBQUA
+-A4IBAQAGP7jfjiCdzc28qYjrLfjm8BX6FJxfVbyPaECq0lEDqwnu7qbXjzKadQtB
+-NXG/2TUD3f3lfUXb5ZoWFBTHmKXFuU2BOgz54Jdx0POgXYS6g6jYoJi/EkhC8BuK
+-WIAWYmm7llrOrAL6y80gMND7IzrTe3UDyMEgniSQ0mEAhWPi+adSUOINO2H5sdVf
+-ZN3LOHsFjbf5CI6/0wIT5zT6Pbuv16reeSj0rof1SYVCx6+LoJTtId425jijD3XP
+-aBBIHX2booiGvbX+lUrI/ndrCkd5q9Y16lNPjzq64UwAV7iZ+SFd0q3Zx/q/cXNJ
+-XQss/QI3lDw+1+9yxePzFJ9YJyqq
++BwMBMB0GA1UdDgQWBBQt4ncFfa+aZQHR14uBoSSZ2R1R+TAfBgNVHSMEGDAWgBRo
++XGGvnUgyRCvWM5dxerH6NMjKmDAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3DQEBBQUA
++A4IBAQAJLuSYb6TFU9avj9NCXbdmqK72VQbLCcr1P41lknN+BgX/BS4rVaNEEjIb
++7uh0i6hKwQyAXrF0ogDrY+xtCfJnErBnDyDgxBWaiu9zCuDR4Sto48t2YVmixZcm
++AHIUTFIPg3oIYbGDrftAheh3KZGqw63SDX8wLUOI/VGEuetSXcridYKTz6gADxX4
++44Ce5PIsuljffYlEMsw27eoalMc9Yo4qUn46efPN8OC3J5+wqst2zxM0+DoV8nCM
++71upmwZJGrE5RQdefpig3wztms9BIWWOA+XqGQQ59sMJ0P6NYF3SepiuuC1Td/Xl
++3jSTkiIyGIjObUe/z7EPdWU37yZm
+ -----END CERTIFICATE-----
+diff --git a/tests/certs/Server-localhost-sv.csr b/tests/certs/Server-localhost-sv.csr
+index 4a1ccaf..a17a5ba 100644
+--- a/tests/certs/Server-localhost-sv.csr
++++ b/tests/certs/Server-localhost-sv.csr
+@@ -1,11 +1,11 @@
+ -----BEGIN CERTIFICATE REQUEST-----
+ MIIBkzCB/QIBADBUMQswCQYDVQQGEwJOTjExMC8GA1UECgwoRWRlbCBDdXJsIEFy
+ Y3RpYyBJbGx1ZGl1bSBSZXNlYXJjaCBDbG91ZDESMBAGA1UEAwwJbG9jYWxob3N0
+-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDTb1PtMqFpICJuXGk0PY8UZWHI
+-95kV7KlRQ4d6sEtlxcJ85ErwxyVCGezshFpioE7e+S2GquWyuffoH13GjQexg1SS
+-qGVdLOY74PMOrrJyBUzdhZAWvB8DWSN2vuA47iEFN9ABMX0fPPX9eFbNy4a70egH
+-c6aQ+Tt+nYW8PCp4SQIDAQABoAAwDQYJKoZIhvcNAQELBQADgYEAxfegbegW/e09
+-TV4TVuyt7S7wwCJFepfi7hNDoPf/CiuW3KeSySP68iD9QUNhy2wADFP6eHPaooUZ
+-h5PIvZ8IKpBzIbtG2mcOV4tKEBIshoBv/VFOTUqGKJf4r9dK0AjbovyPNpt9lCcO
+-xcnrH3WuQUVdmXVvlUXHz/mhzs2TFx4=
++MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC91D6D8/7TXD3ZYriEeL2DvQyC
++gRIh7E1pSAgU/LCsNayPCKWGcB+gfvzgtehBpU/LD6b6Nlc6cJKoDtVFmBqvXqHJ
++5MWSMDsv+K/C7ZCk6TeHjWIvRuFQOQ/AmWvCitDG3/wWa5P17CYkjjh/N3Jy7Jza
++ppkM5BoSry6w2EtD/wIDAQABoAAwDQYJKoZIhvcNAQELBQADgYEAJ+DZjgjdoDt3
++ELXUNSxa6RsaMwltqnsMiTxwZ892b8HyW4i2Xnzg1Ew2bIMbOj/lVn5VP1nGJ90Z
++jlaefKoppJN29njCaxy3tB035jQqhgE9JBhN+yddNu7a3gdPOezzWtXuGzG2GBbe
++GS3cdEjT5OcIxbMPk1Bt9IJw2kBAP/c=
+ -----END CERTIFICATE REQUEST-----
+diff --git a/tests/certs/Server-localhost-sv.key b/tests/certs/Server-localhost-sv.key
+index 832bbba..cd31f9f 100644
+--- a/tests/certs/Server-localhost-sv.key
++++ b/tests/certs/Server-localhost-sv.key
+@@ -1,15 +1,15 @@
+ -----BEGIN RSA PRIVATE KEY-----
+-MIICXQIBAAKBgQDTb1PtMqFpICJuXGk0PY8UZWHI95kV7KlRQ4d6sEtlxcJ85Erw
+-xyVCGezshFpioE7e+S2GquWyuffoH13GjQexg1SSqGVdLOY74PMOrrJyBUzdhZAW
+-vB8DWSN2vuA47iEFN9ABMX0fPPX9eFbNy4a70egHc6aQ+Tt+nYW8PCp4SQIDAQAB
+-AoGBAMhtVySaAzJxONJfHYdc934BIPHt7BtBbbvQBOSDq+V80wGrM3MNhL8lbldC
+-m5+0kS+DC+oFpJqI+Xz8BtwJooilPuQO3syo5YZuFRee81M8Z5Ss78TG6FLdjt6Z
+-hKQHju+Ghxm08pd2cTaYGDzS3LYsvSXz4TnsdWAVATCwKTSFAkEA8HnPcZdAXiLJ
+-eA2cRAuyEUPjs7B6eR5dLraLrIOtcKs/xJH/W+63hhMjqe9CASuSzVJEr8QxijYN
+-Cdlq3V3XhwJBAOEVk48TZF+gc87sWsBIy+mn3MdovKbmnYM/rzVXYiu2mBQ+nKhp
+-mevRc/UJdkaW8H340wRm1qGMYPCeekRdha8CQCuHcSR3o4Amvd9MX2f10gLMDjCd
+-ll3MQEPPaVMN9tw5M27KmrWybWgImOEO3RzHHWirJqHGWs1Q4WVSBMUTUosCQQDf
+-sz/6HL3PRHqUltcC79apnEmSbgfAoMa/INYTX4uUAl9XD3tG7d0qP/rM9+By+6R8
+-roWahFKgMBJQUlEWDRTFAkAiLYKd8pxw3x3kuk5ItmTiq3JNluMyIA/i3RVW1aVO
+-U5tX8sw6r4wVcsvXVboS/Trjeev2qkqC06ARV7vb6Wq5
++MIICWwIBAAKBgQC91D6D8/7TXD3ZYriEeL2DvQyCgRIh7E1pSAgU/LCsNayPCKWG
++cB+gfvzgtehBpU/LD6b6Nlc6cJKoDtVFmBqvXqHJ5MWSMDsv+K/C7ZCk6TeHjWIv
++RuFQOQ/AmWvCitDG3/wWa5P17CYkjjh/N3Jy7JzappkM5BoSry6w2EtD/wIDAQAB
++AoGALifwN2dZW4z/IN9HHDa7Zc/OveCiRwtM2z9/b5LtZkH6viCNFr4mgoC9/eld
++GrEWULpykD4sQXJjxmcs5ioQuo0y0ircZjdUFK/RzHGZDtw7LR+Ihd9lI7kkSfCW
++kZoekbAdL+mQc1Y637PLikCFbXN5OynlB1tF6S2AbUEJEOECQQD7wNtThQhQemt2
++jiQTmqKhbZvkbM3gTDKpgPHvrlfXfAp5UUzXZP2xdbueMHq+N1Dv7Pnb+poJ5sCH
++4jQ1eu/vAkEAwQf7DiJmHfwtPUirwvKMKfiVnn1ZsNHjcryPUdazUg2WApk+ZLRs
++5nzXbHwrKGExGybhHFsddeqy3BqHHoLc8QJAP2jtFVVNqc+b36mfppxtWBGekWNi
++W5t1q0ICLieQkoL4tGPo4dvbFmacEhUN5XlTVosux9yQDexkFBXCprHHWwJAZ2gD
++EdtToRSKl53qhZCxjXphjHnSJmsJ0Vk53bmKbpZgmhvF1OTiwcZ3EOKjrAoE6Gq3
++hR06dwS3tDlx0OKBwQJAMlt286U7P3/jMVgjHnPFZirVSYa/S2YbZuUNfTm8Rgia
++4wTz6ssG5QK6vNJRZ6gwv1Zjp7P/U2JxRR8mx+5t6w==
+ -----END RSA PRIVATE KEY-----
+diff --git a/tests/certs/Server-localhost-sv.pem b/tests/certs/Server-localhost-sv.pem
+index 77f1844..ee5f3d3 100644
+--- a/tests/certs/Server-localhost-sv.pem
++++ b/tests/certs/Server-localhost-sv.pem
+@@ -24,33 +24,33 @@ commonName_value              = localhost
+ # the certficate
+ # some dhparam
+ -----BEGIN RSA PRIVATE KEY-----
+-MIICXQIBAAKBgQDTb1PtMqFpICJuXGk0PY8UZWHI95kV7KlRQ4d6sEtlxcJ85Erw
+-xyVCGezshFpioE7e+S2GquWyuffoH13GjQexg1SSqGVdLOY74PMOrrJyBUzdhZAW
+-vB8DWSN2vuA47iEFN9ABMX0fPPX9eFbNy4a70egHc6aQ+Tt+nYW8PCp4SQIDAQAB
+-AoGBAMhtVySaAzJxONJfHYdc934BIPHt7BtBbbvQBOSDq+V80wGrM3MNhL8lbldC
+-m5+0kS+DC+oFpJqI+Xz8BtwJooilPuQO3syo5YZuFRee81M8Z5Ss78TG6FLdjt6Z
+-hKQHju+Ghxm08pd2cTaYGDzS3LYsvSXz4TnsdWAVATCwKTSFAkEA8HnPcZdAXiLJ
+-eA2cRAuyEUPjs7B6eR5dLraLrIOtcKs/xJH/W+63hhMjqe9CASuSzVJEr8QxijYN
+-Cdlq3V3XhwJBAOEVk48TZF+gc87sWsBIy+mn3MdovKbmnYM/rzVXYiu2mBQ+nKhp
+-mevRc/UJdkaW8H340wRm1qGMYPCeekRdha8CQCuHcSR3o4Amvd9MX2f10gLMDjCd
+-ll3MQEPPaVMN9tw5M27KmrWybWgImOEO3RzHHWirJqHGWs1Q4WVSBMUTUosCQQDf
+-sz/6HL3PRHqUltcC79apnEmSbgfAoMa/INYTX4uUAl9XD3tG7d0qP/rM9+By+6R8
+-roWahFKgMBJQUlEWDRTFAkAiLYKd8pxw3x3kuk5ItmTiq3JNluMyIA/i3RVW1aVO
+-U5tX8sw6r4wVcsvXVboS/Trjeev2qkqC06ARV7vb6Wq5
++MIICWwIBAAKBgQC91D6D8/7TXD3ZYriEeL2DvQyCgRIh7E1pSAgU/LCsNayPCKWG
++cB+gfvzgtehBpU/LD6b6Nlc6cJKoDtVFmBqvXqHJ5MWSMDsv+K/C7ZCk6TeHjWIv
++RuFQOQ/AmWvCitDG3/wWa5P17CYkjjh/N3Jy7JzappkM5BoSry6w2EtD/wIDAQAB
++AoGALifwN2dZW4z/IN9HHDa7Zc/OveCiRwtM2z9/b5LtZkH6viCNFr4mgoC9/eld
++GrEWULpykD4sQXJjxmcs5ioQuo0y0ircZjdUFK/RzHGZDtw7LR+Ihd9lI7kkSfCW
++kZoekbAdL+mQc1Y637PLikCFbXN5OynlB1tF6S2AbUEJEOECQQD7wNtThQhQemt2
++jiQTmqKhbZvkbM3gTDKpgPHvrlfXfAp5UUzXZP2xdbueMHq+N1Dv7Pnb+poJ5sCH
++4jQ1eu/vAkEAwQf7DiJmHfwtPUirwvKMKfiVnn1ZsNHjcryPUdazUg2WApk+ZLRs
++5nzXbHwrKGExGybhHFsddeqy3BqHHoLc8QJAP2jtFVVNqc+b36mfppxtWBGekWNi
++W5t1q0ICLieQkoL4tGPo4dvbFmacEhUN5XlTVosux9yQDexkFBXCprHHWwJAZ2gD
++EdtToRSKl53qhZCxjXphjHnSJmsJ0Vk53bmKbpZgmhvF1OTiwcZ3EOKjrAoE6Gq3
++hR06dwS3tDlx0OKBwQJAMlt286U7P3/jMVgjHnPFZirVSYa/S2YbZuUNfTm8Rgia
++4wTz6ssG5QK6vNJRZ6gwv1Zjp7P/U2JxRR8mx+5t6w==
+ -----END RSA PRIVATE KEY-----
+ Certificate:
+     Data:
+         Version: 3 (0x2)
+         Serial Number:
+-            0b:5d:0a:89:a5:41
++            0b:95:4c:95:88:3d
+         Signature Algorithm: sha1WithRSAEncryption
+         Issuer:
+             countryName               = NN
+             organizationName          = Edel Curl Arctic Illudium Research Cloud
+             commonName                = Nothern Nowhere Trust Anchor
+         Validity
+-            Not Before: Aug  4 22:07:52 2009 GMT
+-            Not After : Oct 21 22:07:52 2017 GMT
++            Not Before: May 11 13:58:14 2010 GMT
++            Not After : Jul 28 13:58:14 2018 GMT
+         Subject:
+             countryName               = NN
+             organizationName          = Edel Curl Arctic Illudium Research Cloud
+@@ -59,15 +59,15 @@ Certificate:
+             Public Key Algorithm: rsaEncryption
+                 Public-Key: (1024 bit)
+                 Modulus:
+-                    00:d3:6f:53:ed:32:a1:69:20:22:6e:5c:69:34:3d:
+-                    8f:14:65:61:c8:f7:99:15:ec:a9:51:43:87:7a:b0:
+-                    4b:65:c5:c2:7c:e4:4a:f0:c7:25:42:19:ec:ec:84:
+-                    5a:62:a0:4e:de:f9:2d:86:aa:e5:b2:b9:f7:e8:1f:
+-                    5d:c6:8d:07:b1:83:54:92:a8:65:5d:2c:e6:3b:e0:
+-                    f3:0e:ae:b2:72:05:4c:dd:85:90:16:bc:1f:03:59:
+-                    23:76:be:e0:38:ee:21:05:37:d0:01:31:7d:1f:3c:
+-                    f5:fd:78:56:cd:cb:86:bb:d1:e8:07:73:a6:90:f9:
+-                    3b:7e:9d:85:bc:3c:2a:78:49
++                    00:bd:d4:3e:83:f3:fe:d3:5c:3d:d9:62:b8:84:78:
++                    bd:83:bd:0c:82:81:12:21:ec:4d:69:48:08:14:fc:
++                    b0:ac:35:ac:8f:08:a5:86:70:1f:a0:7e:fc:e0:b5:
++                    e8:41:a5:4f:cb:0f:a6:fa:36:57:3a:70:92:a8:0e:
++                    d5:45:98:1a:af:5e:a1:c9:e4:c5:92:30:3b:2f:f8:
++                    af:c2:ed:90:a4:e9:37:87:8d:62:2f:46:e1:50:39:
++                    0f:c0:99:6b:c2:8a:d0:c6:df:fc:16:6b:93:f5:ec:
++                    26:24:8e:38:7f:37:72:72:ec:9c:da:a6:99:0c:e4:
++                    1a:12:af:2e:b0:d8:4b:43:ff
+                 Exponent: 65537 (0x10001)
+         X509v3 extensions:
+             X509v3 Subject Alternative Name: 
+@@ -77,47 +77,47 @@ Certificate:
+             X509v3 Extended Key Usage: 
+                 TLS Web Server Authentication
+             X509v3 Subject Key Identifier: 
+-                53:59:CB:8D:67:CD:E7:63:E2:E5:DD:F0:F8:E1:82:ED:A8:10:38:A3
++                2D:E2:77:05:7D:AF:9A:65:01:D1:D7:8B:81:A1:24:99:D9:1D:51:F9
+             X509v3 Authority Key Identifier: 
+-                keyid:12:6B:24:D2:4A:68:B7:A1:B0:1C:CD:BF:D6:4C:CC:40:5B:7F:E0:40
++                keyid:68:5C:61:AF:9D:48:32:44:2B:D6:33:97:71:7A:B1:FA:34:C8:CA:98
+ 
+             X509v3 Basic Constraints: critical
+                 CA:FALSE
+     Signature Algorithm: sha1WithRSAEncryption
+-        06:3f:b8:df:8e:20:9d:cd:cd:bc:a9:88:eb:2d:f8:e6:f0:15:
+-        fa:14:9c:5f:55:bc:8f:68:40:aa:d2:51:03:ab:09:ee:ee:a6:
+-        d7:8f:32:9a:75:0b:41:35:71:bf:d9:35:03:dd:fd:e5:7d:45:
+-        db:e5:9a:16:14:14:c7:98:a5:c5:b9:4d:81:3a:0c:f9:e0:97:
+-        71:d0:f3:a0:5d:84:ba:83:a8:d8:a0:98:bf:12:48:42:f0:1b:
+-        8a:58:80:16:62:69:bb:96:5a:ce:ac:02:fa:cb:cd:20:30:d0:
+-        fb:23:3a:d3:7b:75:03:c8:c1:20:9e:24:90:d2:61:00:85:63:
+-        e2:f9:a7:52:50:e2:0d:3b:61:f9:b1:d5:5f:64:dd:cb:38:7b:
+-        05:8d:b7:f9:08:8e:bf:d3:02:13:e7:34:fa:3d:bb:af:d7:aa:
+-        de:79:28:f4:ae:87:f5:49:85:42:c7:af:8b:a0:94:ed:21:de:
+-        36:e6:38:a3:0f:75:cf:68:10:48:1d:7d:9b:a2:88:86:bd:b5:
+-        fe:95:4a:c8:fe:77:6b:0a:47:79:ab:d6:35:ea:53:4f:8f:3a:
+-        ba:e1:4c:00:57:b8:99:f9:21:5d:d2:ad:d9:c7:fa:bf:71:73:
+-        49:5d:0b:2c:fd:02:37:94:3c:3e:d7:ef:72:c5:e3:f3:14:9f:
+-        58:27:2a:aa
++        09:2e:e4:98:6f:a4:c5:53:d6:af:8f:d3:42:5d:b7:66:a8:ae:
++        f6:55:06:cb:09:ca:f5:3f:8d:65:92:73:7e:06:05:ff:05:2e:
++        2b:55:a3:44:12:32:1b:ee:e8:74:8b:a8:4a:c1:0c:80:5e:b1:
++        74:a2:00:eb:63:ec:6d:09:f2:67:12:b0:67:0f:20:e0:c4:15:
++        9a:8a:ef:73:0a:e0:d1:e1:2b:68:e3:cb:76:61:59:a2:c5:97:
++        26:00:72:14:4c:52:0f:83:7a:08:61:b1:83:ad:fb:40:85:e8:
++        77:29:91:aa:c3:ad:d2:0d:7f:30:2d:43:88:fd:51:84:b9:eb:
++        52:5d:ca:e2:75:82:93:cf:a8:00:0f:15:f8:e3:80:9e:e4:f2:
++        2c:ba:58:df:7d:89:44:32:cc:36:ed:ea:1a:94:c7:3d:62:8e:
++        2a:52:7e:3a:79:f3:cd:f0:e0:b7:27:9f:b0:aa:cb:76:cf:13:
++        34:f8:3a:15:f2:70:8c:ef:5b:a9:9b:06:49:1a:b1:39:45:07:
++        5e:7e:98:a0:df:0c:ed:9a:cf:41:21:65:8e:03:e5:ea:19:04:
++        39:f6:c3:09:d0:fe:8d:60:5d:d2:7a:98:ae:b8:2d:53:77:f5:
++        e5:de:34:93:92:22:32:18:88:ce:6d:47:bf:cf:b1:0f:75:65:
++        37:ef:26:66
+ -----BEGIN CERTIFICATE-----
+-MIIDQTCCAimgAwIBAgIGC10KiaVBMA0GCSqGSIb3DQEBBQUAMGcxCzAJBgNVBAYT
++MIIDQTCCAimgAwIBAgIGC5VMlYg9MA0GCSqGSIb3DQEBBQUAMGcxCzAJBgNVBAYT
+ Ak5OMTEwLwYDVQQKDChFZGVsIEN1cmwgQXJjdGljIElsbHVkaXVtIFJlc2VhcmNo
+ IENsb3VkMSUwIwYDVQQDDBxOb3RoZXJuIE5vd2hlcmUgVHJ1c3QgQW5jaG9yMB4X
+-DTA5MDgwNDIyMDc1MloXDTE3MTAyMTIyMDc1MlowVDELMAkGA1UEBhMCTk4xMTAv
++DTEwMDUxMTEzNTgxNFoXDTE4MDcyODEzNTgxNFowVDELMAkGA1UEBhMCTk4xMTAv
+ BgNVBAoMKEVkZWwgQ3VybCBBcmN0aWMgSWxsdWRpdW0gUmVzZWFyY2ggQ2xvdWQx
+ EjAQBgNVBAMMCWxvY2FsaG9zdDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA
+-029T7TKhaSAiblxpND2PFGVhyPeZFeypUUOHerBLZcXCfORK8MclQhns7IRaYqBO
+-3vkthqrlsrn36B9dxo0HsYNUkqhlXSzmO+DzDq6ycgVM3YWQFrwfA1kjdr7gOO4h
+-BTfQATF9Hzz1/XhWzcuGu9HoB3OmkPk7fp2FvDwqeEkCAwEAAaOBiTCBhjAUBgNV
++vdQ+g/P+01w92WK4hHi9g70MgoESIexNaUgIFPywrDWsjwilhnAfoH784LXoQaVP
++yw+m+jZXOnCSqA7VRZgar16hyeTFkjA7L/ivwu2QpOk3h41iL0bhUDkPwJlrworQ
++xt/8FmuT9ewmJI44fzdycuyc2qaZDOQaEq8usNhLQ/8CAwEAAaOBiTCBhjAUBgNV
+ HREEDTALgglsb2NhbGhvc3QwCwYDVR0PBAQDAgUgMBMGA1UdJQQMMAoGCCsGAQUF
+-BwMBMB0GA1UdDgQWBBRTWcuNZ83nY+Ll3fD44YLtqBA4ozAfBgNVHSMEGDAWgBQS
+-ayTSSmi3obAczb/WTMxAW3/gQDAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3DQEBBQUA
+-A4IBAQAGP7jfjiCdzc28qYjrLfjm8BX6FJxfVbyPaECq0lEDqwnu7qbXjzKadQtB
+-NXG/2TUD3f3lfUXb5ZoWFBTHmKXFuU2BOgz54Jdx0POgXYS6g6jYoJi/EkhC8BuK
+-WIAWYmm7llrOrAL6y80gMND7IzrTe3UDyMEgniSQ0mEAhWPi+adSUOINO2H5sdVf
+-ZN3LOHsFjbf5CI6/0wIT5zT6Pbuv16reeSj0rof1SYVCx6+LoJTtId425jijD3XP
+-aBBIHX2booiGvbX+lUrI/ndrCkd5q9Y16lNPjzq64UwAV7iZ+SFd0q3Zx/q/cXNJ
+-XQss/QI3lDw+1+9yxePzFJ9YJyqq
++BwMBMB0GA1UdDgQWBBQt4ncFfa+aZQHR14uBoSSZ2R1R+TAfBgNVHSMEGDAWgBRo
++XGGvnUgyRCvWM5dxerH6NMjKmDAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3DQEBBQUA
++A4IBAQAJLuSYb6TFU9avj9NCXbdmqK72VQbLCcr1P41lknN+BgX/BS4rVaNEEjIb
++7uh0i6hKwQyAXrF0ogDrY+xtCfJnErBnDyDgxBWaiu9zCuDR4Sto48t2YVmixZcm
++AHIUTFIPg3oIYbGDrftAheh3KZGqw63SDX8wLUOI/VGEuetSXcridYKTz6gADxX4
++44Ce5PIsuljffYlEMsw27eoalMc9Yo4qUn46efPN8OC3J5+wqst2zxM0+DoV8nCM
++71upmwZJGrE5RQdefpig3wztms9BIWWOA+XqGQQ59sMJ0P6NYF3SepiuuC1Td/Xl
++3jSTkiIyGIjObUe/z7EPdWU37yZm
+ -----END CERTIFICATE-----
+ -----BEGIN DH PARAMETERS-----
+ MIGHAoGBAP5mA7oYimErFUulbvNC8V0HwyB62NCj6TZb6YXJwElCksQc8RyHnkrY
+diff --git a/tests/certs/scripts/genserv.sh b/tests/certs/scripts/genserv.sh
+index 61145d8..a7876e7 100755
+--- a/tests/certs/scripts/genserv.sh
++++ b/tests/certs/scripts/genserv.sh
+@@ -39,7 +39,7 @@ if [ ".$CAPREFIX" = . ] ; then
+ 	NOTOK=1
+ else
+     if [ ! -f $CAPREFIX-ca.cacert ] ; then
+-	echo No CA certficate file $PREFIX-ca.caert
++	echo No CA certficate file $CAPREFIX-ca.caert
+ 	NOTOK=1
+     fi
+     if [ ! -f $CAPREFIX-ca.key ] ; then
+@@ -92,6 +92,16 @@ fi
+ echo "openssl x509 -noout -text -hash -in $PREFIX-sv.selfcert -nameopt multiline"
+ $OPENSSL x509 -noout -text -hash -in $PREFIX-sv.crt -nameopt multiline
+ 
++# revoke server cert
++touch $CAPREFIX-ca.db
++echo 01 > $CAPREFIX-ca.cnt
++echo "openssl ca -config $CAPREFIX-ca.cnf -revoke $PREFIX-sv.crt"
++$OPENSSL ca -config $CAPREFIX-ca.cnf -revoke $PREFIX-sv.crt
++
++# issue CRL
++echo "openssl ca -config $CAPREFIX-ca.cnf -gencrl -out $PREFIX-sv.crl"
++$OPENSSL ca -config $CAPREFIX-ca.cnf -gencrl -out $PREFIX-sv.crl
++
+ echo "openssl x509 -in $PREFIX-sv.crt -outform der -out $PREFIX-sv.der "
+ $OPENSSL x509 -in $PREFIX-sv.crt -outform der -out $PREFIX-sv.der
+ read
+diff --git a/tests/data/Makefile.am b/tests/data/Makefile.am
+index 6f2c090..66ada48 100644
+--- a/tests/data/Makefile.am
++++ b/tests/data/Makefile.am
+@@ -65,7 +65,7 @@ EXTRA_DIST = test1 test108 test117 test127 test20 test27 test34 test46	   \
+  test564 test1101 test1102 test1103 test1104 test299 test310 test311       \
+  test312 test1105 test565 test800 test1106 test801 test566 test802 test803 \
+  test1107 test1108 test1109 test1110 test1111 test1112 test129 test567     \
+- test568 test569 test570 test571 test804 test572
++ test568 test569 test570 test571 test804 test572 test313
+ 
+ filecheck:
+ 	@mkdir test-place; \
+diff --git a/tests/data/test313 b/tests/data/test313
+new file mode 100644
+index 0000000..c54495a
+--- /dev/null
++++ b/tests/data/test313
+@@ -0,0 +1,39 @@
++<testcase>
++<info>
++<keywords>
++HTTPS
++HTTP GET
++PEM certificate
++CRL
++</keywords>
++</info>
++
++#
++# Client-side
++<client>
++<features>
++SSL
++</features>
++<server>
++https Server-localhost-sv.pem
++</server>
++ <name>
++CRL test
++ </name>
++ <command>
++--cacert %SRCDIR/certs/EdelCurlRoot-ca.crt --crlfile %SRCDIR/certs/Server-localhost-sv.crl https://localhost:%HTTPSPORT/313
++</command>
++# Ensure that we're running on localhost because we're checking the host name
++<precheck>
++perl -e "print 'Test requires default test server host' if ( '%HOSTIP' ne '127.0.0.1' );"
++</precheck>
++</client>
++
++#
++# Verify data after the test has been "shot"
++<verify>
++<errorcode>
++60
++</errorcode>
++</verify>
++</testcase>

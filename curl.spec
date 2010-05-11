@@ -17,6 +17,16 @@ Patch1: curl-7.20.1-d487ade.patch
 # upstream commit 82e9b78a388ab539c8784cd853adf6e4a97d52c5
 Patch2: curl-7.20.1-82e9b78.patch
 
+# rhbz #581926
+#   upstream commit 2e8b21833a581cc5389833ec4fdeeaa6fb7be538
+#   upstream commit 3e759f4fb6018b353bd4a1d608be3a3d7b2c9645
+#   upstream commit 016ce4b1daa0f8d44a0da7105e1e1c97531e8b87
+Patch3: curl-7.20.1-crl.patch
+
+# rhbz #581926 - test-case
+#   http://curl.haxx.se/mail/lib-2010-04/0214.html
+Patch4: curl-7.20.1-crl-test.patch
+
 # patch making libcurl multilib ready
 Patch101: curl-7.20.0-multilib.patch
 
@@ -111,6 +121,10 @@ done
 # upstream patches (already applied)
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
+
+# upstream patches (not yet applied)
+%patch4 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -163,7 +177,7 @@ make %{?_smp_mflags}
 
 # make it possible to start a testing OpenSSH server with SELinux
 # in the enforcing mode (#521087)
-gcc -o hide_selinux.so -shared %{SOURCE3}
+gcc -o hide_selinux.so -fPIC -shared %{SOURCE3}
 LD_PRELOAD="`readlink -f ./hide_selinux.so`:$LD_PRELOAD"
 export LD_PRELOAD
 
@@ -226,6 +240,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Apr 28 2010 Kamil Dudka <kdudka@redhat.com> 7.20.1-5
+- CRL support now works again (#581926)
 - make it possible to start a testing OpenSSH server when building with SELinux
   in the enforcing mode (#521087)
 
