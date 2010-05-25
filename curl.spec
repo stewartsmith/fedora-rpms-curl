@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.20.1
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -27,6 +27,9 @@ Patch3: curl-7.20.1-crl.patch
 #   http://curl.haxx.se/mail/lib-2010-04/0214.html
 #   (the CA pass phrase used in the patch is 'libcurl')
 Patch4: curl-7.20.1-crl-test.patch
+
+# upstream commit 47dda4a1d43c9341753388ab3babb0d27cf34840
+Patch5: curl-7.20.1-47dda4a.patch
 
 # patch making libcurl multilib ready
 Patch101: curl-7.20.0-multilib.patch
@@ -123,6 +126,7 @@ done
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch5 -p1
 
 # upstream patches (not yet applied)
 %patch4 -p1
@@ -240,6 +244,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue May 25 2010 Kamil Dudka <kdudka@redhat.com> 7.20.1-6
+- fix -J/--remote-header-name to strip CR-LF (upstream patch)
+
 * Wed Apr 28 2010 Kamil Dudka <kdudka@redhat.com> 7.20.1-5
 - CRL support now works again (#581926)
 - make it possible to start a testing OpenSSH server when building with SELinux

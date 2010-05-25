@@ -1,0 +1,53 @@
+ CHANGES    |    4 ++++
+ src/main.c |   23 ++++++++++++++++++++---
+ 2 files changed, 24 insertions(+), 3 deletions(-)
+
+diff --git a/CHANGES b/CHANGES
+index 7928690..db2d68b 100644
+--- a/CHANGES
++++ b/CHANGES
+@@ -6,6 +6,10 @@
+ 
+                                   Changelog
+ 
++Daniel Stenberg (19 Apr 2010)
++- -J/--remote-header-name didn't strip trailing carriage returns or linefeeds
++  properly, so they could be used in the file name.
++
+ Kamil Dudka (11 May 2010)
+ - CRL support in libcurl-NSS has been completely broken. Now it works. Original
+   bug report: https://bugzilla.redhat.com/581926
+diff --git a/src/main.c b/src/main.c
+index 6e3ef3d..d532846 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -4200,9 +4200,26 @@ parse_filename(char *ptr, size_t len)
+     }
+   }
+ 
+-  q = strrchr(p, quote);
+-  if (q)
+-    *q = 0;
++  if(quote) {
++    /* if the file name started with a quote, then scan for the end quote and
++       stop there */
++    q = strrchr(p, quote);
++    if (q)
++      *q = 0;
++  }
++  else
++    q = NULL; /* no start quote, so no end has been found */
++
++  if(!q) {
++    /* make sure the file name doesn't end in \r or \n */
++    q = strchr(p, '\r');
++    if(q)
++      *q  = 0;
++
++    q = strchr(p, '\n');
++    if(q)
++      *q  = 0;
++  }
+ 
+   if (copy!=p)
+     memmove(copy, p, strlen(p)+1);
