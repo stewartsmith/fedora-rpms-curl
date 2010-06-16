@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.20.1
-Release: 6%{?dist}
+Version: 7.21.0
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -10,26 +10,6 @@ Source3: hide_selinux.c
 
 # upstream commit e32fe30d0cf7c1f7045ac0bd29322e7fb4feb5c8
 Patch0: curl-7.20.0-e32fe30.patch
-
-# upstream commit d487ade72c5f31703ce097e8460e0225fad80348
-Patch1: curl-7.20.1-d487ade.patch
-
-# upstream commit 82e9b78a388ab539c8784cd853adf6e4a97d52c5
-Patch2: curl-7.20.1-82e9b78.patch
-
-# rhbz #581926
-#   upstream commit 2e8b21833a581cc5389833ec4fdeeaa6fb7be538
-#   upstream commit 3e759f4fb6018b353bd4a1d608be3a3d7b2c9645
-#   upstream commit 016ce4b1daa0f8d44a0da7105e1e1c97531e8b87
-Patch3: curl-7.20.1-crl.patch
-
-# rhbz #581926 - test-case
-#   http://curl.haxx.se/mail/lib-2010-04/0214.html
-#   (the CA pass phrase used in the patch is 'libcurl')
-Patch4: curl-7.20.1-crl-test.patch
-
-# upstream commit 47dda4a1d43c9341753388ab3babb0d27cf34840
-Patch5: curl-7.20.1-47dda4a.patch
 
 # patch making libcurl multilib ready
 Patch101: curl-7.20.0-multilib.patch
@@ -40,16 +20,8 @@ Patch102: curl-7.20.0-lrt.patch
 # prevent configure script from discarding -g in CFLAGS (#496778)
 Patch103: curl-7.19.4-debug.patch
 
-# suppress occasional failure of curl test-suite on s390; caused more likely
-# by the test-suite infrastructure than (lib)curl itself
-# http://curl.haxx.se/mail/lib-2009-12/0031.html
-Patch104: curl-7.20.1-test-delay.patch
-
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch105: curl-7.19.7-localhost6.patch
-
-# experimentally enabled threaded DNS lookup
-Patch106: curl-7.20.1-threaded-dns.patch
 
 # exclude test1112 from the test suite (#565305)
 Patch107: curl-7.20.0-disable-test1112.patch
@@ -122,22 +94,11 @@ done
 # revert an upstream commit which breaks Fedora builds
 %patch0 -p1 -R
 
-# upstream patches (already applied)
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch5 -p1
-
-# upstream patches (not yet applied)
-%patch4 -p1
-
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
-%patch104 -p1
 %patch105 -p1
-%patch106 -p1
 
 # exclude test1112 from the test suite (#565305)
 %patch107 -p1
@@ -153,6 +114,7 @@ sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ tests/data/test*
     --enable-ipv6 \
     --enable-ldaps \
     --enable-manual \
+    --enable-threaded-resolver \
     --with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
     --with-gssapi \
     --with-libidn \
@@ -244,6 +206,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Jun 16 2010 Kamil Dudka <kdudka@redhat.com> 7.21.0-1
+- new upstream release, drop applied patches
+
 * Tue May 25 2010 Kamil Dudka <kdudka@redhat.com> 7.20.1-6
 - fix -J/--remote-header-name to strip CR-LF (upstream patch)
 
