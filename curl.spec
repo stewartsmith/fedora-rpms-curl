@@ -9,22 +9,22 @@ Source2: curlbuild.h
 Source3: hide_selinux.c
 
 # upstream commit e32fe30d0cf7c1f7045ac0bd29322e7fb4feb5c8
-Patch0: curl-7.20.0-e32fe30.patch
+Patch0: 0000-curl-7.20.0-e32fe30.patch
 
 # patch making libcurl multilib ready
-Patch101: curl-7.20.0-multilib.patch
+Patch101: 0101-curl-7.20.0-multilib.patch
 
 # force -lrt when linking the curl tool and test-cases
-Patch102: curl-7.20.0-lrt.patch
+Patch102: 0102-curl-7.20.0-lrt.patch
 
 # prevent configure script from discarding -g in CFLAGS (#496778)
-Patch103: curl-7.19.4-debug.patch
+Patch103: 0103-curl-7.19.4-debug.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
-Patch105: curl-7.19.7-localhost6.patch
+Patch104: 0104-curl-7.19.7-localhost6.patch
 
 # exclude test1112 from the test suite (#565305)
-Patch107: curl-7.20.0-disable-test1112.patch
+Patch105: 0105-curl-7.20.0-disable-test1112.patch
 
 Provides: webclient
 URL: http://curl.haxx.se/
@@ -98,10 +98,10 @@ done
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
-%patch105 -p1
+%patch104 -p1
 
 # exclude test1112 from the test suite (#565305)
-%patch107 -p1
+%patch105 -p1
 rm -f tests/data/test1112
 
 autoreconf
