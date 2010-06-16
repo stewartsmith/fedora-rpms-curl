@@ -8,9 +8,6 @@ Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 Source3: hide_selinux.c
 
-# upstream commit e32fe30d0cf7c1f7045ac0bd29322e7fb4feb5c8
-Patch0: 0000-curl-7.20.0-e32fe30.patch
-
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.20.0-multilib.patch
 
@@ -25,6 +22,9 @@ Patch104: 0104-curl-7.19.7-localhost6.patch
 
 # exclude test1112 from the test suite (#565305)
 Patch105: 0105-curl-7.20.0-disable-test1112.patch
+
+# disable valgrind for certain test-cases (libssh2 problem)
+Patch106: 0106-curl-7.21.0-libssh2-valgrind.patch
 
 Provides: webclient
 URL: http://curl.haxx.se/
@@ -94,14 +94,12 @@ for f in CHANGES README; do
     mv -f ${f}.utf8 ${f}
 done
 
-# revert an upstream commit which breaks Fedora builds
-%patch0 -p1 -R
-
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
 %patch104 -p1
+%patch106 -p1
 
 # exclude test1112 from the test suite (#565305)
 %patch105 -p1
@@ -212,6 +210,7 @@ rm -rf $RPM_BUILD_ROOT
 * Wed Jun 16 2010 Kamil Dudka <kdudka@redhat.com> 7.21.0-1
 - new upstream release, drop applied patches
 - update of %%description
+- disable valgrind for certain test-cases (libssh2 problem)
 
 * Tue May 25 2010 Kamil Dudka <kdudka@redhat.com> 7.20.1-6
 - fix -J/--remote-header-name to strip CR-LF (upstream patch)
