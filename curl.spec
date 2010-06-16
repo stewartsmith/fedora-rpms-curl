@@ -49,21 +49,25 @@ BuildRequires: valgrind
 BuildRequires: zlib-devel
 Requires: libcurl = %{version}-%{release}
 
-# TODO: mention also IMAP(S), POP3(S), SMTP(S) and RTSP protocols
 %description
-cURL is a tool for getting files from HTTP, FTP, FILE, LDAP, LDAPS,
-DICT, TELNET and TFTP servers, using any of the supported protocols.
-cURL is designed to work without user interaction or any kind of
-interactivity. cURL offers many useful capabilities, like proxy support,
-user authentication, FTP upload, HTTP post, and file transfer resume.
+curl is a command line tool for transferring data with URL syntax, supporting
+FTP, FTPS, HTTP, HTTPS, SCP, SFTP, TFTP, TELNET, DICT, LDAP, LDAPS, FILE, IMAP,
+SMTP, POP3 and RTSP.  curl supports SSL certificates, HTTP POST, HTTP PUT, FTP
+uploading, HTTP form based upload, proxies, cookies, user+password
+authentication (Basic, Digest, NTLM, Negotiate, kerberos...), file transfer
+resume, proxy tunneling and a busload of other useful tricks. 
 
 %package -n libcurl
 Summary: A library for getting files from web servers
 Group: Development/Libraries
 
 %description -n libcurl
-This package provides a way for applications to use FTP, HTTP, Gopher and
-other servers for getting files.
+libcurl is a free and easy-to-use client-side URL transfer library, supporting
+FTP, FTPS, HTTP, HTTPS, SCP, SFTP, TFTP, TELNET, DICT, LDAP, LDAPS, FILE, IMAP,
+SMTP, POP3 and RTSP. libcurl supports SSL certificates, HTTP POST, HTTP PUT,
+FTP uploading, HTTP form based upload, proxies, cookies, user+password
+authentication (Basic, Digest, NTLM, Negotiate, Kerberos4), file transfer
+resume, http proxy tunneling and more.
 
 %package -n libcurl-devel
 Summary: Files needed for building applications with libcurl
@@ -76,10 +80,9 @@ Provides: curl-devel = %{version}-%{release}
 Obsoletes: curl-devel < %{version}-%{release}
 
 %description -n libcurl-devel
-cURL is a tool for getting files from FTP, HTTP, Gopher, Telnet, and
-Dict servers, using any of the supported protocols. The libcurl-devel
-package includes files needed for developing applications which can
-use cURL's capabilities internally.
+The libcurl-devel package includes header files and libraries necessary for
+developing programs which use the libcurl library. It contains the API
+documentation of the library, too.
 
 %prep
 %setup -q
@@ -208,6 +211,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed Jun 16 2010 Kamil Dudka <kdudka@redhat.com> 7.21.0-1
 - new upstream release, drop applied patches
+- update of %%description
 
 * Tue May 25 2010 Kamil Dudka <kdudka@redhat.com> 7.20.1-6
 - fix -J/--remote-header-name to strip CR-LF (upstream patch)
