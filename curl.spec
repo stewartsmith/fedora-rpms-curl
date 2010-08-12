@@ -1,15 +1,12 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.21.0
-Release: 3%{?dist}
+Version: 7.21.1
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 Source3: hide_selinux.c
-
-# patch adding support for NTLM authentication (#603783)
-Patch1: 0001-curl-7.21.0-ntlm.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.20.0-multilib.patch
@@ -99,9 +96,6 @@ for f in CHANGES README; do
     iconv -f iso-8859-1 -t utf8 < ${f} > ${f}.utf8
     mv -f ${f}.utf8 ${f}
 done
-
-# upstream patches (not yet applied)
-%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -221,6 +215,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Aug 12 2010 Kamil Dudka <kdudka@redhat.com> 7.21.1-1
+- new upstream release
+
 * Mon Jul 12 2010 Dan Horák <dan[at]danny.cz> 7.21.0-3
 - disable test 575 on s390(x)
 
