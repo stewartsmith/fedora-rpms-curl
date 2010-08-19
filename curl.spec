@@ -15,13 +15,13 @@ Patch1: 0001-curl-7.21.1-a6e088e.patch
 Patch2: 0002-curl-7.21.1-5907777.patch
 
 # patch making libcurl multilib ready
-Patch101: 0101-curl-7.20.0-multilib.patch
+Patch101: 0101-curl-7.21.1-multilib.patch
 
 # force -lrt when linking the curl tool and test-cases
-Patch102: 0102-curl-7.20.0-lrt.patch
+Patch102: 0102-curl-7.21.1-lrt.patch
 
 # prevent configure script from discarding -g in CFLAGS (#496778)
-Patch103: 0103-curl-7.19.4-debug.patch
+Patch103: 0103-curl-7.21.1-debug.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
