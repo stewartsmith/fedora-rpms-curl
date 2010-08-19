@@ -1,12 +1,18 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.21.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 Source3: hide_selinux.c
+
+# modify system headers to work around gcc bug (#617757)
+Patch1: 0001-curl-7.21.1-a6e088e.patch
+
+# curl -T now ignores file size of special files (#622520)
+Patch2: 0002-curl-7.21.1-5907777.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.20.0-multilib.patch
@@ -25,9 +31,6 @@ Patch105: 0105-curl-7.20.0-disable-test1112.patch
 
 # disable valgrind for certain test-cases (libssh2 problem)
 Patch106: 0106-curl-7.21.0-libssh2-valgrind.patch
-
-# exclude test575 from the test suite (fails on s390(x))
-Patch107: 0107-curl-7.21.0-disable-test575.patch
 
 Provides: webclient
 URL: http://curl.haxx.se/
@@ -97,6 +100,10 @@ for f in CHANGES README; do
     mv -f ${f}.utf8 ${f}
 done
 
+# upstream patches (already applied)
+%patch1 -p1
+%patch2 -p1
+
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
@@ -107,11 +114,6 @@ done
 # exclude test1112 from the test suite (#565305)
 %patch105 -p1
 rm -f tests/data/test1112
-
-%ifarch s390 s390x
-%patch107 -p1
-rm -f tests/data/test575
-%endif
 
 autoreconf
 
@@ -215,6 +217,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Aug 19 2010 Kamil Dudka <kdudka@redhat.com> 7.21.1-2
+- re-enable test575 on s390(x), already fixed (upstream commit d63bdba)
+- modify system headers to work around gcc bug (#617757)
+- curl -T now ignores file size of special files (#622520)
+
 * Thu Aug 12 2010 Kamil Dudka <kdudka@redhat.com> 7.21.1-1
 - new upstream release
 
