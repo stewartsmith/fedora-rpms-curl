@@ -14,7 +14,7 @@ Patch1: 0001-curl-7.21.1-a6e088e.patch
 # curl -T now ignores file size of special files (#622520)
 Patch2: 0002-curl-7.21.1-5907777.patch
 
-# fix kerberos proxy authentization for https (#625676)
+# fix kerberos proxy authentication for https (#625676)
 Patch3: 0003-curl-7.21.1-13b8fc4.patch
 
 # avoid a warning with autoconf 2.66
@@ -143,6 +143,12 @@ sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ tests/data/test*
 # uncomment to turn off optimizations
 # find -name Makefile | xargs sed -i 's/-O2/-O0/'
 
+# either glibc's implementation of strcasecmp() or its interpretation
+# by valgrind seems to be broken on x86_64 (#626470)
+%ifarch x86_64
+sed -i 's/HAVE_STRCASECMP/HAVE_BROKEN_STRCASECMP/' lib/curl_config.h
+%endif
+
 # Remove bogus rpath
 sed -i \
     -e 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' \
@@ -229,7 +235,8 @@ rm -rf $RPM_BUILD_ROOT
 - re-enable test575 on s390(x), already fixed (upstream commit d63bdba)
 - modify system headers to work around gcc bug (#617757)
 - curl -T now ignores file size of special files (#622520)
-- fix kerberos proxy authentization for https (#625676)
+- fix kerberos proxy authentication for https (#625676)
+- work around glibc/valgrind problem on x86_64 (#626470)
 
 * Thu Aug 12 2010 Kamil Dudka <kdudka@redhat.com> 7.21.1-1
 - new upstream release
