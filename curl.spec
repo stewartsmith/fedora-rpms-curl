@@ -14,6 +14,12 @@ Patch1: 0001-curl-7.21.1-a6e088e.patch
 # curl -T now ignores file size of special files (#622520)
 Patch2: 0002-curl-7.21.1-5907777.patch
 
+# fix kerberos proxy authentization for https (#625676)
+Patch3: 0003-curl-7.21.1-13b8fc4.patch
+
+# avoid a warning with autoconf 2.66
+Patch4: 0004-curl-7.21.1-d0dea8f.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.21.1-multilib.patch
 
@@ -103,6 +109,8 @@ done
 # upstream patches (already applied)
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
+%patch4 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -217,10 +225,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
-* Thu Aug 19 2010 Kamil Dudka <kdudka@redhat.com> 7.21.1-2
+* Mon Aug 23 2010 Kamil Dudka <kdudka@redhat.com> 7.21.1-2
 - re-enable test575 on s390(x), already fixed (upstream commit d63bdba)
 - modify system headers to work around gcc bug (#617757)
 - curl -T now ignores file size of special files (#622520)
+- fix kerberos proxy authentization for https (#625676)
 
 * Thu Aug 12 2010 Kamil Dudka <kdudka@redhat.com> 7.21.1-1
 - new upstream release
