@@ -28,3 +28,25 @@ index 70b0f12..6512ce4 100644
  DEPENDENCIES = $(top_builddir)/lib/libcurl.la
  
  # Makefile.inc provides the source defines (TESTUTIL, SUPPORTFILES,
+--- a/src/Makefile.in
++++ b/src/Makefile.in
+@@ -337,7 +337,7 @@
+ 	writeout.h writeenv.h getpass.h homedir.h curlutil.h
+ 
+ curl_SOURCES = $(CURL_CFILES) $(CURLX_ONES) $(CURL_HFILES)
+-curl_LDADD = $(top_builddir)/lib/libcurl.la @CURL_LIBS@
++curl_LDADD = $(top_builddir)/lib/libcurl.la @CURL_LIBS@ -lrt
+ curl_DEPENDENCIES = $(top_builddir)/lib/libcurl.la
+ BUILT_SOURCES = hugehelp.c
+ CLEANFILES = hugehelp.c
+--- a/tests/libtest/Makefile.in
++++ b/tests/libtest/Makefile.in
+@@ -670,7 +670,7 @@
+ 
+ 
+ # Dependencies (may need to be overriden)
+-LDADD = $(top_builddir)/lib/libcurl.la
++LDADD = $(top_builddir)/lib/libcurl.la -lrt
+ DEPENDENCIES = $(top_builddir)/lib/libcurl.la
+ 
+ # files used only in some libcurl test programs
