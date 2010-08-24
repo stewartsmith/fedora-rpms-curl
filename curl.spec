@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.21.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -41,7 +41,6 @@ Patch106: 0106-curl-7.21.0-libssh2-valgrind.patch
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: automake
 BuildRequires: groff
 BuildRequires: krb5-devel
 BuildRequires: libidn-devel
@@ -84,9 +83,17 @@ resume, http proxy tunneling and more.
 %package -n libcurl-devel
 Summary: Files needed for building applications with libcurl
 Group: Development/Libraries
-Requires: automake
 Requires: libcurl = %{version}-%{release}
+
+# From Fedora 14, %%{_datadir}/aclocal is included in the filesystem package
+%if 0%{?fedora} < 14
+Requires: %{_datadir}/aclocal
+%endif
+
+# From Fedora 11, RHEL-6, pkgconfig dependency is auto-detected
+%if 0%{?fedora} < 11 && 0%{?rhel} < 6
 Requires: pkgconfig
+%endif
 
 Provides: curl-devel = %{version}-%{release}
 Obsoletes: curl-devel < %{version}-%{release}
@@ -122,8 +129,6 @@ done
 # exclude test1112 from the test suite (#565305)
 %patch105 -p1
 rm -f tests/data/test1112
-
-autoreconf
 
 # replace hard wired port numbers in the test suite
 sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ tests/data/test*
@@ -184,8 +189,8 @@ make DESTDIR=$RPM_BUILD_ROOT INSTALL="%{__install} -p" install
 
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
-install -d $RPM_BUILD_ROOT/%{_datadir}/aclocal
-install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT/%{_datadir}/aclocal
+install -d $RPM_BUILD_ROOT%{_datadir}/aclocal
+install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 
 # Make libcurl-devel multilib-ready (bug #488922)
 %if 0%{?__isa_bits} == 64
@@ -231,6 +236,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Aug 24 2010 Paul Howarth <paul@city-fan.org> 7.21.1-3
+- fix up patches so there's no need to run autotools in the rpm build
+- drop buildreq automake
+- drop dependency on automake for devel package from F-14, where
+  %%{_datadir}/aclocal is included in the filesystem package
+- drop dependency on pkgconfig for devel package from F-11, where
+  pkgconfig dependencies are auto-generated
+
 * Mon Aug 23 2010 Kamil Dudka <kdudka@redhat.com> 7.21.1-2
 - re-enable test575 on s390(x), already fixed (upstream commit d63bdba)
 - modify system headers to work around gcc bug (#617757)
