@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.21.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -149,9 +149,13 @@ sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ tests/data/test*
 # find -name Makefile | xargs sed -i 's/-O2/-O0/'
 
 # either glibc's implementation of strcasecmp() or its interpretation
-# by valgrind seems to be broken on x86_64 (#626470)
+# by valgrind seems to be broken on x86_64 (#626470), the same problem
+# appeared with strncasecmp() a while later (#631449)
 %ifarch x86_64
-sed -i 's/HAVE_STRCASECMP/HAVE_BROKEN_STRCASECMP/' lib/curl_config.h
+sed -i \
+    -e 's/HAVE_STRCASECMP/HAVE_BROKEN_STRCASECMP/' \
+    -e 's/HAVE_STRNCASECMP/HAVE_BROKEN_STRNCASECMP/' \
+    lib/curl_config.h
 %endif
 
 # Remove bogus rpath
@@ -236,6 +240,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Sep 07 2010 Kamil Dudka <kdudka@redhat.com> 7.21.1-4
+- work around glibc/valgrind problem on x86_64 (#631449)
+
 * Tue Aug 24 2010 Paul Howarth <paul@city-fan.org> 7.21.1-3
 - fix up patches so there's no need to run autotools in the rpm build
 - drop buildreq automake
