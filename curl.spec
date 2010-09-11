@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.21.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -51,13 +51,16 @@ BuildRequires: openssh-clients
 BuildRequires: openssh-server
 BuildRequires: pkgconfig
 BuildRequires: stunnel
+BuildRequires: zlib-devel
+
+# ssh(1) dies on SIGSEGV when SELinux policy is not installed (#632914)
+BuildRequires: selinux-policy-targeted
 
 # valgrind is not available on s390(x)
 %ifnarch s390 s390x
 BuildRequires: valgrind
 %endif
 
-BuildRequires: zlib-devel
 Requires: libcurl = %{version}-%{release}
 
 %description
@@ -134,13 +137,14 @@ rm -f tests/data/test1112
 sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ tests/data/test*
 
 %build
+[ -x /usr/kerberos/bin/krb5-config ] && KRB5_PREFIX="=/usr/kerberos"
 %configure --disable-static \
     --enable-ipv6 \
     --enable-ldaps \
     --enable-manual \
     --enable-threaded-resolver \
     --with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
-    --with-gssapi \
+    --with-gssapi${KRB5_PREFIX} \
     --with-libidn \
     --with-libssh2 \
     --without-ssl --with-nss
@@ -240,6 +244,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Sat Sep 11 2010 Kamil Dudka <kdudka@redhat.com> 7.21.1-5
+- make it possible to run SCP/SFTP tests on x86_64 (#632914)
+
 * Tue Sep 07 2010 Kamil Dudka <kdudka@redhat.com> 7.21.1-4
 - work around glibc/valgrind problem on x86_64 (#631449)
 
