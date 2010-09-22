@@ -1,33 +1,18 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.21.1
-Release: 6%{?dist}
+Version: 7.21.2
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 Source3: hide_selinux.c
 
-# modify system headers to work around gcc bug (#617757)
-Patch1: 0001-curl-7.21.1-a6e088e.patch
-
-# curl -T now ignores file size of special files (#622520)
-Patch2: 0002-curl-7.21.1-5907777.patch
-
-# fix kerberos proxy authentication for https (#625676)
-Patch3: 0003-curl-7.21.1-13b8fc4.patch
-
-# avoid a warning with autoconf 2.66
-Patch4: 0004-curl-7.21.1-d0dea8f.patch
-
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.21.1-multilib.patch
 
-# force -lrt when linking the curl tool and test-cases
-Patch102: 0102-curl-7.21.1-lrt.patch
-
 # prevent configure script from discarding -g in CFLAGS (#496778)
-Patch103: 0103-curl-7.21.1-debug.patch
+Patch102: 0102-curl-7.21.2-debug.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
@@ -52,9 +37,6 @@ BuildRequires: openssh-server
 BuildRequires: pkgconfig
 BuildRequires: stunnel
 BuildRequires: zlib-devel
-
-# ssh(1) dies on SIGSEGV when SELinux policy is not installed (#632914)
-BuildRequires: selinux-policy-targeted
 
 # valgrind is not available on s390(x)
 %ifnarch s390 s390x
@@ -116,16 +98,9 @@ for f in CHANGES README; do
     mv -f ${f}.utf8 ${f}
 done
 
-# upstream patches (already applied)
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
-%patch103 -p1
 %patch104 -p1
 %patch106 -p1
 
@@ -148,9 +123,8 @@ sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ tests/data/test*
     --with-libidn \
     --with-libssh2 \
     --without-ssl --with-nss
-
-# uncomment to turn off optimizations
-# find -name Makefile | xargs sed -i 's/-O2/-O0/'
+#    --enable-debug
+# use ^^^ to turn off optimizations, etc.
 
 # either glibc's implementation of strcasecmp() or its interpretation
 # by valgrind seems to be broken on x86_64 (#626470), the same problem
@@ -244,6 +218,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Oct 13 2010 Kamil Dudka <kdudka@redhat.com> 7.21.2-1
+- new upstream release, drop applied patches
+- make 0102-curl-7.21.2-debug.patch less intrusive
+
 * Wed Sep 29 2010 jkeating - 7.21.1-6
 - Rebuilt for gcc bug 634757
 
