@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.21.1
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -244,6 +244,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Sep 29 2010 jkeating - 7.21.1-6
+- Rebuilt for gcc bug 634757
+
 * Sat Sep 11 2010 Kamil Dudka <kdudka@redhat.com> 7.21.1-5
 - make it possible to run SCP/SFTP tests on x86_64 (#632914)
 
