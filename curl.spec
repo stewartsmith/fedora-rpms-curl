@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.21.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -45,6 +45,10 @@ BuildRequires: valgrind
 
 Requires: libcurl = %{version}-%{release}
 
+# require at least the version of libssh2 that we were built against,
+# to ensure that we have the necessary symbols available (#525002, #642796)
+%global libssh2_version %(pkg-config --modversion libssh2 2>/dev/null || echo 0)
+
 %description
 curl is a command line tool for transferring data with URL syntax, supporting
 FTP, FTPS, HTTP, HTTPS, SCP, SFTP, TFTP, TELNET, DICT, LDAP, LDAPS, FILE, IMAP,
@@ -56,6 +60,7 @@ resume, proxy tunneling and a busload of other useful tricks.
 %package -n libcurl
 Summary: A library for getting files from web servers
 Group: Development/Libraries
+Requires: libssh2%{?_isa} >= %{libssh2_version}
 
 %description -n libcurl
 libcurl is a free and easy-to-use client-side URL transfer library, supporting
@@ -218,6 +223,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Oct 14 2010 Paul Howarth <paul@city-fan.org> 7.21.2-2
+- enforce versioned libssh2 dependency for libcurl (#642796)
+
 * Wed Oct 13 2010 Kamil Dudka <kdudka@redhat.com> 7.21.2-1
 - new upstream release, drop applied patches
 - make 0102-curl-7.21.2-debug.patch less intrusive
