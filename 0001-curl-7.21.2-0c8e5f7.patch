@@ -1,0 +1,115 @@
+ CHANGES             |   10 ++++++++++
+ lib/ftp.c           |    7 ++++++-
+ tests/data/test1036 |    1 +
+ tests/data/test1057 |    1 +
+ tests/data/test110  |    1 +
+ tests/data/test122  |    1 +
+ tests/data/test135  |    1 +
+ 7 files changed, 21 insertions(+), 1 deletions(-)
+
+diff --git a/CHANGES b/CHANGES
+index c06d213..90ef831 100644
+--- a/CHANGES
++++ b/CHANGES
+@@ -6,6 +6,16 @@
+ 
+                                   Changelog
+ 
++Kamil Dudka (29 Oct 2010)
++- ftp: prevent server from hanging on closed data connection
++  
++  Some FTP servers (e.g. Pure-ftpd) end up hanging if we close the data
++  connection before transferring all the requested data.  If we send ABOR
++  in that case, it prevents the server from hanging.
++  
++  Bug: https://bugzilla.redhat.com/643656
++  Reported by: Pasi Karkkainen, Patrick Monnerat
++
+ Version 7.21.2 (12 Oct 2010)
+ 
+ Daniel Stenberg (12 Oct 2010)
+diff --git a/lib/ftp.c b/lib/ftp.c
+index 60d9517..b11be35 100644
+--- a/lib/ftp.c
++++ b/lib/ftp.c
+@@ -3083,6 +3083,11 @@ static CURLcode ftp_done(struct connectdata *conn, CURLcode status,
+ #endif
+ 
+   if(conn->sock[SECONDARYSOCKET] != CURL_SOCKET_BAD) {
++    if(!result && ftpc->dont_check)
++      /* prevent some FTP servers (namely Pure-ftpd) from hanging if we close
++       * the data channel before transferring all data */
++      result = Curl_pp_sendf(&ftpc->pp, "ABOR");
++
+     if(conn->ssl[SECONDARYSOCKET].use) {
+       /* The secondary socket is using SSL so we must close down that part
+          first before we close the socket for real */
+@@ -3097,7 +3102,7 @@ static CURLcode ftp_done(struct connectdata *conn, CURLcode status,
+     }
+   }
+ 
+-  if((ftp->transfer == FTPTRANSFER_BODY) && ftpc->ctl_valid &&
++  if(!result && (ftp->transfer == FTPTRANSFER_BODY) && ftpc->ctl_valid &&
+      pp->pending_resp && !premature) {
+     /*
+      * Let's see what the server says about the transfer we just performed,
+diff --git a/tests/data/test1036 b/tests/data/test1036
+index b8ebc4f..a31cb45 100644
+--- a/tests/data/test1036
++++ b/tests/data/test1036
+@@ -50,6 +50,7 @@ TYPE I
+ SIZE 1036
+ REST 20
+ RETR 1036
++ABOR
+ QUIT
+ </protocol>
+ <file name="log/curl1036.out">
+diff --git a/tests/data/test1057 b/tests/data/test1057
+index cfb88f2..b4ef20c 100644
+--- a/tests/data/test1057
++++ b/tests/data/test1057
+@@ -45,6 +45,7 @@ TYPE I
+ SIZE 1057
+ REST 52
+ RETR 1057
++ABOR
+ QUIT
+ </protocol>
+ </verify>
+diff --git a/tests/data/test110 b/tests/data/test110
+index b63ba8a..4a094e7 100644
+--- a/tests/data/test110
++++ b/tests/data/test110
+@@ -46,6 +46,7 @@ TYPE I
+ SIZE 110
+ REST 20
+ RETR 110
++ABOR
+ QUIT
+ </protocol>
+ </verify>
+diff --git a/tests/data/test122 b/tests/data/test122
+index fb1dd05..ac60672 100644
+--- a/tests/data/test122
++++ b/tests/data/test122
+@@ -39,6 +39,7 @@ EPSV
+ PASV
+ TYPE I
+ SIZE 122
++ABOR
+ QUIT
+ </protocol>
+ </verify>
+diff --git a/tests/data/test135 b/tests/data/test135
+index a051dba..10eb0ea 100644
+--- a/tests/data/test135
++++ b/tests/data/test135
+@@ -47,6 +47,7 @@ TYPE I
+ SIZE 135
+ REST 4
+ RETR 135
++ABOR
+ QUIT
+ </protocol>
+ </verify>

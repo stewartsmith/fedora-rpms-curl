@@ -1,12 +1,15 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.21.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 Source3: hide_selinux.c
+
+# ftp: prevent server from hanging on closed data connection (#643656)
+Patch1: 0001-curl-7.21.2-0c8e5f7.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.21.1-multilib.patch
@@ -102,6 +105,9 @@ for f in CHANGES README; do
     iconv -f iso-8859-1 -t utf8 < ${f} > ${f}.utf8
     mv -f ${f}.utf8 ${f}
 done
+
+# upstream patches (already applied)
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -223,6 +229,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Oct 29 2010 Kamil Dudka <kdudka@redhat.com> 7.21.2-3
+- prevent FTP server from hanging on closed data connection (#643656)
+
 * Thu Oct 14 2010 Paul Howarth <paul@city-fan.org> 7.21.2-2
 - enforce versioned libssh2 dependency for libcurl (#642796)
 
