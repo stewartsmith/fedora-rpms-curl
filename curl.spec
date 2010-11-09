@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.21.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -10,6 +10,13 @@ Source3: hide_selinux.c
 
 # ftp: prevent server from hanging on closed data connection (#643656)
 Patch1: 0001-curl-7.21.2-0c8e5f7.patch
+
+# ftp: close connection as soon as ABOR has been sent (#649347)
+Patch2: 0002-curl-7.21.2-c6b97a8.patch
+
+# return more appropriate error code in case FTP server session idle
+# timeout has exceeded (#650255)
+Patch3: 0003-curl-7.21.2-bz650255.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.21.1-multilib.patch
@@ -108,6 +115,8 @@ done
 
 # upstream patches (already applied)
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -229,6 +238,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Nov 09 2010 Kamil Dudka <kdudka@redhat.com> 7.21.2-4
+- prevent FTP client from hanging on unrecognized ABOR response (#649347)
+- return more appropriate error code in case FTP server session idle
+  timeout has exceeded (#650255)
+
 * Fri Oct 29 2010 Kamil Dudka <kdudka@redhat.com> 7.21.2-3
 - prevent FTP server from hanging on closed data connection (#643656)
 
