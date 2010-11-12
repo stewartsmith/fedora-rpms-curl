@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.21.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -16,7 +16,10 @@ Patch2: 0002-curl-7.21.2-c6b97a8.patch
 
 # return more appropriate error code in case FTP server session idle
 # timeout has exceeded (#650255)
-Patch3: 0003-curl-7.21.2-bz650255.patch
+Patch3: 0003-curl-7.21.2-12b2412.patch
+
+# do not send QUIT to a dead FTP control connection (#650255)
+Patch4: 0004-curl-7.21.2-bz650255.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.21.1-multilib.patch
@@ -118,6 +121,9 @@ done
 %patch2 -p1
 %patch3 -p1
 
+# upstream patches (not yet applied)
+%patch4 -p1
+
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
@@ -145,16 +151,6 @@ sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ tests/data/test*
     --without-ssl --with-nss
 #    --enable-debug
 # use ^^^ to turn off optimizations, etc.
-
-# either glibc's implementation of strcasecmp() or its interpretation
-# by valgrind seems to be broken on x86_64 (#626470), the same problem
-# appeared with strncasecmp() a while later (#631449)
-%ifarch x86_64
-sed -i \
-    -e 's/HAVE_STRCASECMP/HAVE_BROKEN_STRCASECMP/' \
-    -e 's/HAVE_STRNCASECMP/HAVE_BROKEN_STRNCASECMP/' \
-    lib/curl_config.h
-%endif
 
 # Remove bogus rpath
 sed -i \
@@ -238,6 +234,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Nov 12 2010 Kamil Dudka <kdudka@redhat.com> 7.21.2-5
+- do not send QUIT to a dead FTP control connection (#650255)
+- pull back glibc's implementation of str[n]casecmp(), #626470 appears fixed
+
 * Tue Nov 09 2010 Kamil Dudka <kdudka@redhat.com> 7.21.2-4
 - prevent FTP client from hanging on unrecognized ABOR response (#649347)
 - return more appropriate error code in case FTP server session idle
