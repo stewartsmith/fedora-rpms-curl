@@ -1,25 +1,18 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.21.2
-Release: 5%{?dist}
+Version: 7.21.3
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 Source3: hide_selinux.c
 
-# ftp: prevent server from hanging on closed data connection (#643656)
-Patch1: 0001-curl-7.21.2-0c8e5f7.patch
-
-# ftp: close connection as soon as ABOR has been sent (#649347)
-Patch2: 0002-curl-7.21.2-c6b97a8.patch
-
-# return more appropriate error code in case FTP server session idle
-# timeout has exceeded (#650255)
-Patch3: 0003-curl-7.21.2-12b2412.patch
-
 # do not send QUIT to a dead FTP control connection (#650255)
-Patch4: 0004-curl-7.21.2-bz650255.patch
+Patch4: 0004-curl-7.21.3-bz650255.patch
+
+# Avoid buffer overflow report from glibc with FORTIFY_SOURCE
+Patch5: 0005-curl-7.21.3-tftpd-buffer-overflow.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.21.1-multilib.patch
@@ -31,7 +24,7 @@ Patch102: 0102-curl-7.21.2-debug.patch
 Patch104: 0104-curl-7.19.7-localhost6.patch
 
 # exclude test1112 from the test suite (#565305)
-Patch105: 0105-curl-7.20.0-disable-test1112.patch
+Patch105: 0105-curl-7.21.3-disable-test1112.patch
 
 # disable valgrind for certain test-cases (libssh2 problem)
 Patch106: 0106-curl-7.21.0-libssh2-valgrind.patch
@@ -116,13 +109,9 @@ for f in CHANGES README; do
     mv -f ${f}.utf8 ${f}
 done
 
-# upstream patches (already applied)
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-
 # upstream patches (not yet applied)
 %patch4 -p1
+%patch5 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -234,6 +223,47 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Dec 16 2010 Paul Howarth <paul@city-fan.org> 7.21.3-1
+- update to 7.21.3:
+  - added --noconfigure switch to testcurl.pl
+  - added --xattr option
+  - added CURLOPT_RESOLVE and --resolve
+  - added CURLAUTH_ONLY
+  - added version-check.pl to the examples dir
+  - check for libcurl features for some command line options
+  - Curl_setopt: disallow CURLOPT_USE_SSL without SSL support
+  - http_chunks: remove debug output
+  - URL-parsing: consider ? a divider
+  - SSH: avoid using the libssh2_ prefix
+  - SSH: use libssh2_session_handshake() to work on win64
+  - ftp: prevent server from hanging on closed data connection when stopping
+    a transfer before the end of the full transfer (ranges)
+  - LDAP: detect non-binary attributes properly
+  - ftp: treat server's response 421 as CURLE_OPERATION_TIMEDOUT
+  - gnutls->handshake: improved timeout handling
+  - security: pass the right parameter to init
+  - krb5: use GSS_ERROR to check for error
+  - TFTP: resend the correct data
+  - configure: fix autoconf 2.68 warning: no AC_LANG_SOURCE call detected
+  - GnuTLS: now detects socket errors on Windows
+  - symbols-in-versions: updated en masse
+  - added a couple of examples that were missing from the tarball
+  - Curl_send/recv_plain: return errno on failure
+  - Curl_wait_for_resolv (for c-ares): correct timeout
+  - ossl_connect_common: detect connection re-use
+  - configure: prevent link errors with --librtmp
+  - openldap: use remote port in URL passed to ldap_init_fd()
+  - url: provide dead_connection flag in Curl_handler::disconnect
+  - lots of compiler warning fixes
+  - ssh: fix a download resume point calculation
+  - fix getinfo CURLINFO_LOCAL* for reused connections
+  - multi: the returned running handles counter could turn negative
+  - multi: only ever consider pipelining for connections doing HTTP(S)
+- drop upstream patches now in tarball
+- update bz650255 and disable-test1112 patches to apply against new codebase
+- add workaround for false-positive glibc-detected buffer overflow in tftpd
+  test server with FORTIFY_SOURCE (similar to #515361)
+
 * Fri Nov 12 2010 Kamil Dudka <kdudka@redhat.com> 7.21.2-5
 - do not send QUIT to a dead FTP control connection (#650255)
 - pull back glibc's implementation of str[n]casecmp(), #626470 appears fixed

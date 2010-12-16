@@ -5,7 +5,7 @@ diff --git a/lib/url.c b/lib/url.c
 index 1b65a92..4e2bce6 100644
 --- a/lib/url.c
 +++ b/lib/url.c
-@@ -2886,6 +2886,11 @@ ConnectionExists(struct SessionHandle *data,
+@@ -2910,6 +2910,11 @@
          check->data = data;
          infof(data, "Connection #%ld seems to be dead!\n", i);
  
@@ -14,6 +14,6 @@ index 1b65a92..4e2bce6 100644
 +           * connection */
 +          check->proto.ftpc.ctl_valid = FALSE;
 +
-         Curl_disconnect(check); /* disconnect resources */
+         /* disconnect resources */
+         Curl_disconnect(check, /* dead_connection */ TRUE);
          data->state.connc->connects[i]=NULL; /* nothing here */
- 
