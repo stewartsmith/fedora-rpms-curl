@@ -8,9 +8,6 @@ Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 Source3: hide_selinux.c
 
-# do not send QUIT to a dead FTP control connection (#650255)
-Patch4: 0004-curl-7.21.3-bz650255.patch
-
 # Avoid buffer overflow report from glibc with FORTIFY_SOURCE
 Patch5: 0005-curl-7.21.3-tftpd-buffer-overflow.patch
 
@@ -110,7 +107,6 @@ for f in CHANGES README; do
 done
 
 # upstream patches (not yet applied)
-%patch4 -p1
 %patch5 -p1
 
 # Fedora patches
