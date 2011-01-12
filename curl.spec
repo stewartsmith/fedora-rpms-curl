@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.21.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -125,6 +125,7 @@ sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ tests/data/test*
 %build
 [ -x /usr/kerberos/bin/krb5-config ] && KRB5_PREFIX="=/usr/kerberos"
 %configure --disable-static \
+    --enable-hidden-symbols \
     --enable-ipv6 \
     --enable-ldaps \
     --enable-manual \
@@ -219,6 +220,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Jan 12 2011 Kamil Dudka <kdudka@redhat.com> 7.21.3-2
+- build libcurl with --enable-hidden-symbols
+
 * Thu Dec 16 2010 Paul Howarth <paul@city-fan.org> 7.21.3-1
 - update to 7.21.3:
   - added --noconfigure switch to testcurl.pl
