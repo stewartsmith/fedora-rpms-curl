@@ -8,6 +8,9 @@ Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 Source3: hide_selinux.c
 
+# avoid memory leak on SSL connection failure
+Patch1: 0001-curl-7.21.4-a40f58d.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.21.1-multilib.patch
 
@@ -102,6 +105,9 @@ for f in CHANGES README; do
     iconv -f iso-8859-1 -t utf8 < ${f} > ${f}.utf8
     mv -f ${f}.utf8 ${f}
 done
+
+# upstream patches (already applied)
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -216,6 +222,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Feb 17 2011 Kamil Dudka <kdudka@redhat.com> 7.21.4-1
 - new upstream release
+- avoid memory leak on SSL connection failure (upstream commit a40f58d)
 
 * Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 7.21.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
