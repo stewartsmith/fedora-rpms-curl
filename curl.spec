@@ -26,6 +26,9 @@ Patch105: 0105-curl-7.21.3-disable-test1112.patch
 # disable valgrind for certain test-cases (libssh2 problem)
 Patch106: 0106-curl-7.21.0-libssh2-valgrind.patch
 
+# work around valgrind bug (#678518)
+Patch107: 0107-curl-7.21.4-libidn-valgrind.patch
+
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -114,6 +117,7 @@ done
 %patch102 -p1
 %patch104 -p1
 %patch106 -p1
+%patch107 -p1
 
 # exclude test1112 from the test suite (#565305)
 %patch105 -p1
@@ -220,9 +224,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
-* Thu Feb 17 2011 Kamil Dudka <kdudka@redhat.com> 7.21.4-1
+* Fri Feb 18 2011 Kamil Dudka <kdudka@redhat.com> 7.21.4-1
 - new upstream release
 - avoid memory leak on SSL connection failure (upstream commit a40f58d)
+- work around valgrind bug (#678518)
 
 * Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 7.21.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
