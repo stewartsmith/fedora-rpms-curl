@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.21.4
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -10,6 +10,9 @@ Source3: hide_selinux.c
 
 # avoid memory leak on SSL connection failure
 Patch1: 0001-curl-7.21.4-a40f58d.patch
+
+# do not ignore failure of SSL handshake
+Patch2: 0002-curl-7.21.4-7aa2d10.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.21.1-multilib.patch
@@ -111,6 +114,7 @@ done
 
 # upstream patches (already applied)
 %patch1 -p1
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -224,6 +228,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Feb 22 2011 Kamil Dudka <kdudka@redhat.com> 7.21.4-2
+- do not ignore failure of SSL handshake (upstream commit 7aa2d10)
+
 * Fri Feb 18 2011 Kamil Dudka <kdudka@redhat.com> 7.21.4-1
 - new upstream release
 - avoid memory leak on SSL connection failure (upstream commit a40f58d)

@@ -1,0 +1,44 @@
+From 1f009bb739514d08efef093adf5e1813db6333ec Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Tue, 22 Feb 2011 13:13:53 +0100
+Subject: [PATCH] nss: do not ignore failure of SSL handshake
+
+Flaw introduced in fc77790 and present in curl-7.21.4.
+Bug: https://bugzilla.redhat.com/669702#c16
+---
+ lib/nss.c |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/lib/nss.c b/lib/nss.c
+index d26ad5b..be26253 100644
+--- a/lib/nss.c
++++ b/lib/nss.c
+@@ -1157,7 +1157,7 @@ CURLcode Curl_nss_connect(struct connectdata *conn, int sockindex)
+   struct SessionHandle *data = conn->data;
+   curl_socket_t sockfd = conn->sock[sockindex];
+   struct ssl_connect_data *connssl = &conn->ssl[sockindex];
+-  int curlerr;
++  CURLcode curlerr;
+   const int *cipher_to_enable;
+   PRSocketOptionData sock_opt;
+   long time_left;
+@@ -1289,9 +1289,13 @@ CURLcode Curl_nss_connect(struct connectdata *conn, int sockindex)
+                            NULL) != SECSuccess)
+     goto error;
+ 
+-  if(data->set.ssl.verifypeer && (CURLE_OK !=
+-        (curlerr = nss_load_ca_certificates(conn, sockindex))))
+-    goto error;
++  if(data->set.ssl.verifypeer) {
++    const CURLcode rv = nss_load_ca_certificates(conn, sockindex);
++    if(CURLE_OK != rv) {
++      curlerr = rv;
++      goto error;
++    }
++  }
+ 
+   if (data->set.ssl.CRLfile) {
+     if(SECSuccess != nss_load_crl(data->set.ssl.CRLfile)) {
+-- 
+1.7.4
+
