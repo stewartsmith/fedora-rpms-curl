@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.21.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -47,8 +47,8 @@ BuildRequires: pkgconfig
 BuildRequires: stunnel
 BuildRequires: zlib-devel
 
-# valgrind is not available on s390(x)
-%ifnarch s390 s390x
+# valgrind is not available on s390(x) or sparc
+%ifnarch s390 s390x %{sparc}
 BuildRequires: valgrind
 %endif
 
@@ -228,6 +228,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Sat Mar 05 2011 Dennis Gilmore <dennis@ausil.us> 7.21.4-3
+- no valgrind on sparc arches
+
 * Tue Feb 22 2011 Kamil Dudka <kdudka@redhat.com> 7.21.4-2
 - do not ignore failure of SSL handshake (upstream commit 7aa2d10)
 
