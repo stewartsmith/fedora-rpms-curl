@@ -228,7 +228,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
-* Sat Arp 16 2011 Peter Robinson <pbrobinson@gmail.com> 7.21.4-3
+* Sat Apr 16 2011 Peter Robinson <pbrobinson@gmail.com> 7.21.4-4
 - no valgrind on ARMv5 arches
 
 * Sat Mar 05 2011 Dennis Gilmore <dennis@ausil.us> 7.21.4-3
