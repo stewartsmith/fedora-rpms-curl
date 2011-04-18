@@ -1,18 +1,12 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.21.4
-Release: 4%{?dist}
+Version: 7.21.5
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 Source3: hide_selinux.c
-
-# avoid memory leak on SSL connection failure
-Patch1: 0001-curl-7.21.4-a40f58d.patch
-
-# do not ignore failure of SSL handshake
-Patch2: 0002-curl-7.21.4-7aa2d10.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.21.1-multilib.patch
@@ -111,10 +105,6 @@ for f in CHANGES README; do
     iconv -f iso-8859-1 -t utf8 < ${f} > ${f}.utf8
     mv -f ${f}.utf8 ${f}
 done
-
-# upstream patches (already applied)
-%patch1 -p1
-%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -228,6 +218,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Apr 18 2011 Kamil Dudka <kdudka@redhat.com> 7.21.5-1
+- new upstream release
+
 * Sat Apr 16 2011 Peter Robinson <pbrobinson@gmail.com> 7.21.4-4
 - no valgrind on ARMv5 arches
 
