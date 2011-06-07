@@ -19,7 +19,7 @@ diff --git a/tests/data/Makefile.in b/tests/data/Makefile.in
 index 435b126..1d71c4e 100644
 --- a/tests/data/Makefile.in
 +++ b/tests/data/Makefile.in
-@@ -307,7 +307,7 @@ EXTRA_DIST = test1 test108 test117 test1
+@@ -308,7 +308,7 @@ EXTRA_DIST = test1 test108 test117 test1
   test561 test1098 test1099 test562 test563 test1100 test564 test1101	   \
   test1102 test1103 test1104 test299 test310 test311 test312 test1105	   \
   test565 test800 test1106 test801 test566 test802 test803 test1107	   \
