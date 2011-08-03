@@ -416,21 +416,38 @@ Subject: [PATCH 2/2] curl_gssapi: add a missing include of sendf.h
 
 Reported by: Paul Howarth
 ---
- lib/curl_gssapi.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ lib/curl_gssapi.c |    3 ++-
+ lib/curl_gssapi.h |    2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/lib/curl_gssapi.c b/lib/curl_gssapi.c
 index e55c9cc..d1b1715 100644
 --- a/lib/curl_gssapi.c
 +++ b/lib/curl_gssapi.c
-@@ -25,6 +25,7 @@
+@@ -25,8 +25,9 @@
  #ifdef HAVE_GSSAPI
  
  #include "curl_gssapi.h"
 +#include "sendf.h"
  
- void Curl_gss_req_flags(OM_uint32 *req_flags, const struct SessionHandle *data)
+-void Curl_gss_req_flags(OM_uint32 *req_flags, const struct SessionHandle *data)
++void Curl_gss_req_flags(OM_uint32 *req_flags, struct SessionHandle *data)
  {
+   if(data->set.gssapi_delegation & CURLGSSAPI_DELEGATION_POLICY_FLAG) {
+ #ifdef GSS_C_DELEG_POLICY_FLAG
+diff --git a/lib/curl_gssapi.h b/lib/curl_gssapi.h
+index 02aa527..c8ffefc 100644
+--- a/lib/curl_gssapi.h
++++ b/lib/curl_gssapi.h
+@@ -39,7 +39,7 @@
+ #  include <gssapi.h>
+ #endif
+ 
+-void Curl_gss_req_flags(OM_uint32 *req_flags, const struct SessionHandle *data);
++void Curl_gss_req_flags(OM_uint32 *req_flags, struct SessionHandle *data);
+ 
+ #endif /* HAVE_GSSAPI */
+ 
 -- 
 1.7.4.4
 
