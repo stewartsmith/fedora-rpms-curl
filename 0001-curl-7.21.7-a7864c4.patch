@@ -1,7 +1,7 @@
 From fd86734fca0945b2d6b90d6d7d0224cf0732114a Mon Sep 17 00:00:00 2001
 From: Kamil Dudka <kdudka@redhat.com>
 Date: Wed, 3 Aug 2011 12:48:49 +0200
-Subject: [PATCH] curl - rhbz #719939
+Subject: [PATCH 1/2] curl - rhbz #719939
 
 ---
  docs/libcurl/curl_easy_setopt.3  |    8 ++++++
@@ -403,6 +403,34 @@ index d256968..d3cfec3 100644
  };
  
  struct Names {
+-- 
+1.7.4.4
+
+
+From d4ea7258b1703497fd0c06e08369a6bd3e37d2e8 Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Wed, 3 Aug 2011 18:00:07 +0200
+Subject: [PATCH 2/2] curl_gssapi: add a missing include of sendf.h
+
+... to avoid build failure when GSS_C_DELEG_POLICY_FLAG is not defined.
+
+Reported by: Paul Howarth
+---
+ lib/curl_gssapi.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/lib/curl_gssapi.c b/lib/curl_gssapi.c
+index e55c9cc..d1b1715 100644
+--- a/lib/curl_gssapi.c
++++ b/lib/curl_gssapi.c
+@@ -25,6 +25,7 @@
+ #ifdef HAVE_GSSAPI
+ 
+ #include "curl_gssapi.h"
++#include "sendf.h"
+ 
+ void Curl_gss_req_flags(OM_uint32 *req_flags, const struct SessionHandle *data)
+ {
 -- 
 1.7.4.4
 
