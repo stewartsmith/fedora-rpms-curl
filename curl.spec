@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.21.7
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -10,6 +10,15 @@ Source3: hide_selinux.c
 
 # add a new option CURLOPT_GSSAPI_DELEGATION (#719939)
 Patch1: 0001-curl-7.21.7-a7864c4.patch
+
+# fix SIGSEGV of curl -O -J given more than one URLs (#723075)
+Patch2: 0002-curl-7.21.7-5eb2396.patch
+
+# introduce the --delegation option of curl (#730444)
+Patch3: 0003-curl-7.21.7-5538904.patch
+
+# initialize NSS with no database if the selected database is broken (#728562)
+Patch4: 0004-curl-7.21.7-d6f319f.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.21.1-multilib.patch
@@ -111,6 +120,9 @@ done
 
 # upstream patches (already applied)
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -224,6 +236,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Aug 15 2011 Kamil Dudka <kdudka@redhat.com> 7.21.7-3
+- fix SIGSEGV of curl -O -J given more than one URLs (#723075)
+- introduce the --delegation option of curl (#730444)
+- initialize NSS with no database if the selected database is broken (#728562)
+
 * Wed Aug 03 2011 Kamil Dudka <kdudka@redhat.com> 7.21.7-2
 - add a new option CURLOPT_GSSAPI_DELEGATION (#719939)
 
