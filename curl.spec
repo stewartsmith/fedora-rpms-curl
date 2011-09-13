@@ -1,25 +1,12 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.21.7
-Release: 4%{?dist}
+Version: 7.22.0
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 Source3: hide_selinux.c
-
-# add a new option CURLOPT_GSSAPI_DELEGATION (#719939)
-Patch1: 0001-curl-7.21.7-a7864c4.patch
-
-# fix SIGSEGV of curl -O -J given more than one URLs (#723075)
-Patch2: 0002-curl-7.21.7-5eb2396.patch
-Patch5: 0005-curl-7.21.7-61ae7e9.patch
-
-# introduce the --delegation option of curl (#730444)
-Patch3: 0003-curl-7.21.7-5538904.patch
-
-# initialize NSS with no database if the selected database is broken (#728562)
-Patch4: 0004-curl-7.21.7-d6f319f.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.21.1-multilib.patch
@@ -118,13 +105,6 @@ for f in CHANGES README; do
     iconv -f iso-8859-1 -t utf8 < ${f} > ${f}.utf8
     mv -f ${f}.utf8 ${f}
 done
-
-# upstream patches (already applied)
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -238,6 +218,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Sep 13 2011 Kamil Dudka <kdudka@redhat.com> 7.22.0-1
+- new upstream release
+- curl-config now provides dummy --static-libs option (#733956)
+
 * Sun Aug 21 2011 Paul Howarth <paul@city-fan.org> 7.21.7-4
 - actually fix SIGSEGV of curl -O -J given more than one URL (#723075)
 
