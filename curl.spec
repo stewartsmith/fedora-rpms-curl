@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.23.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -170,6 +170,10 @@ gcc -o hide_selinux.so -fPIC -shared %{SOURCE3}
 LD_PRELOAD="`readlink -f ./hide_selinux.so`:$LD_PRELOAD"
 export LD_PRELOAD
 
+# workaround for bug #760060
+NSS_SSL_CBC_RANDOM_IV=0
+export NSS_SSL_CBC_RANDOM_IV
+
 # use different port range for 32bit and 64bit build, thus make it possible
 # to run both in parallel on the same machine
 ./runtests.pl -a -b%{?__isa_bits}90 -p -v
@@ -228,6 +232,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Dec 27 2011 Kamil Dudka <kdudka@redhat.com> 7.23.0-4
+- allow to run FTPS tests with nss-3.13 (#760060)
+
 * Sun Dec 25 2011 Kamil Dudka <kdudka@redhat.com> 7.23.0-3
 - avoid unnecessary timeout event when waiting for 100-continue (#767490)
 
