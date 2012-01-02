@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.23.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -13,6 +13,9 @@ Patch1: 0001-curl-7.23.0-c532604.patch
 
 # transfer: avoid unnecessary timeout event when waiting for 100-continue
 Patch2: 0002-curl-7.23.0-9f7f6a6.patch
+
+# do not skip FTPS tests with nss-3.13
+Patch3: 0003-curl-7.23.0-e99128a.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.21.1-multilib.patch
@@ -115,6 +118,7 @@ done
 # upstream patches
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -169,10 +173,6 @@ make %{?_smp_mflags}
 gcc -o hide_selinux.so -fPIC -shared %{SOURCE3}
 LD_PRELOAD="`readlink -f ./hide_selinux.so`:$LD_PRELOAD"
 export LD_PRELOAD
-
-# workaround for bug #760060
-NSS_SSL_CBC_RANDOM_IV=0
-export NSS_SSL_CBC_RANDOM_IV
 
 # use different port range for 32bit and 64bit build, thus make it possible
 # to run both in parallel on the same machine
@@ -232,6 +232,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Jan 02 2012 Kamil Dudka <kdudka@redhat.com> 7.23.0-5
+- upstream patch that allows to run FTPS tests with nss-3.13 (#760060)
+
 * Tue Dec 27 2011 Kamil Dudka <kdudka@redhat.com> 7.23.0-4
 - allow to run FTPS tests with nss-3.13 (#760060)
 
