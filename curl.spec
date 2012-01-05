@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.23.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -232,6 +232,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Jan 05 2012 Paul Howarth <paul@city-fan.org> 7.23.0-6
+- rebuild for gcc 4.7
+
 * Mon Jan 02 2012 Kamil Dudka <kdudka@redhat.com> 7.23.0-5
 - upstream patch that allows to run FTPS tests with nss-3.13 (#760060)
 
