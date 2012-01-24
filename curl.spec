@@ -218,7 +218,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
-* Wed Jan 24 2012 Kamil Dudka <kdudka@redhat.com> 7.24.0-1
+* Tue Jan 24 2012 Kamil Dudka <kdudka@redhat.com> 7.24.0-1
 - new upstream release (fixes CVE-2012-0036)
 
 * Thu Jan 05 2012 Paul Howarth <paul@city-fan.org> 7.23.0-6
