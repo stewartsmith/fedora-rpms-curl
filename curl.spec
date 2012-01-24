@@ -1,21 +1,12 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.23.0
-Release: 6%{?dist}
+Version: 7.24.0
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 Source3: hide_selinux.c
-
-# -J -O: use -O name if no Content-Disposition header comes!
-Patch1: 0001-curl-7.23.0-c532604.patch
-
-# transfer: avoid unnecessary timeout event when waiting for 100-continue
-Patch2: 0002-curl-7.23.0-9f7f6a6.patch
-
-# do not skip FTPS tests with nss-3.13
-Patch3: 0003-curl-7.23.0-e99128a.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.21.1-multilib.patch
@@ -114,11 +105,6 @@ for f in CHANGES README; do
     iconv -f iso-8859-1 -t utf8 < ${f} > ${f}.utf8
     mv -f ${f}.utf8 ${f}
 done
-
-# upstream patches
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -232,6 +218,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Jan 24 2012 Kamil Dudka <kdudka@redhat.com> 7.24.0-1
+- new upstream release (fixes CVE-2012-0036)
+
 * Thu Jan 05 2012 Paul Howarth <paul@city-fan.org> 7.23.0-6
 - rebuild for gcc 4.7
 
