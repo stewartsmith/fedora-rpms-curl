@@ -1,6 +1,6 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.24.0
+Version: 7.25.0
 Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
@@ -9,10 +9,10 @@ Source2: curlbuild.h
 Source3: hide_selinux.c
 
 # patch making libcurl multilib ready
-Patch101: 0101-curl-7.21.1-multilib.patch
+Patch101: 0101-curl-7.25.0-multilib.patch
 
 # prevent configure script from discarding -g in CFLAGS (#496778)
-Patch102: 0102-curl-7.21.2-debug.patch
+Patch102: 0102-curl-7.25.0-debug.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
@@ -26,9 +26,13 @@ Patch106: 0106-curl-7.21.0-libssh2-valgrind.patch
 # work around valgrind bug (#678518)
 Patch107: 0107-curl-7.21.4-libidn-valgrind.patch
 
+# Fix character encoding of docs, which are of mixed encoding originally so
+# a simple iconv can't fix them
+Patch108: 0108-curl-7.25.0-utf8.patch
+
 Provides: webclient
 URL: http://curl.haxx.se/
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(id -nu)
 BuildRequires: groff
 BuildRequires: krb5-devel
 BuildRequires: libidn-devel
@@ -99,26 +103,22 @@ documentation of the library, too.
 %prep
 %setup -q
 
-# Convert docs to UTF-8
-# NOTE: we do this _before_ applying of all patches, which are already UTF-8
-for f in CHANGES README; do
-    iconv -f iso-8859-1 -t utf8 < ${f} > ${f}.utf8
-    mv -f ${f}.utf8 ${f}
-done
-
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
 %patch104 -p1
 %patch106 -p1
 %patch107 -p1
+%patch108 -p1
 
 # exclude test1112 from the test suite (#565305)
 %patch105 -p1
 rm -f tests/data/test1112
 
 # replace hard wired port numbers in the test suite
-sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ tests/data/test*
+cd tests/data/
+sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ test*
+cd -
 
 %build
 [ -x /usr/kerberos/bin/krb5-config ] && KRB5_PREFIX="=/usr/kerberos"
@@ -167,7 +167,7 @@ export LD_PRELOAD
 %install
 rm -rf $RPM_BUILD_ROOT
 
-make DESTDIR=$RPM_BUILD_ROOT INSTALL="%{__install} -p" install
+make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install
 
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
@@ -218,6 +218,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Mar 23 2012 Paul Howarth <paul@city-fan.org> 7.25.0-1
+- new upstream release (#806264)
+- fix character encoding of docs with a patch rather than just iconv
+- update debug and multilib patches
+- don't use macros for commands
+- reduce size of %%prep output for readability
+
 * Tue Jan 24 2012 Kamil Dudka <kdudka@redhat.com> 7.24.0-1
 - new upstream release (fixes CVE-2012-0036)
 
