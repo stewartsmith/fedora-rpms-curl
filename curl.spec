@@ -11,6 +11,9 @@ Source3: hide_selinux.c
 # use NSS_InitContext() to initialize NSS if available (#738456)
 Patch1: 0001-curl-7.25.00-20cb12db.patch
 
+# provide human-readable names for NSS errors (upstream commit a60edcc6)
+Patch2: 0002-curl-7.25.00-a60edcc6.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.25.0-multilib.patch
 
@@ -108,6 +111,7 @@ documentation of the library, too.
 
 # upstream patches
 %patch1 -p1
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -226,6 +230,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Fri Apr 13 2012 Kamil Dudka <kdudka@redhat.com> 7.25.0-2
 - use NSS_InitContext() to initialize NSS if available (#738456)
+- provide human-readable names for NSS errors (upstream commit a60edcc6)
 
 * Fri Mar 23 2012 Paul Howarth <paul@city-fan.org> 7.25.0-1
 - new upstream release (#806264)
