@@ -9,10 +9,10 @@ Source2: curlbuild.h
 Source3: hide_selinux.c
 
 # use NSS_InitContext() to initialize NSS if available (#738456)
-Patch1: 0001-curl-7.25.00-20cb12db.patch
+Patch1: 0001-curl-7.25.0-20cb12db.patch
 
 # provide human-readable names for NSS errors (upstream commit a60edcc6)
-Patch2: 0002-curl-7.25.00-a60edcc6.patch
+Patch2: 0002-curl-7.25.0-a60edcc6.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.25.0-multilib.patch
