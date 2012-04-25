@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.25.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -52,7 +52,7 @@ BuildRequires: stunnel
 BuildRequires: zlib-devel
 
 # valgrind is not available on s390(x), sparc or arm5
-%ifnarch s390 s390x %{sparc} %{arm}
+%ifnarch s390 s390x %{sparc} %{arm} ppc pp64
 BuildRequires: valgrind
 %endif
 
@@ -228,6 +228,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Apr 25 2012 Karsten Hopp <karsten@redhat.com> 7.25.0-3
+- drop BR valgrind on PPC(64) until bugzilla #810992 gets fixed
+
 * Fri Apr 13 2012 Kamil Dudka <kdudka@redhat.com> 7.25.0-2
 - use NSS_InitContext() to initialize NSS if available (#738456)
 - provide human-readable names for NSS errors (upstream commit a60edcc6)
