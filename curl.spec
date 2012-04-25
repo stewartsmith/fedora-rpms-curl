@@ -52,7 +52,7 @@ BuildRequires: stunnel
 BuildRequires: zlib-devel
 
 # valgrind is not available on s390(x), sparc or arm5
-%ifnarch s390 s390x %{sparc} %{arm} ppc pp64
+%ifnarch s390 s390x %{sparc} %{arm} ppc
 BuildRequires: valgrind
 %endif
 
@@ -228,6 +228,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Apr 25 2012 Karsten Hopp <karsten@redhat.com> 7.25.0-3
+- valgrind on ppc64 works fine, disable ppc32 only
+
 * Wed Apr 25 2012 Karsten Hopp <karsten@redhat.com> 7.25.0-3
 - drop BR valgrind on PPC(64) until bugzilla #810992 gets fixed
 
