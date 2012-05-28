@@ -1,12 +1,15 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.26.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 Source3: hide_selinux.c
+
+# use human-readable error messages provided by NSS
+Patch1: 0001-curl-7.26.0-72f4b534.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.25.0-multilib.patch
@@ -102,6 +105,9 @@ documentation of the library, too.
 
 %prep
 %setup -q
+
+# upstream patches
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -221,6 +227,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon May 28 2012 Kamil Dudka <kdudka@redhat.com> 7.26.0-2
+- use human-readable error messages provided by NSS (upstream commit 72f4b534)
+
 * Fri May 25 2012 Kamil Dudka <kdudka@redhat.com> 7.26.0-1
 - new upstream release
 
