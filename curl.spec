@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.26.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -32,6 +32,9 @@ Patch107: 0107-curl-7.21.4-libidn-valgrind.patch
 # Fix character encoding of docs, which are of mixed encoding originally so
 # a simple iconv can't fix them
 Patch108: 0108-curl-7.26.0-utf8.patch
+
+# server timeout on ppc64
+Patch109: 0109-curl-7.26.0-disable-test1319.patch
 
 Provides: webclient
 URL: http://curl.haxx.se/
@@ -116,6 +119,9 @@ documentation of the library, too.
 %patch106 -p1
 %patch107 -p1
 %patch108 -p1
+%ifarch ppc64
+%patch109 -p1
+%endif
 
 # exclude test1112 from the test suite (#565305)
 %patch105 -p1
@@ -227,6 +233,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed May 30 2012 Karsten Hopp <karsten@redhat.com> 7.26.0-3
+- disable test 1319 on ppc64, server times out
+
 * Mon May 28 2012 Kamil Dudka <kdudka@redhat.com> 7.26.0-2
 - use human-readable error messages provided by NSS (upstream commit 72f4b534)
 
