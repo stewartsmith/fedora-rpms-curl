@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.26.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -10,6 +10,9 @@ Source3: hide_selinux.c
 
 # use human-readable error messages provided by NSS
 Patch1: 0001-curl-7.26.0-72f4b534.patch
+
+# fix duplicated SSL handshake with multi interface and proxy (#788526)
+Patch2: 0002-curl-7.26.0-68857e40.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.25.0-multilib.patch
@@ -111,6 +114,7 @@ documentation of the library, too.
 
 # upstream patches
 %patch1 -p1
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -233,6 +237,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Sat Jun 09 2012 Kamil Dudka <kdudka@redhat.com> 7.26.0-4
+- fix duplicated SSL handshake with multi interface and proxy (#788526)
+
 * Wed May 30 2012 Karsten Hopp <karsten@redhat.com> 7.26.0-3
 - disable test 1319 on ppc64, server times out
 
