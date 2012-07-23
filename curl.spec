@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.26.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -13,6 +13,9 @@ Patch1: 0001-curl-7.26.0-72f4b534.patch
 
 # fix duplicated SSL handshake with multi interface and proxy (#788526)
 Patch2: 0002-curl-7.26.0-68857e40.patch
+
+# print reason phrase from HTTP status line on error (#676596)
+Patch3: 0003-curl-7.26.0-d317ca50.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.25.0-multilib.patch
@@ -115,6 +118,7 @@ documentation of the library, too.
 # upstream patches
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -237,6 +241,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Jul 23 2012 Kamil Dudka <kdudka@redhat.com> 7.26.0-6
+- print reason phrase from HTTP status line on error (#676596)
+
 * Wed Jul 18 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 7.26.0-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
