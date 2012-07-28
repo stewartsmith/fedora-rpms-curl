@@ -1,12 +1,30 @@
- CHANGES |   18 +++++++++---------
+ CHANGES |   16 ++++++++--------
  README  |    2 +-
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/CHANGES b/CHANGES
 index 2335841..d4d37c2 100644
 --- a/CHANGES
 +++ b/CHANGES
-@@ -604,18 +604,18 @@ Daniel Stenberg (1 Apr 2012)
+@@ -272,7 +272,7 @@ Daniel Stenberg (9 Jul 2012)
+ 
+ - cookie: fixed typo in comment
+ 
+-- [Christian Hägele brought this change]
++- [Christian HÃ¤gele brought this change]
+ 
+   https_getsock: provided for schannel backend as well
+   
+@@ -454,7 +454,7 @@ Yang Tse (3 Jul 2012)
+   testcurl.pl: fix missing semicolon
+ 
+ Daniel Stenberg (2 Jul 2012)
+-- [Christian Hägele brought this change]
++- [Christian HÃ¤gele brought this change]
+ 
+   unicode NTLM SSPI: heap corruption fixed
+   
+@@ -2563,18 +2563,18 @@ Daniel Stenberg (1 Apr 2012)
    Reported by: Michael Wallner
  
  Steve Holme (31 Mar 2012)
@@ -28,7 +46,7 @@ index 2335841..d4d37c2 100644
  
    md5: Add support for calculating the md5 sum of buffers incrementally
    
-@@ -1913,7 +1913,7 @@ Daniel Stenberg (20 Dec 2011)
+@@ -3866,7 +3866,7 @@ Daniel Stenberg (20 Dec 2011)
    This offers an alternative to the existing Curl_socket_ready() API which
    only checks one socket for read and one for write.
  
@@ -37,7 +55,7 @@ index 2335841..d4d37c2 100644
  
    curl.h: add __ANDROID__ macro check
    
-@@ -2126,7 +2126,7 @@ Daniel Stenberg (12 Dec 2011)
+@@ -4079,7 +4079,7 @@ Daniel Stenberg (12 Dec 2011)
    linking with a static openssl requires a set of more libs to be linked
    on Windows.
    
@@ -46,7 +64,7 @@ index 2335841..d4d37c2 100644
    
    Bug: http://curl.haxx.se/mail/lib-2011-12/0063.html
    Reported by: Ward Willats
-@@ -3386,7 +3386,7 @@ Daniel Stenberg (25 Sep 2011)
+@@ -5333,7 +5333,7 @@ Daniel Stenberg (25 Sep 2011)
    damaging.
    
    Bug: http://curl.haxx.se/bug/view.cgi?id=3413181
@@ -55,33 +73,6 @@ index 2335841..d4d37c2 100644
  
  Yang Tse (24 Sep 2011)
  - curl tool: fix a compiler warning
-@@ -4386,7 +4386,7 @@ Daniel Stenberg (8 Aug 2011)
-   Update the phrasing to reflect our more strict interpretation:
-   http://curl.haxx.se/mail/lib-2011-08/0064.html
- 
--- [Cristian Rodríguez brought this change]
-+- [Cristian RodrÃ­guez brought this change]
- 
-   OpenSSL: Use SSL_MODE_RELEASE_BUFFERS if available, reduces memory use
-   
-@@ -4394,7 +4394,7 @@ Daniel Stenberg (8 Aug 2011)
-   http://www.openssl.org/docs/ssl/SSL_CTX_set_mode.html
-   http://www.imperialviolet.org/2010/06/25/overclocking-ssl.html
-   
--  Signed-off-by: Cristian Rodríguez <crrodriguez@opensuse.org>
-+  Signed-off-by: Cristian RodrÃ­guez <crrodriguez@opensuse.org>
- 
- - TODO-RELEASE: close issue #292
-   
-@@ -4428,7 +4428,7 @@ Daniel Stenberg (6 Aug 2011)
-         provided" by Christian H<E4>gele
-         http://curl.haxx.se/mail/lib-2011-08/0009.html
- 
--- [Christian Hägele brought this change]
-+- [Christian HÃ¤gele brought this change]
- 
-   asyn-thread: check for dotted addresses before thread starts
- 
 diff --git a/README b/README
 index 2ffacc3..cfd6760 100644
 --- a/README

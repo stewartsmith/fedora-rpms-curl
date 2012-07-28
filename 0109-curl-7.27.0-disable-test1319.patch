@@ -1,6 +1,11 @@
-diff -up curl-7.26.0/tests/data/Makefile.am.ppc1319 curl-7.26.0/tests/data/Makefile.am
---- curl-7.26.0/tests/data/Makefile.am.ppc1319	2012-05-30 12:32:16.396720278 +0200
-+++ curl-7.26.0/tests/data/Makefile.am	2012-05-30 12:32:40.475870630 +0200
+ tests/data/Makefile.am |    2 +-
+ tests/data/Makefile.in |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tests/data/Makefile.am b/tests/data/Makefile.am
+index bb4722e..d6879c9 100644
+--- a/tests/data/Makefile.am
++++ b/tests/data/Makefile.am
 @@ -81,7 +81,7 @@ test1208 test1209 test1210 test1211 \
  test1220 \
  test1300 test1301 test1302 test1303 test1304 test1305	\
@@ -8,17 +13,18 @@ diff -up curl-7.26.0/tests/data/Makefile.am.ppc1319 curl-7.26.0/tests/data/Makef
 -test1314 test1315 test1316 test1317 test1318 test1319 test1320 test1321 \
 +test1314 test1315 test1316 test1317 test1318 test1320 test1321 \
  test1322 test1323 test1324 test1325 test1326 test1327 test1328 test1329 \
- test1331 test1332 test1333 \
- test1400 test1401 test1402 test1403 test1404 test1405 test1406 test1407 \
-diff -up curl-7.26.0/tests/data/Makefile.in.ppc1319 curl-7.26.0/tests/data/Makefile.in
---- curl-7.26.0/tests/data/Makefile.in.ppc1319	2012-05-30 12:32:24.891420536 +0200
-+++ curl-7.26.0/tests/data/Makefile.in	2012-05-30 12:32:47.225632459 +0200
-@@ -340,7 +340,7 @@ test1208 test1209 test1210 test1211 \
+ test1331 test1332 test1333 test1334 test1335 test1336 test1337 test1338 \
+ test1339 test1340 test1341 test1342 test1343 test1344 test1345 test1346 \
+diff --git a/tests/data/Makefile.in b/tests/data/Makefile.in
+index c7e9d96..ec70dce 100644
+--- a/tests/data/Makefile.in
++++ b/tests/data/Makefile.in
+@@ -346,7 +346,7 @@ test1208 test1209 test1210 test1211 \
  test1220 \
  test1300 test1301 test1302 test1303 test1304 test1305	\
  test1306 test1307 test1308 test1309 test1310 test1311 test1312 test1313 \
 -test1314 test1315 test1316 test1317 test1318 test1319 test1320 test1321 \
 +test1314 test1315 test1316 test1317 test1318 test1320 test1321 \
  test1322 test1323 test1324 test1325 test1326 test1327 test1328 test1329 \
- test1331 test1332 test1333 \
- test1400 test1401 test1402 test1403 test1404 test1405 test1406 test1407 \
+ test1331 test1332 test1333 test1334 test1335 test1336 test1337 test1338 \
+ test1339 test1340 test1341 test1342 test1343 test1344 test1345 test1346 \
