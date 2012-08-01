@@ -1,12 +1,15 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.27.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 Source3: hide_selinux.c
+
+# eliminate unnecessary inotify events on upload via file protocol (#844385)
+Patch1: 0001-curl-7.27.0-1f8518c5.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.27.0-multilib.patch
@@ -230,6 +233,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Aug 01 2012 Kamil Dudka <kdudka@redhat.com> 7.27.0-2
+- eliminate unnecessary inotify events on upload via file protocol (#844385)
+
 * Sat Jul 28 2012 Kamil Dudka <kdudka@redhat.com> 7.27.0-1
 - new upstream release
 
