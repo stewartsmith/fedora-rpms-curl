@@ -110,7 +110,7 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
-
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
