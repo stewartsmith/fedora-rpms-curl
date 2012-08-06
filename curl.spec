@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.27.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -20,9 +20,6 @@ Patch102: 0102-curl-7.27.0-debug.patch
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
 
-# exclude test1112 from the test suite (#565305)
-Patch105: 0105-curl-7.27.0-disable-test1112.patch
-
 # disable valgrind for certain test-cases (libssh2 problem)
 Patch106: 0106-curl-7.21.0-libssh2-valgrind.patch
 
@@ -32,9 +29,6 @@ Patch107: 0107-curl-7.21.4-libidn-valgrind.patch
 # Fix character encoding of docs, which are of mixed encoding originally so
 # a simple iconv can't fix them
 Patch108: 0108-curl-7.27.0-utf8.patch
-
-# server timeout on ppc64
-Patch109: 0109-curl-7.27.0-disable-test1319.patch
 
 Provides: webclient
 URL: http://curl.haxx.se/
@@ -119,18 +113,19 @@ documentation of the library, too.
 %patch106 -p1
 %patch107 -p1
 %patch108 -p1
-%ifarch ppc64
-%patch109 -p1
-%endif
-
-# exclude test1112 from the test suite (#565305)
-%patch105 -p1
-rm -f tests/data/test1112
 
 # replace hard wired port numbers in the test suite
 cd tests/data/
 sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ test*
 cd -
+
+# disable test 1112 (#565305)
+echo "1112" >> tests/data/DISABLED
+
+# disable test 1319 on ppc64 (server times out)
+%ifarch ppc64
+echo "1319" >> tests/data/DISABLED
+%endif
 
 %build
 [ -x /usr/kerberos/bin/krb5-config ] && KRB5_PREFIX="=/usr/kerberos"
@@ -233,6 +228,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Aug 06 2012 Kamil Dudka <kdudka@redhat.com> 7.27.0-3
+- use the upstream facility to disable problematic tests
+
 * Wed Aug 01 2012 Kamil Dudka <kdudka@redhat.com> 7.27.0-2
 - eliminate unnecessary inotify events on upload via file protocol (#844385)
 
