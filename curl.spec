@@ -11,6 +11,9 @@ Source3: hide_selinux.c
 # eliminate unnecessary inotify events on upload via file protocol (#844385)
 Patch1: 0001-curl-7.27.0-1f8518c5.patch
 
+# do not crash if MD5 fingerprint is not provided by libssh2
+Patch2: 0002-curl-7.27.0-f05e5136.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.27.0-multilib.patch
 
@@ -105,6 +108,7 @@ documentation of the library, too.
 
 # upstream patches
 %patch1 -p1
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -228,8 +232,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
-* Mon Aug 06 2012 Kamil Dudka <kdudka@redhat.com> 7.27.0-3
+* Mon Oct 01 2012 Kamil Dudka <kdudka@redhat.com> 7.27.0-3
 - use the upstream facility to disable problematic tests
+- do not crash if MD5 fingerprint is not provided by libssh2
 
 * Wed Aug 01 2012 Kamil Dudka <kdudka@redhat.com> 7.27.0-2
 - eliminate unnecessary inotify events on upload via file protocol (#844385)
