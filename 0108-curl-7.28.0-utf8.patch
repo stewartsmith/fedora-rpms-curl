@@ -1,12 +1,29 @@
+From c6246783cf347652f70d95c0562dd411747e9d53 Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Wed, 31 Oct 2012 11:40:30 +0100
+Subject: [PATCH] Fix character encoding of docs
+
+..., which are of mixed encoding originally so a simple iconv can't
+fix them.
+---
  CHANGES |   16 ++++++++--------
  README  |    2 +-
  2 files changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/CHANGES b/CHANGES
-index 2335841..d4d37c2 100644
+index 4568408..5fc1652 100644
 --- a/CHANGES
 +++ b/CHANGES
-@@ -272,7 +272,7 @@ Daniel Stenberg (9 Jul 2012)
+@@ -338,7 +338,7 @@ Daniel Stenberg (8 Sep 2012)
+ 
+ - test1411: verify SMTP without SIZE support
+ 
+-- [František Kučera brought this change]
++- [FrantiÅ¡ek KuÄera brought this change]
+ 
+   SMTP: only send SIZE if supported
+   
+@@ -1094,7 +1094,7 @@ Daniel Stenberg (9 Jul 2012)
  
  - cookie: fixed typo in comment
  
@@ -15,7 +32,7 @@ index 2335841..d4d37c2 100644
  
    https_getsock: provided for schannel backend as well
    
-@@ -454,7 +454,7 @@ Yang Tse (3 Jul 2012)
+@@ -1276,7 +1276,7 @@ Yang Tse (3 Jul 2012)
    testcurl.pl: fix missing semicolon
  
  Daniel Stenberg (2 Jul 2012)
@@ -24,7 +41,7 @@ index 2335841..d4d37c2 100644
  
    unicode NTLM SSPI: heap corruption fixed
    
-@@ -2563,18 +2563,18 @@ Daniel Stenberg (1 Apr 2012)
+@@ -3385,18 +3385,18 @@ Daniel Stenberg (1 Apr 2012)
    Reported by: Michael Wallner
  
  Steve Holme (31 Mar 2012)
@@ -46,7 +63,7 @@ index 2335841..d4d37c2 100644
  
    md5: Add support for calculating the md5 sum of buffers incrementally
    
-@@ -3866,7 +3866,7 @@ Daniel Stenberg (20 Dec 2011)
+@@ -4688,7 +4688,7 @@ Daniel Stenberg (20 Dec 2011)
    This offers an alternative to the existing Curl_socket_ready() API which
    only checks one socket for read and one for write.
  
@@ -55,7 +72,7 @@ index 2335841..d4d37c2 100644
  
    curl.h: add __ANDROID__ macro check
    
-@@ -4079,7 +4079,7 @@ Daniel Stenberg (12 Dec 2011)
+@@ -4901,7 +4901,7 @@ Daniel Stenberg (12 Dec 2011)
    linking with a static openssl requires a set of more libs to be linked
    on Windows.
    
@@ -64,15 +81,6 @@ index 2335841..d4d37c2 100644
    
    Bug: http://curl.haxx.se/mail/lib-2011-12/0063.html
    Reported by: Ward Willats
-@@ -5333,7 +5333,7 @@ Daniel Stenberg (25 Sep 2011)
-   damaging.
-   
-   Bug: http://curl.haxx.se/bug/view.cgi?id=3413181
--  Reported by: Taneli V�h�kangas
-+  Reported by: Taneli Vähäkangas
- 
- Yang Tse (24 Sep 2011)
- - curl tool: fix a compiler warning
 diff --git a/README b/README
 index 2ffacc3..cfd6760 100644
 --- a/README
@@ -84,3 +92,6 @@ index 2ffacc3..cfd6760 100644
 -  Kungliga Tekniska H�gskolan. This notice is included here to comply with the
 +  Kungliga Tekniska Högskolan. This notice is included here to comply with the
    distribution terms.
+-- 
+1.7.1
+
