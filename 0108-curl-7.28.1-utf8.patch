@@ -14,91 +14,24 @@ diff --git a/CHANGES b/CHANGES
 index 4568408..5fc1652 100644
 --- a/CHANGES
 +++ b/CHANGES
-@@ -154,7 +154,7 @@ Daniel Stenberg (19 Nov 2012)
+@@ -198,7 +198,7 @@ Daniel Stenberg (12 Nov 2012)
  
- - RELEASE-NOTES: synced with fa1ae0abcde
+ - [Gabriel Sjoberg brought this change]
  
--- [Cristian Rodríguez brought this change]
-+- [Cristian RodrÃ­guez brought this change]
- 
-   OpenSSL: Disable SSL/TLS compression
+-  Digst: Add microseconds into nounce calculation
++  Digest: Add microseconds into nounce calculation
    
+   When using only 1 second precision, curl doesn't create new cnonce
+   values quickly enough for all uses.
 @@ -209,7 +209,7 @@ Daniel Stenberg (12 Nov 2012)
    curl --digest -utest:test http://tomcat.test.com:8080/manager/list
    
    This is because curl uses the same cnonce for several seconds, but
 -  doesn't increment the nonce counter.  Tomcat correctly interprets
-+  doesn't increment the nonce counter. Â Tomcat correctly interprets
++  doesn't increment the nonce counter.   Tomcat correctly interprets
    this as a replay attack and rejects the request.
    
    When microsecond-precision is available, this commit causes curl to
-@@ -529,7 +529,7 @@ Daniel Stenberg (23 Oct 2012)
- 
- - href_extractor.c: fix the URL
- 
--- [Michał Kowalczyk brought this change]
-+- [MichaÅ Kowalczyk brought this change]
- 
-   href_extractor: example code extracting href elements
-   
-@@ -897,7 +897,7 @@ Daniel Stenberg (8 Sep 2012)
- 
- - test1411: verify SMTP without SIZE support
- 
--- [František Kučera brought this change]
-+- [FrantiÅ¡ek KuÄera brought this change]
- 
-   SMTP: only send SIZE if supported
-   
-@@ -1653,7 +1653,7 @@ Daniel Stenberg (9 Jul 2012)
- 
- - cookie: fixed typo in comment
- 
--- [Christian Hägele brought this change]
-+- [Christian HÃ¤gele brought this change]
- 
-   https_getsock: provided for schannel backend as well
-   
-@@ -1835,7 +1835,7 @@ Yang Tse (3 Jul 2012)
-   testcurl.pl: fix missing semicolon
- 
- Daniel Stenberg (2 Jul 2012)
--- [Christian Hägele brought this change]
-+- [Christian HÃ¤gele brought this change]
- 
-   unicode NTLM SSPI: heap corruption fixed
-   
-@@ -3944,18 +3944,18 @@ Daniel Stenberg (1 Apr 2012)
-   Reported by: Michael Wallner
- 
- Steve Holme (31 Mar 2012)
--- [Gökhan Şengün brought this change]
-+- [GÃ¶khan ÅengÃ¼n brought this change]
- 
-   smtp: Add support for DIGEST-MD5 authentication
- 
--- [Gökhan Şengün brought this change]
-+- [GÃ¶khan ÅengÃ¼n brought this change]
- 
-   smtp: Cody tidy up of md5 digest length
-   
-   Replaced the hard coded md5 digest length (16) with a preprocessor
-   constant
- 
--- [Gökhan Şengün brought this change]
-+- [GÃ¶khan ÅengÃ¼n brought this change]
- 
-   md5: Add support for calculating the md5 sum of buffers incrementally
-   
-@@ -5247,7 +5247,7 @@ Daniel Stenberg (20 Dec 2011)
-   This offers an alternative to the existing Curl_socket_ready() API which
-   only checks one socket for read and one for write.
- 
--- [Cédric Deltheil brought this change]
-+- [CeÌdric Deltheil brought this change]
- 
-   curl.h: add __ANDROID__ macro check
-   
 @@ -5460,7 +5460,7 @@ Daniel Stenberg (12 Dec 2011)
    linking with a static openssl requires a set of more libs to be linked
    on Windows.
