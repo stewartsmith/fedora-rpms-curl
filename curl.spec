@@ -939,10 +939,10 @@ rm -rf $RPM_BUILD_ROOT
 * Tue Oct 07 2003 Adrian Havill <havill@redhat.com> 7.10.6-5
 - match serverAltName certs with SSL (#106168)
 
-* Mon Sep 16 2003 Adrian Havill <havill@redhat.com> 7.10.6-4.1
+* Tue Sep 16 2003 Adrian Havill <havill@redhat.com> 7.10.6-4.1
 - bump n-v-r for RHEL
 
-* Mon Sep 16 2003 Adrian Havill <havill@redhat.com> 7.10.6-4
+* Tue Sep 16 2003 Adrian Havill <havill@redhat.com> 7.10.6-4
 - restore ca cert bundle (#104400)
 - require openssl, we want to use its ca-cert bundle
 
@@ -958,7 +958,7 @@ rm -rf $RPM_BUILD_ROOT
 * Mon Aug 25 2003 Adrian Havill <havill@redhat.com> 7.10.6-2
 - devel subpkg needs openssl-devel as a Require (#102963)
 
-* Tue Jul 28 2003 Adrian Havill <havill@redhat.com> 7.10.6-1
+* Mon Jul 28 2003 Adrian Havill <havill@redhat.com> 7.10.6-1
 - bumped version
 
 * Tue Jul 01 2003 Adrian Havill <havill@redhat.com> 7.10.5-1
@@ -977,7 +977,7 @@ rm -rf $RPM_BUILD_ROOT
 * Tue Jan 21 2003 Joe Orton <jorton@redhat.com> 7.9.8-4
 - don't add -L/usr/lib to 'curl-config --libs' output
 
-* Mon Jan  7 2003 Nalin Dahyabhai <nalin@redhat.com> 7.9.8-3
+* Tue Jan  7 2003 Nalin Dahyabhai <nalin@redhat.com> 7.9.8-3
 - rebuild
 
 * Wed Nov  6 2002 Joe Orton <jorton@redhat.com> 7.9.8-2
