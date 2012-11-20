@@ -673,7 +673,7 @@ rm -rf $RPM_BUILD_ROOT
 * Mon Aug 11 2008 Tom "spot" Callaway <tcallawa@redhat.com> 7.18.2-4
 - make miniature library for libcurl.so.3
 
-* Wed Jul  4 2008 Jindrich Novy <jnovy@redhat.com> 7.18.2-3
+* Fri Jul  4 2008 Jindrich Novy <jnovy@redhat.com> 7.18.2-3
 - enable support for libssh2 (#453958)
 
 * Wed Jun 18 2008 Jindrich Novy <jnovy@redhat.com> 7.18.2-2
@@ -874,7 +874,7 @@ rm -rf $RPM_BUILD_ROOT
 - update to use ca-bundle in /etc/pki
 - mark License as MIT not MPL
 
-* Mon Mar  9 2005 Ivana Varekova <varekova@redhat.com> 7.13.1-1
+* Wed Mar  9 2005 Ivana Varekova <varekova@redhat.com> 7.13.1-1
 - rebuilt (7.13.1)
 
 * Tue Mar  1 2005 Tomas Mraz <tmraz@redhat.com> 7.13.0-2
@@ -905,7 +905,7 @@ rm -rf $RPM_BUILD_ROOT
 * Mon Sep 27 2004 Warren Togami <wtogami@redhat.com> 7.12.0-3
 - remove INSTALL, move libcurl docs to -devel
 
-* Fri Jul 26 2004 Jindrich Novy <jnovy@redhat.com>
+* Mon Jul 26 2004 Jindrich Novy <jnovy@redhat.com>
 - updated to 7.12.0
 - updated nousr patch
 
