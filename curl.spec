@@ -1,6 +1,6 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.28.0
+Version: 7.28.1
 Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
@@ -12,7 +12,7 @@ Source3: hide_selinux.c
 Patch101: 0101-curl-7.27.0-multilib.patch
 
 # prevent configure script from discarding -g in CFLAGS (#496778)
-Patch102: 0102-curl-7.28.0-debug.patch
+Patch102: 0102-curl-7.28.1-debug.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
@@ -25,7 +25,7 @@ Patch107: 0107-curl-7.21.4-libidn-valgrind.patch
 
 # Fix character encoding of docs, which are of mixed encoding originally so
 # a simple iconv can't fix them
-Patch108: 0108-curl-7.28.0-utf8.patch
+Patch108: 0108-curl-7.28.1-utf8.patch
 
 Provides: webclient
 URL: http://curl.haxx.se/
@@ -115,9 +115,8 @@ cd tests/data/
 sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ test*
 cd -
 
-# disable test 1112 (#565305) and test 2032
-# <http://thread.gmane.org/gmane.comp.web.curl.library/37087>
-printf "1112\n2032\n" >> tests/data/DISABLED
+# disable test 1112 (#565305)
+printf "1112\n" >> tests/data/DISABLED
 
 # disable test 1319 on ppc64 (server times out)
 %ifarch ppc64
@@ -225,6 +224,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Nov 20 2012 Kamil Dudka <kdudka@redhat.com> 7.28.1-1
+- new upstream release
+
 * Wed Oct 31 2012 Kamil Dudka <kdudka@redhat.com> 7.28.0-1
 - new upstream release
 

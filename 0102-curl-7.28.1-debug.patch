@@ -4,9 +4,9 @@ Date: Wed, 31 Oct 2012 11:38:30 +0100
 Subject: [PATCH] prevent configure script from discarding -g in CFLAGS (#496778)
 
 ---
- configure            |   15 ++++-----------
- m4/curl-compilers.m4 |   15 ++++-----------
- 2 files changed, 8 insertions(+), 22 deletions(-)
+ configure            |   13 +++----------
+ m4/curl-compilers.m4 |   13 +++----------
+ 2 files changed, 6 insertions(+), 20 deletions(-)
 
 diff --git a/configure b/configure
 index 8f079a3..53b4774 100755
@@ -26,10 +26,9 @@ index 8f079a3..53b4774 100755
 -    flags_dbg_all="$flags_dbg_all -gvms"
 +    flags_dbg_all=""
      flags_dbg_yes="-g"
--    flags_dbg_off="-g0"
+     flags_dbg_off=""
 -    flags_opt_all="-O -O0 -O1 -O2 -O3 -Os"
 -    flags_opt_yes="-O2"
-+    flags_dbg_off=""
 +    flags_opt_all=""
 +    flags_opt_yes=""
      flags_opt_off="-O0"
@@ -53,10 +52,9 @@ index 0cbba7a..9175b5b 100644
 -    flags_dbg_all="$flags_dbg_all -gvms"
 +    flags_dbg_all=""
      flags_dbg_yes="-g"
--    flags_dbg_off="-g0"
+     flags_dbg_off=""
 -    flags_opt_all="-O -O0 -O1 -O2 -O3 -Os"
 -    flags_opt_yes="-O2"
-+    flags_dbg_off=""
 +    flags_opt_all=""
 +    flags_opt_yes=""
      flags_opt_off="-O0"
