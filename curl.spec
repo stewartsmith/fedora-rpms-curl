@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.28.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -51,8 +51,8 @@ BuildRequires: pkgconfig
 BuildRequires: stunnel
 BuildRequires: zlib-devel
 
-# valgrind is not available on s390(x), sparc or arm5
-%ifnarch s390 s390x %{sparc} %{arm} ppc
+# require valgrind to boost test coverage on i386 and x86_64
+%ifarch %{ix86} x86_64
 BuildRequires: valgrind
 %endif
 
@@ -236,6 +236,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Jan 15 2013 Kamil Dudka <kdudka@redhat.com> 7.28.1-3
+- require valgrind for build only on i386 and x86_64 (#886891)
+
 * Tue Jan 15 2013 Kamil Dudka <kdudka@redhat.com> 7.28.1-2
 - prevent NSS from crashing on client auth hook failure
 - clear session cache if a client cert from file is used
