@@ -11,6 +11,9 @@ Source3: hide_selinux.c
 # prevent NSS from crashing on client auth hook failure
 Patch1: 0001-curl-7.28.1-68d2830e.patch
 
+# clear session cache if a client cert from file is used
+Patch2: 0002-curl-7.28.1-b36f1d26.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.27.0-multilib.patch
 
@@ -105,6 +108,7 @@ documentation of the library, too.
 
 # upstream patches
 %patch1 -p1
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -230,6 +234,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Tue Jan 15 2013 Kamil Dudka <kdudka@redhat.com> 7.28.1-2
 - prevent NSS from crashing on client auth hook failure
+- clear session cache if a client cert from file is used
 
 * Tue Nov 20 2012 Kamil Dudka <kdudka@redhat.com> 7.28.1-1
 - new upstream release
