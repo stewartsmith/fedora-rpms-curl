@@ -6,15 +6,15 @@ Subject: [PATCH] Fix character encoding of docs
 ..., which are of mixed encoding originally so a simple iconv can't
 fix them.
 ---
- CHANGES |   22 +++++++++++-----------
+ CHANGES |    2 +-
  README  |    2 +-
- 2 files changed, 12 insertions(+), 12 deletions(-)
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/CHANGES b/CHANGES
 index 4568408..5fc1652 100644
 --- a/CHANGES
 +++ b/CHANGES
-@@ -198,7 +198,7 @@ Daniel Stenberg (12 Nov 2012)
+@@ -1910,7 +1910,7 @@ Daniel Stenberg (12 Nov 2012)
  
  - [Gabriel Sjoberg brought this change]
  
@@ -23,24 +23,6 @@ index 4568408..5fc1652 100644
    
    When using only 1 second precision, curl doesn't create new cnonce
    values quickly enough for all uses.
-@@ -209,7 +209,7 @@ Daniel Stenberg (12 Nov 2012)
-   curl --digest -utest:test http://tomcat.test.com:8080/manager/list
-   
-   This is because curl uses the same cnonce for several seconds, but
--  doesn't increment the nonce counter.  Tomcat correctly interprets
-+  doesn't increment the nonce counter.   Tomcat correctly interprets
-   this as a replay attack and rejects the request.
-   
-   When microsecond-precision is available, this commit causes curl to
-@@ -5460,7 +5460,7 @@ Daniel Stenberg (12 Dec 2011)
-   linking with a static openssl requires a set of more libs to be linked
-   on Windows.
-   
--  Thanks also to Steve Holme and Martin Storsj� for additional feedback.
-+  Thanks also to Steve Holme and Martin Storsjö for additional feedback.
-   
-   Bug: http://curl.haxx.se/mail/lib-2011-12/0063.html
-   Reported by: Ward Willats
 diff --git a/README b/README
 index 2ffacc3..cfd6760 100644
 --- a/README

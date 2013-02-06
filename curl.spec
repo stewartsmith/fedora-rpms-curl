@@ -1,27 +1,18 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.28.1
-Release: 3%{?dist}
+Version: 7.29.0
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 Source3: hide_selinux.c
 
-# prevent NSS from crashing on client auth hook failure
-Patch1: 0001-curl-7.28.1-68d2830e.patch
-
-# clear session cache if a client cert from file is used
-Patch2: 0002-curl-7.28.1-b36f1d26.patch
-
-# fix error messages for CURLE_SSL_{CACERT,CRL}_BADFILE
-Patch3: 0003-curl-7.28.1-26613d78.patch
-
 # patch making libcurl multilib ready
-Patch101: 0101-curl-7.27.0-multilib.patch
+Patch101: 0101-curl-7.29.0-multilib.patch
 
 # prevent configure script from discarding -g in CFLAGS (#496778)
-Patch102: 0102-curl-7.28.1-debug.patch
+Patch102: 0102-curl-7.29.0-debug.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
@@ -34,7 +25,7 @@ Patch107: 0107-curl-7.21.4-libidn-valgrind.patch
 
 # Fix character encoding of docs, which are of mixed encoding originally so
 # a simple iconv can't fix them
-Patch108: 0108-curl-7.28.1-utf8.patch
+Patch108: 0108-curl-7.29.0-utf8.patch
 
 Provides: webclient
 URL: http://curl.haxx.se/
@@ -110,9 +101,6 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -236,6 +224,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Feb 06 2013 Kamil Dudka <kdudka@redhat.com> 7.29.0-1
+- new upstream release (fixes CVE-2013-0249)
+
 * Tue Jan 15 2013 Kamil Dudka <kdudka@redhat.com> 7.28.1-3
 - require valgrind for build only on i386 and x86_64 (#886891)
 
