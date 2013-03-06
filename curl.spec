@@ -6,7 +6,6 @@ License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
-Source3: hide_selinux.c
 
 # fix a SIGSEGV when closing an unused multi handle (#914411)
 Patch1: 0001-curl-7.29.0-da3fc1ee.patch
@@ -165,12 +164,6 @@ export LD_LIBRARY_PATH
 cd tests
 make %{?_smp_mflags}
 
-# make it possible to start a testing OpenSSH server with SELinux
-# in the enforcing mode (#521087)
-gcc -o hide_selinux.so -fPIC -shared %{SOURCE3}
-LD_PRELOAD="`readlink -f ./hide_selinux.so`:$LD_PRELOAD"
-export LD_PRELOAD
-
 # use different port range for 32bit and 64bit build, thus make it possible
 # to run both in parallel on the same machine
 ./runtests.pl -a -b%{?__isa_bits}90 -p -v
@@ -234,6 +227,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed Mar 06 2013 Kamil Dudka <kdudka@redhat.com> 7.29.0-3
 - switch SSL socket into non-blocking mode after handshake
+- drop the hide_selinux.c hack no longer needed in %%check
 
 * Fri Feb 22 2013 Kamil Dudka <kdudka@redhat.com> 7.29.0-2
 - fix a SIGSEGV when closing an unused multi handle (#914411)
