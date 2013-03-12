@@ -16,6 +16,9 @@ Patch2: 0002-curl-7.29.0-9d0af301.patch
 # do not ignore poll() failures other than EINTR
 Patch3: 0003-curl-7.29.0-491e026c.patch
 
+# curl_global_init() now accepts the CURL_GLOBAL_ACK_EINTR flag
+Patch4: 0004-curl-7.29.0-57ccdfa8.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.29.0-multilib.patch
 
@@ -112,6 +115,7 @@ documentation of the library, too.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -231,6 +235,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Tue Mar 12 2013 Kamil Dudka <kdudka@redhat.com> 7.29.0-4
 - do not ignore poll() failures other than EINTR (#919127)
+- curl_global_init() now accepts the CURL_GLOBAL_ACK_EINTR flag (#919127)
 
 * Wed Mar 06 2013 Kamil Dudka <kdudka@redhat.com> 7.29.0-3
 - switch SSL socket into non-blocking mode after handshake
