@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.29.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -11,7 +11,10 @@ Source2: curlbuild.h
 Patch1: 0001-curl-7.29.0-da3fc1ee.patch
 
 # switch SSL socket into non-blocking mode after handshake
-Patch2: 0002-curl-7.29.0-9d0af3018.patch
+Patch2: 0002-curl-7.29.0-9d0af301.patch
+
+# do not ignore poll() failures other than EINTR
+Patch3: 0003-curl-7.29.0-491e026c.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.29.0-multilib.patch
@@ -108,6 +111,7 @@ documentation of the library, too.
 # upstream patches
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -225,6 +229,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Mar 12 2013 Kamil Dudka <kdudka@redhat.com> 7.29.0-4
+- do not ignore poll() failures other than EINTR (#919127)
+
 * Wed Mar 06 2013 Kamil Dudka <kdudka@redhat.com> 7.29.0-3
 - switch SSL socket into non-blocking mode after handshake
 - drop the hide_selinux.c hack no longer needed in %%check
