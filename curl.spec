@@ -26,6 +26,9 @@ Patch107: 0107-curl-7.21.4-libidn-valgrind.patch
 # a simple iconv can't fix them
 Patch108: 0108-curl-7.30.0-utf8.patch
 
+# prevent test-suite failure due to using non-default port ranges in tests
+Patch109: 0109-curl-7.30.0-tests-port-range.patch
+
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(id -nu)
@@ -113,6 +116,8 @@ documentation of the library, too.
 cd tests/data/
 sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ test*
 cd -
+
+%patch109 -p1
 
 # disable test 1112 (#565305)
 printf "1112\n" >> tests/data/DISABLED
@@ -219,6 +224,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Fri Apr 12 2013 Kamil Dudka <kdudka@redhat.com> 7.30.0-1
 - new upstream release (fixes CVE-2013-1944)
+- prevent test-suite failure due to using non-default port ranges in tests
 
 * Tue Mar 12 2013 Kamil Dudka <kdudka@redhat.com> 7.29.0-4
 - do not ignore poll() failures other than EINTR (#919127)
