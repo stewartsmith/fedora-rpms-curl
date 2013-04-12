@@ -14,7 +14,7 @@ diff --git a/CHANGES b/CHANGES
 index 4568408..5fc1652 100644
 --- a/CHANGES
 +++ b/CHANGES
-@@ -1910,7 +1910,7 @@ Daniel Stenberg (12 Nov 2012)
+@@ -4312,7 +4312,7 @@ Daniel Stenberg (12 Nov 2012)
  
  - [Gabriel Sjoberg brought this change]
  
