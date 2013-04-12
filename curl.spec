@@ -7,6 +7,9 @@ Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 
+# prevent test-suite failure due to using non-default port ranges in tests
+Patch1: 0001-curl-7.30.0-ddbda328.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.30.0-multilib.patch
 
@@ -25,9 +28,6 @@ Patch107: 0107-curl-7.21.4-libidn-valgrind.patch
 # Fix character encoding of docs, which are of mixed encoding originally so
 # a simple iconv can't fix them
 Patch108: 0108-curl-7.30.0-utf8.patch
-
-# prevent test-suite failure due to using non-default port ranges in tests
-Patch109: 0109-curl-7.30.0-tests-port-range.patch
 
 Provides: webclient
 URL: http://curl.haxx.se/
@@ -117,7 +117,7 @@ cd tests/data/
 sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ test*
 cd -
 
-%patch109 -p1
+%patch1 -p1
 
 # disable test 1112 (#565305)
 printf "1112\n" >> tests/data/DISABLED
