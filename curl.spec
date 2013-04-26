@@ -103,6 +103,7 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -112,12 +113,12 @@ documentation of the library, too.
 %patch107 -p1
 %patch108 -p1
 
-# replace hard wired port numbers in the test suite
+# replace hard wired port numbers in the test suite (this only boosts test
+# coverage by enabling tests that would otherwise be disabled due to using
+# runtests.pl -b)
 cd tests/data/
-sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ test*
+sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ test{309,1028,1055,1056}
 cd -
-
-%patch1 -p1
 
 # disable test 1112 (#565305)
 printf "1112\n" >> tests/data/DISABLED
