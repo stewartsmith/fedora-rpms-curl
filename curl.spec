@@ -7,6 +7,9 @@ Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 
+# test1230: avoid using hard-wired port number
+Patch1: 0001-curl-7.31.0-02964ed6.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.30.0-multilib.patch
 
@@ -100,6 +103,7 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
