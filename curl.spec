@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.31.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -35,6 +35,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(id -nu)
 BuildRequires: groff
 BuildRequires: krb5-devel
 BuildRequires: libidn-devel
+BuildRequires: libmetalink-devel
 BuildRequires: libssh2-devel
 BuildRequires: nss-devel
 BuildRequires: openldap-devel
@@ -139,6 +140,7 @@ echo "1319" >> tests/data/DISABLED
     --with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
     --with-gssapi${KRB5_PREFIX} \
     --with-libidn \
+    --with-libmetalink \
     --with-libssh2 \
     --without-ssl --with-nss
 #    --enable-debug
@@ -223,6 +225,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Jun 26 2013 Kamil Dudka <kdudka@redhat.com> 7.31.0-2
+- build the curl tool with metalink support
+
 * Sat Jun 22 2013 Kamil Dudka <kdudka@redhat.com> 7.31.0-1
 - new upstream release (fixes CVE-2013-2174)
 
