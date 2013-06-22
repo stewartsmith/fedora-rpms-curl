@@ -1,17 +1,11 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.30.0
-Release: 2%{?dist}
+Version: 7.31.0
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
-
-# prevent test-suite failure due to using non-default port ranges in tests
-Patch1: 0001-curl-7.30.0-ddbda328.patch
-
-# prevent an artificial timeout event due to stale speed-check data (#906031)
-Patch2: 0002-curl-7.30.0-b37b5233.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.30.0-multilib.patch
@@ -106,8 +100,6 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
-%patch1 -p1
-%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -227,6 +219,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Sat Jun 22 2013 Kamil Dudka <kdudka@redhat.com> 7.31.0-1
+- new upstream release (fixes CVE-2013-2174)
+
 * Fri Apr 26 2013 Kamil Dudka <kdudka@redhat.com> 7.30.0-2
 - prevent an artificial timeout event due to stale speed-check data (#906031)
 
