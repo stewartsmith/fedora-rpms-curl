@@ -11,10 +11,10 @@ Source2: curlbuild.h
 Patch1: 0001-curl-7.31.0-02964ed6.patch
 
 # patch making libcurl multilib ready
-Patch101: 0101-curl-7.30.0-multilib.patch
+Patch101: 0101-curl-7.31.0-multilib.patch
 
 # prevent configure script from discarding -g in CFLAGS (#496778)
-Patch102: 0102-curl-7.30.0-debug.patch
+Patch102: 0102-curl-7.31.0-debug.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
@@ -27,7 +27,7 @@ Patch107: 0107-curl-7.21.4-libidn-valgrind.patch
 
 # Fix character encoding of docs, which are of mixed encoding originally so
 # a simple iconv can't fix them
-Patch108: 0108-curl-7.30.0-utf8.patch
+Patch108: 0108-curl-7.31.0-utf8.patch
 
 Provides: webclient
 URL: http://curl.haxx.se/
