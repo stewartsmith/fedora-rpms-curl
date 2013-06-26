@@ -16,6 +16,9 @@ Patch101: 0101-curl-7.31.0-multilib.patch
 # prevent configure script from discarding -g in CFLAGS (#496778)
 Patch102: 0102-curl-7.31.0-debug.patch
 
+# make the curl tool link SSL libraries also used by src/tool_metalink.c
+Patch103: 0103-curl-7.31.0-metalink.patch
+
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
 
@@ -109,6 +112,7 @@ documentation of the library, too.
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
+%patch103 -p1
 %patch104 -p1
 %patch106 -p1
 %patch107 -p1
