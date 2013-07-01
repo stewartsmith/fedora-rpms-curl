@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.31.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -9,6 +9,9 @@ Source2: curlbuild.h
 
 # test1230: avoid using hard-wired port number
 Patch1: 0001-curl-7.31.0-02964ed6.patch
+
+# restore the functionality of 'curl -u :'
+Patch2: 0002-curl-7.31.0-abca89aa.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.31.0-multilib.patch
@@ -108,6 +111,7 @@ documentation of the library, too.
 
 # upstream patches
 %patch1 -p1
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -229,6 +233,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Jul 01 2013 Kamil Dudka <kdudka@redhat.com> 7.31.0-3
+- restore the functionality of 'curl -u :'
+
 * Wed Jun 26 2013 Kamil Dudka <kdudka@redhat.com> 7.31.0-2
 - build the curl tool with metalink support
 
