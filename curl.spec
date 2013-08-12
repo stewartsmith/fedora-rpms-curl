@@ -182,9 +182,6 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 install -d $RPM_BUILD_ROOT%{_datadir}/aclocal
 install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 
-# drop man page for a script we do not distribute
-rm -f ${RPM_BUILD_ROOT}%{_mandir}/man1/mk-ca-bundle.1
-
 # Make libcurl-devel multilib-ready (bug #488922)
 %if 0%{?__isa_bits} == 64
 %define _curlbuild_h curlbuild-64.h
