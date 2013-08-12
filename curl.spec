@@ -7,6 +7,9 @@ Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 
+# make sure that NSS is initialized prior to calling PK11_GenerateRandom()
+Patch1: 0001-curl-7.32.0-204126a5.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
 
@@ -104,6 +107,7 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -227,6 +231,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Mon Aug 12 2013 Kamil Dudka <kdudka@redhat.com> 7.32.0-1
 - new upstream release
+- make sure that NSS is initialized prior to calling PK11_GenerateRandom()
 
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 7.31.0-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
