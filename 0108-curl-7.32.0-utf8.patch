@@ -6,23 +6,9 @@ Subject: [PATCH] Fix character encoding of docs
 ..., which are of mixed encoding originally so a simple iconv can't
 fix them.
 ---
- CHANGES |    2 +-
- README  |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ README |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/CHANGES b/CHANGES
-index 4568408..5fc1652 100644
---- a/CHANGES
-+++ b/CHANGES
-@@ -5325,7 +5325,7 @@ Daniel Stenberg (12 Nov 2012)
- 
- - [Gabriel Sjoberg brought this change]
- 
--  Digst: Add microseconds into nounce calculation
-+  Digest: Add microseconds into nounce calculation
-   
-   When using only 1 second precision, curl doesn't create new cnonce
-   values quickly enough for all uses.
 diff --git a/README b/README
 index 2ffacc3..cfd6760 100644
 --- a/README

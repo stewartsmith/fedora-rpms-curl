@@ -1,29 +1,20 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.31.0
-Release: 5%{?dist}
+Version: 7.32.0
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 
-# test1230: avoid using hard-wired port number
-Patch1: 0001-curl-7.31.0-02964ed6.patch
-
-# restore the functionality of 'curl -u :'
-Patch2: 0002-curl-7.31.0-abca89aa.patch
-
-# mention all option listed in 'curl --help' in curl.1 man page
-Patch3: 0003-curl-7.31.0-3a0e931f.patch
-
 # patch making libcurl multilib ready
-Patch101: 0101-curl-7.31.0-multilib.patch
+Patch101: 0101-curl-7.32.0-multilib.patch
 
 # prevent configure script from discarding -g in CFLAGS (#496778)
-Patch102: 0102-curl-7.31.0-debug.patch
+Patch102: 0102-curl-7.32.0-debug.patch
 
 # make the curl tool link SSL libraries also used by src/tool_metalink.c
-Patch103: 0103-curl-7.31.0-metalink.patch
+Patch103: 0103-curl-7.32.0-metalink.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
@@ -36,7 +27,7 @@ Patch107: 0107-curl-7.21.4-libidn-valgrind.patch
 
 # Fix character encoding of docs, which are of mixed encoding originally so
 # a simple iconv can't fix them
-Patch108: 0108-curl-7.31.0-utf8.patch
+Patch108: 0108-curl-7.32.0-utf8.patch
 
 Provides: webclient
 URL: http://curl.haxx.se/
@@ -113,9 +104,6 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -237,13 +225,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Aug 12 2013 Kamil Dudka <kdudka@redhat.com> 7.32.0-1
+- new upstream release
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 7.31.0-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
 * Tue Jul 09 2013 Kamil Dudka <kdudka@redaht.com> 7.31.0-4
 - mention all option listed in 'curl --help' in curl.1 man page
 
-* Tue Jul 01 2013 Kamil Dudka <kdudka@redhat.com> 7.31.0-3
+* Tue Jul 02 2013 Kamil Dudka <kdudka@redhat.com> 7.31.0-3
 - restore the functionality of 'curl -u :'
 
 * Wed Jun 26 2013 Kamil Dudka <kdudka@redhat.com> 7.31.0-2
