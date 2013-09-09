@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.32.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -9,6 +9,9 @@ Source2: curlbuild.h
 
 # make sure that NSS is initialized prior to calling PK11_GenerateRandom()
 Patch1: 0001-curl-7.32.0-204126a5.patch
+
+# avoid delay if FTP is aborted in CURLOPT_HEADERFUNCTION callback (#1005686)
+Patch2: 0002-curl-7.32.0-c639d725.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -108,6 +111,7 @@ documentation of the library, too.
 
 # upstream patches
 %patch1 -p1
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -226,6 +230,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Sep 09 2013 Kamil Dudka <kdudka@redhat.com> 7.32.0-2
+- avoid delay if FTP is aborted in CURLOPT_HEADERFUNCTION callback (#1005686)
+
 * Mon Aug 12 2013 Kamil Dudka <kdudka@redhat.com> 7.32.0-1
 - new upstream release
 - make sure that NSS is initialized prior to calling PK11_GenerateRandom()
