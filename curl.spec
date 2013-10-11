@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.32.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -27,6 +27,9 @@ Patch104: 0104-curl-7.19.7-localhost6.patch
 
 # disable valgrind for certain test-cases (libssh2 problem)
 Patch106: 0106-curl-7.21.0-libssh2-valgrind.patch
+
+# http://thread.gmane.org/gmane.comp.web.curl.library/40551/focus=40561
+Patch105: 0105-curl-7.32.0-scp-upload.patch
 
 # work around valgrind bug (#678518)
 Patch107: 0107-curl-7.21.4-libidn-valgrind.patch
@@ -112,6 +115,9 @@ documentation of the library, too.
 # upstream patches
 %patch1 -p1
 %patch2 -p1
+
+# patches not yet upstream
+%patch105 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -230,6 +236,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Oct 11 2013 Kamil Dudka <kdudka@redhat.com> 7.32.0-3
+- do not limit the speed of SCP upload on a fast connection
+
 * Mon Sep 09 2013 Kamil Dudka <kdudka@redhat.com> 7.32.0-2
 - avoid delay if FTP is aborted in CURLOPT_HEADERFUNCTION callback (#1005686)
 
