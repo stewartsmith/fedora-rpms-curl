@@ -10,6 +10,9 @@ Source2: curlbuild.h
 # test906: Fixed failing test on some platforms
 Patch1: 0001-curl-7.33.0-4d49ffe1.patch
 
+# fix missing initialization in NTLM code causing test 906 to fail
+Patch2: 0002-curl-7.33.0-86c64f3d.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
 
@@ -108,6 +111,7 @@ documentation of the library, too.
 
 # upstream patches
 %patch1 -p1
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -228,6 +232,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Mon Oct 14 2013 Kamil Dudka <kdudka@redhat.com> 7.33.0-1
 - new upstream release
+- fix missing initialization in NTLM code causing test 906 to fail
 
 * Fri Oct 11 2013 Kamil Dudka <kdudka@redhat.com> 7.32.0-3
 - do not limit the speed of SCP upload on a fast connection
