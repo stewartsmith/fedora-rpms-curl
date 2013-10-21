@@ -1,0 +1,32 @@
+From 06c74b11fa976246307fbcbd36f71f59f2beaa6f Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Mon, 21 Oct 2013 18:47:54 +0200
+Subject: [PATCH] ssh: initialize per-handle data in ssh_connect()
+
+... if not already initialized.  This fixes a regression introduced by
+commit 4ad8e142da463ab208d5b5565e53291c8e5ef038, which caused test619
+to intermittently fail on certain machines (namely Fedora build hosts).
+
+[upstream commit f70b2c77f4889316acb75d41e97a7f28c9a6a995]
+---
+ lib/ssh.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/lib/ssh.c b/lib/ssh.c
+index 79f58bb..e8b8b7c 100644
+--- a/lib/ssh.c
++++ b/lib/ssh.c
+@@ -2719,6 +2719,10 @@ static CURLcode ssh_connect(struct connectdata *conn, bool *done)
+   CURLcode result;
+   struct SessionHandle *data = conn->data;
+ 
++  /* initialize per-handle data if not already */
++  if(!data->req.protop)
++    ssh_setup_connection(conn);
++
+   /* We default to persistent connections. We set this already in this connect
+      function to make the re-use checks properly be able to check this bit. */
+   conn->bits.close = FALSE;
+-- 
+1.7.1
+
