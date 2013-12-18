@@ -1,23 +1,11 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.33.0
-Release: 2%{?dist}
+Version: 7.34.0
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
-
-# test906: Fixed failing test on some platforms
-Patch1: 0001-curl-7.33.0-4d49ffe1.patch
-
-# fix missing initialization in NTLM code causing test 906 to fail
-Patch2: 0002-curl-7.33.0-86c64f3d.patch
-
-# fix missing initialization in SSH code causing test 619 to fail
-Patch3: 0003-curl-7.33.0-f70b2c77.patch
-
-# allow to use TLS > 1.0 if built against recent NSS
-Patch4: 0004-curl-7.33.0-7fc9325a.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -116,10 +104,6 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -238,6 +222,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Dec 18 2013 Kamil Dudka <kdudka@redhat.com> 7.34.0-1
+- new upstream release
+
 * Mon Dec 02 2013 Kamil Dudka <kdudka@redhat.com> 7.33.0-2
 - allow to use TLS > 1.0 if built against recent NSS
 
