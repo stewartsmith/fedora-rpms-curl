@@ -132,7 +132,7 @@ echo "1319" >> tests/data/DISABLED
 %build
 [ -x /usr/kerberos/bin/krb5-config ] && KRB5_PREFIX="=/usr/kerberos"
 %configure --disable-static \
-    --enable-hidden-symbols \
+    --enable-symbol-hiding \
     --enable-ipv6 \
     --enable-ldaps \
     --enable-manual \
