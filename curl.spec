@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.35.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -125,6 +125,9 @@ cd tests/data/
 sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ test{309,1028,1055,1056}
 cd -
 
+# avoid spurious failure of test1086 on s390(x) koji builders (#1072273)
+sed -i 's/-m 7/-m 15/' tests/data/test1086
+
 # disable test 1112 (#565305)
 printf "1112\n" >> tests/data/DISABLED
 
@@ -226,6 +229,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Mar 05 2014 Kamil Dudka <kdudka@redhat.com> 7.35.0-3
+- avoid spurious failure of test1086 on s390(x) koji builders (#1072273)
+
 * Tue Feb 25 2014 Kamil Dudka <kdudka@redhat.com> 7.35.0-2
 - refresh expired cookie in test172 from upstream test-suite (#1068967)
 
