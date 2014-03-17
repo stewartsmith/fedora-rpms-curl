@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.35.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -47,6 +47,11 @@ BuildRequires: openssh-server
 BuildRequires: pkgconfig
 BuildRequires: stunnel
 BuildRequires: zlib-devel
+
+# perl-Digest-MD5 (formerly part of perl) is required by the test-suite
+%if 19 < 0%{?fedora} || 6 < 0%{?rhel}
+BuildRequires: perl-Digest-MD5
+%endif
 
 # require valgrind to boost test coverage on i386 and x86_64
 %ifarch %{ix86} x86_64
@@ -229,6 +234,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Mar 17 2014 Kamil Dudka <kdudka@redhat.com> 7.35.0-4
+- add BR for perl-Digest-MD5, which is required by the test-suite
+
 * Wed Mar 05 2014 Kamil Dudka <kdudka@redhat.com> 7.35.0-3
 - avoid spurious failure of test1086 on s390(x) koji builders (#1072273)
 
