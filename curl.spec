@@ -7,6 +7,9 @@ Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 
+# adapt tests 815 and 816 such that they work with the fix for CVE-2014-0138
+Patch1: 0001-curl-7.36.0-f82e0edc.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
 
@@ -119,6 +122,7 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
