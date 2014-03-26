@@ -1,29 +1,26 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.35.0
-Release: 5%{?dist}
+Version: 7.36.0
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 
-# refresh expired cookie in test172 from upstream test-suite (#1068967)
-Patch1: 0001-curl-7.32.0-ffb8a21d.patch
-
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
 
 # prevent configure script from discarding -g in CFLAGS (#496778)
-Patch102: 0102-curl-7.32.0-debug.patch
+Patch102: 0102-curl-7.36.0-debug.patch
 
 # make the curl tool link SSL libraries also used by src/tool_metalink.c
-Patch103: 0103-curl-7.32.0-metalink.patch
+Patch103: 0103-curl-7.36.0-metalink.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
 
 # disable valgrind for certain test-cases (libssh2 problem)
-Patch106: 0106-curl-7.21.0-libssh2-valgrind.patch
+Patch106: 0106-curl-7.36.0-libssh2-valgrind.patch
 
 # work around valgrind bug (#678518)
 Patch107: 0107-curl-7.21.4-libidn-valgrind.patch
@@ -122,7 +119,6 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
-%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -244,6 +240,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Mar 26 2014 Kamil Dudka <kdudka@redhat.com> 7.36.0-1
+- new upstream release (fixes CVE-2014-0138)
+
 * Mon Mar 17 2014 Paul Howarth <paul@city-fan.org> 7.35.0-5
 - add all perl build requirements for the test suite, in a portable way
 
