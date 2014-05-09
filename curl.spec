@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.36.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -15,6 +15,9 @@ Patch2: 0002-curl-7.36.0-9317eced.patch
 
 # nss: implement non-blocking SSL handshake
 Patch3: 0003-curl-7.36.0-8868a226.patch
+
+# auth failure on duplicated 'WWW-Authenticate: Negotiate' header (#1093348)
+Patch4: 0004-curl-7.36.0-ec5fde24.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -131,6 +134,7 @@ documentation of the library, too.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -252,6 +256,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri May 09 2014 Kamil Dudka <kdudka@redhat.com> 7.36.0-4
+- auth failure on duplicated 'WWW-Authenticate: Negotiate' header (#1093348)
+
 * Fri Apr 25 2014 Kamil Dudka <kdudka@redhat.com> 7.36.0-3
 - nss: implement non-blocking SSL handshake
 
