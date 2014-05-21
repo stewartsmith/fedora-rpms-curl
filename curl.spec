@@ -1,23 +1,11 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.36.0
-Release: 4%{?dist}
+Version: 7.37.0
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
-
-# adapt tests 815 and 816 such that they work with the fix for CVE-2014-0138
-Patch1: 0001-curl-7.36.0-f82e0edc.patch
-
-# extend URL parser to support IPv6 zone identifiers (#680996)
-Patch2: 0002-curl-7.36.0-9317eced.patch
-
-# nss: implement non-blocking SSL handshake
-Patch3: 0003-curl-7.36.0-8868a226.patch
-
-# auth failure on duplicated 'WWW-Authenticate: Negotiate' header (#1093348)
-Patch4: 0004-curl-7.36.0-ec5fde24.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -131,10 +119,6 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -256,6 +240,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed May 21 2014 Kamil Dudka <kdudka@redhat.com> 7.37.0-1
+- new upstream release
+
 * Fri May 09 2014 Kamil Dudka <kdudka@redhat.com> 7.36.0-4
 - auth failure on duplicated 'WWW-Authenticate: Negotiate' header (#1093348)
 
