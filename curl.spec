@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.37.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -220,7 +220,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc CHANGES README* COPYING
+%doc CHANGES README*
 %doc docs/BUGS docs/FAQ docs/FEATURES
 %doc docs/MANUAL docs/RESOURCES
 %doc docs/TheArtOfHttpScripting docs/TODO
@@ -229,6 +229,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n libcurl
 %defattr(-,root,root,-)
+%{!?_licensedir:%global license %%doc}
+%license COPYING
 %{_libdir}/libcurl.so.*
 
 %files -n libcurl-devel
@@ -244,6 +246,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Jul 11 2014 Tom Callaway <spot@fedoraproject.org> 7.37.0-4
+- fix license handling
+
 * Fri Jul 04 2014 Kamil Dudka <kdudka@redhat.com> 7.37.0-3
 - various SSL-related fixes (mainly crash on connection failure)
 
