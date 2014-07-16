@@ -7,6 +7,9 @@ Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 
+# fix endless loop with GSSAPI proxy auth (patches by David Woodhouse, #1118751)
+Patch1:   0001-curl-7.37.1-gssapi.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
 
@@ -119,6 +122,7 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -244,6 +248,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed Jul 16 2014 Kamil Dudka <kdudka@redhat.com> 7.37.1-1
 - new upstream release
+- fix endless loop with GSSAPI proxy auth (patches by David Woodhouse, #1118751)
 
 * Fri Jul 11 2014 Tom Callaway <spot@fedoraproject.org> 7.37.0-4
 - fix license handling
