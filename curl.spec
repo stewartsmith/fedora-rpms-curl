@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.37.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -68,7 +68,7 @@ BuildRequires: perl(vars)
 BuildRequires: valgrind
 %endif
 
-Requires: libcurl = %{version}-%{release}
+Requires: libcurl%{?_isa} = %{version}-%{release}
 
 # require at least the version of libssh2 that we were built against,
 # to ensure that we have the necessary symbols available (#525002, #642796)
@@ -98,7 +98,7 @@ resume, http proxy tunneling and more.
 %package -n libcurl-devel
 Summary: Files needed for building applications with libcurl
 Group: Development/Libraries
-Requires: libcurl = %{version}-%{release}
+Requires: libcurl%{?_isa} = %{version}-%{release}
 
 # From Fedora 14, %%{_datadir}/aclocal is included in the filesystem package
 %if 0%{?fedora} < 14
@@ -111,6 +111,7 @@ Requires: pkgconfig
 %endif
 
 Provides: curl-devel = %{version}-%{release}
+Provides: curl-devel%{?_isa} = %{version}-%{release}
 Obsoletes: curl-devel < %{version}-%{release}
 
 %description -n libcurl-devel
@@ -246,6 +247,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Aug 13 2014 Rex Dieter <rdieter@fedoraproject.org> 7.37.1-2
+- include arch'd Requires/Provides
+
 * Wed Jul 16 2014 Kamil Dudka <kdudka@redhat.com> 7.37.1-1
 - new upstream release
 - fix endless loop with GSSAPI proxy auth (patches by David Woodhouse, #1118751)
