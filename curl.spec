@@ -39,6 +39,7 @@ BuildRequires: openldap-devel
 BuildRequires: openssh-clients
 BuildRequires: openssh-server
 BuildRequires: pkgconfig
+BuildRequires: python
 BuildRequires: stunnel
 BuildRequires: zlib-devel
 
