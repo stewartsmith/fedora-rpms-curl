@@ -1,6 +1,6 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.39.0
+Version: 7.40.0
 Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
@@ -12,9 +12,6 @@ Patch101: 0101-curl-7.32.0-multilib.patch
 
 # prevent configure script from discarding -g in CFLAGS (#496778)
 Patch102: 0102-curl-7.36.0-debug.patch
-
-# make the curl tool link SSL libraries also used by src/tool_metalink.c
-Patch103: 0103-curl-7.36.0-metalink.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
@@ -124,7 +121,6 @@ documentation of the library, too.
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
-%patch103 -p1
 %patch104 -p1
 %patch106 -p1
 %patch107 -p1
@@ -243,6 +239,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Jan 08 2015 Kamil Dudka <kdudka@redhat.com> 7.40.0-1
+- new upstream release (fixes CVE-2014-8150)
+
 * Wed Nov 05 2014 Kamil Dudka <kdudka@redhat.com> 7.39.0-1
 - new upstream release (fixes CVE-2014-3707)
 
