@@ -1,11 +1,14 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.40.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
+
+# fix a spurious connect failure on dual-stacked hosts (#1187531)
+Patch1: 0001-curl-7.40.0-e08a12d.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -118,6 +121,7 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -240,6 +244,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Feb 23 2015 Kamil Dudka <kdudka@redhat.com> 7.40.0-3
+- fix a spurious connect failure on dual-stacked hosts (#1187531)
+
 * Sat Feb 21 2015 Till Maas <opensource@till.name> - 7.40.0-2
 - Rebuilt for Fedora 23 Change
   https://fedoraproject.org/wiki/Changes/Harden_all_packages_with_position-independent_code
