@@ -1,14 +1,14 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.40.0
-Release: 3%{?dist}
+Version: 7.41.0
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 
-# fix a spurious connect failure on dual-stacked hosts (#1187531)
-Patch1: 0001-curl-7.40.0-e08a12d.patch
+# fix defects found by Coverity and ShellCheck
+Patch1: 0001-curl-7.41.0-abe54705.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -244,6 +244,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Feb 25 2015 Kamil Dudka <kdudka@redhat.com> 7.41.0-1
+- new upstream release
+
 * Mon Feb 23 2015 Kamil Dudka <kdudka@redhat.com> 7.40.0-3
 - fix a spurious connect failure on dual-stacked hosts (#1187531)
 
