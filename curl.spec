@@ -20,9 +20,6 @@ Patch102: 0102-curl-7.36.0-debug.patch
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
 
-# disable valgrind for certain test-cases (libssh2 problem)
-Patch106: 0106-curl-7.36.0-libssh2-valgrind.patch
-
 # work around valgrind bug (#678518)
 Patch107: 0107-curl-7.21.4-libidn-valgrind.patch
 
@@ -129,7 +126,6 @@ install -m0755 %{SOURCE3} tests/
 %patch101 -p1
 %patch102 -p1
 %patch104 -p1
-%patch106 -p1
 %patch107 -p1
 %patch108 -p1
 
