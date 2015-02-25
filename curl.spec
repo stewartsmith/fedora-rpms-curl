@@ -6,6 +6,7 @@ License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
+Source3: https://raw.githubusercontent.com/bagder/curl/curl-7_41_0/tests/extern-scan.pl
 
 # fix defects found by Coverity and ShellCheck
 Patch1: 0001-curl-7.41.0-abe54705.patch
@@ -119,6 +120,7 @@ documentation of the library, too.
 
 %prep
 %setup -q
+install -m0755 %{SOURCE3} tests/
 
 # upstream patches
 %patch1 -p1
@@ -246,6 +248,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed Feb 25 2015 Kamil Dudka <kdudka@redhat.com> 7.41.0-1
 - new upstream release
+- include extern-scan.pl to make test1135 succeed (upstream commit 1514b718)
 
 * Mon Feb 23 2015 Kamil Dudka <kdudka@redhat.com> 7.40.0-3
 - fix a spurious connect failure on dual-stacked hosts (#1187531)
