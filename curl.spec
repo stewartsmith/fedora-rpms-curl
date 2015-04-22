@@ -7,6 +7,9 @@ Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 
+# implement public key pinning for NSS backend (#1195771)
+Patch1: 0001-curl-7.42.0-b47c17d6.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
 
@@ -115,6 +118,7 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -239,6 +243,7 @@ rm -rf $RPM_BUILD_ROOT
 * Wed Apr 22 2015 Kamil Dudka <kdudka@redhat.com> 7.42.0-1
 - new upstream release (fixes CVE-2015-3143, CVE-2015-3144, CVE-2015-3145,
   and CVE-2015-3148)
+- implement public key pinning for NSS backend (#1195771)
 
 * Wed Feb 25 2015 Kamil Dudka <kdudka@redhat.com> 7.41.0-1
 - new upstream release
