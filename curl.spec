@@ -1,15 +1,11 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.41.0
+Version: 7.42.0
 Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
-Source3: https://raw.githubusercontent.com/bagder/curl/curl-7_41_0/tests/extern-scan.pl
-
-# fix defects found by Coverity and ShellCheck
-Patch1: 0001-curl-7.41.0-abe54705.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -117,10 +113,8 @@ documentation of the library, too.
 
 %prep
 %setup -q
-install -m0755 %{SOURCE3} tests/
 
 # upstream patches
-%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -242,6 +236,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Apr 22 2015 Kamil Dudka <kdudka@redhat.com> 7.42.0-1
+- new upstream release (fixes CVE-2015-3143, CVE-2015-3144, CVE-2015-3145,
+  and CVE-2015-3148)
+
 * Wed Feb 25 2015 Kamil Dudka <kdudka@redhat.com> 7.41.0-1
 - new upstream release
 - include extern-scan.pl to make test1135 succeed (upstream commit 1514b718)
