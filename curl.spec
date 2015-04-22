@@ -134,9 +134,6 @@ cd tests/data/
 sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ test{309,1028,1055,1056}
 cd -
 
-# avoid spurious failure of test1086 on s390(x) koji builders (#1072273)
-sed -i 's/-m 7/-m 15/' tests/data/test1086
-
 # disable test 1112 (#565305)
 printf "1112\n" >> tests/data/DISABLED
 
@@ -182,7 +179,7 @@ make %{?_smp_mflags}
 
 # use different port range for 32bit and 64bit build, thus make it possible
 # to run both in parallel on the same machine
-./runtests.pl -a -b%{?__isa_bits}90 -p -v
+./runtests.pl -a -b%{?__isa_bits}90 -p -v '!flaky'
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -244,6 +241,7 @@ rm -rf $RPM_BUILD_ROOT
 - new upstream release (fixes CVE-2015-3143, CVE-2015-3144, CVE-2015-3145,
   and CVE-2015-3148)
 - implement public key pinning for NSS backend (#1195771)
+- do not run flaky test-cases in %%check
 
 * Wed Feb 25 2015 Kamil Dudka <kdudka@redhat.com> 7.41.0-1
 - new upstream release
