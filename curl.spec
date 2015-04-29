@@ -1,6 +1,6 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.42.0
+Version: 7.42.1
 Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
@@ -8,7 +8,7 @@ Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
 
 # implement public key pinning for NSS backend (#1195771)
-Patch1: 0001-curl-7.42.0-b47c17d6.patch
+Patch1: 0001-curl-7.42.1-b47c17d6.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -237,6 +237,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Apr 29 2015 Kamil Dudka <kdudka@redhat.com> 7.42.1-1
+- new upstream release (fixes CVE-2015-3153)
+
 * Wed Apr 22 2015 Kamil Dudka <kdudka@redhat.com> 7.42.0-1
 - new upstream release (fixes CVE-2015-3143, CVE-2015-3144, CVE-2015-3145,
   and CVE-2015-3148)
