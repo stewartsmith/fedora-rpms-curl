@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.43.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -26,6 +26,7 @@ BuildRequires: groff
 BuildRequires: krb5-devel
 BuildRequires: libidn-devel
 BuildRequires: libmetalink-devel
+BuildRequires: libnghttp2-devel
 BuildRequires: libssh2-devel
 BuildRequires: nss-devel
 BuildRequires: openldap-devel
@@ -146,6 +147,7 @@ echo "1319" >> tests/data/DISABLED
     --with-libidn \
     --with-libmetalink \
     --with-libssh2 \
+    --with-nghttp2 \
     --without-ssl --with-nss
 #    --enable-debug
 # use ^^^ to turn off optimizations, etc.
@@ -228,6 +230,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Jul 16 2015 Kamil Dudka <kdudka@redhat.com> 7.43.0-2
+- build support for the HTTP/2 protocol
+
 * Wed Jun 17 2015 Kamil Dudka <kdudka@redhat.com> 7.43.0-1
 - new upstream release (fixes CVE-2015-3236 and CVE-2015-3237)
 
