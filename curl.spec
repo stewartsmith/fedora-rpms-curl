@@ -13,9 +13,6 @@ Patch101: 0101-curl-7.32.0-multilib.patch
 # prevent configure script from discarding -g in CFLAGS (#496778)
 Patch102: 0102-curl-7.36.0-debug.patch
 
-# test1801: temporarily disable failing data check
-Patch103: 0103-curl-7.43.0-test1801.patch
-
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
 
@@ -119,7 +116,6 @@ documentation of the library, too.
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
-%patch103 -p1
 %patch104 -p1
 %patch107 -p1
 
@@ -130,8 +126,9 @@ cd tests/data/
 sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ test{309,1028,1055,1056}
 cd -
 
-# disable test 1112 (#565305)
-printf "1112\n" >> tests/data/DISABLED
+# disable test 1112 (#565305) and test 1801
+# <https://github.com/bagder/curl/commit/21e82bd6#commitcomment-12226582>
+printf "1112\n1801\n" >> tests/data/DISABLED
 
 # disable test 1319 on ppc64 (server times out)
 %ifarch ppc64
