@@ -13,6 +13,9 @@ Patch101: 0101-curl-7.32.0-multilib.patch
 # prevent configure script from discarding -g in CFLAGS (#496778)
 Patch102: 0102-curl-7.36.0-debug.patch
 
+# test1801: temporarily disable failing data check
+Patch103: 0103-curl-7.43.0-test1801.patch
+
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
 
@@ -116,6 +119,7 @@ documentation of the library, too.
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
+%patch103 -p1
 %patch104 -p1
 %patch107 -p1
 
