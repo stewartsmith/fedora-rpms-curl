@@ -1,11 +1,14 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.43.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
+
+# prevent dnf from crashing when using both FTP and HTTP (#1248389)
+Patch1: 0001-curl-7.43.0-f7dcc7c1.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -112,6 +115,7 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -231,6 +235,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Jul 30 2015 Kamil Dudka <kdudka@redhat.com> 7.43.0-3
+- prevent dnf from crashing when using both FTP and HTTP (#1248389)
+
 * Thu Jul 16 2015 Kamil Dudka <kdudka@redhat.com> 7.43.0-2
 - build support for the HTTP/2 protocol
 

@@ -1,0 +1,111 @@
+From 2f8154c11e2cc139067973e47f1ffe5a302fb89d Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Thu, 30 Jul 2015 12:01:20 +0200
+Subject: [PATCH] http: move HTTP/2 cleanup code off http_disconnect()
+
+Otherwise it would never be called for an HTTP/2 connection, which has
+its own disconnect handler.
+
+I spotted this while debugging <https://bugzilla.redhat.com/1248389>
+where the http_disconnect() handler was called on an FTP session handle
+causing 'dnf' to crash.  conn->data->req.protop of type (struct FTP *)
+was reinterpreted as type (struct HTTP *) which resulted in SIGSEGV in
+Curl_add_buffer_free() after printing the "Connection cache is full,
+closing the oldest one." message.
+
+A previously working version of libcurl started to crash after it was
+recompiled with the HTTP/2 support despite the HTTP/2 protocol was not
+actually used.  This commit makes it work again although I suspect the
+root cause (reinterpreting session handle data of incompatible protocol)
+still has to be fixed.  Otherwise the same will happen when mixing FTP
+and HTTP/2 connections and exceeding the connection cache limit.
+
+Reported-by: Tomas Tomecek
+Bug: https://bugzilla.redhat.com/1248389
+
+Upstream-commit: f7dcc7c11817f6eaee61b1cd84ffc1b2b1fcac43
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ lib/http.c  | 25 ++-----------------------
+ lib/http2.c | 11 +++++++++++
+ 2 files changed, 13 insertions(+), 23 deletions(-)
+
+diff --git a/lib/http.c b/lib/http.c
+index a1eef81..8d5b9a4 100644
+--- a/lib/http.c
++++ b/lib/http.c
+@@ -86,7 +86,6 @@
+  * Forward declarations.
+  */
+ 
+-static CURLcode http_disconnect(struct connectdata *conn, bool dead);
+ static int http_getsock_do(struct connectdata *conn,
+                            curl_socket_t *socks,
+                            int numsocks);
+@@ -117,7 +116,7 @@ const struct Curl_handler Curl_handler_http = {
+   http_getsock_do,                      /* doing_getsock */
+   ZERO_NULL,                            /* domore_getsock */
+   ZERO_NULL,                            /* perform_getsock */
+-  http_disconnect,                      /* disconnect */
++  ZERO_NULL,                            /* disconnect */
+   ZERO_NULL,                            /* readwrite */
+   PORT_HTTP,                            /* defport */
+   CURLPROTO_HTTP,                       /* protocol */
+@@ -141,7 +140,7 @@ const struct Curl_handler Curl_handler_https = {
+   http_getsock_do,                      /* doing_getsock */
+   ZERO_NULL,                            /* domore_getsock */
+   ZERO_NULL,                            /* perform_getsock */
+-  http_disconnect,                      /* disconnect */
++  ZERO_NULL,                            /* disconnect */
+   ZERO_NULL,                            /* readwrite */
+   PORT_HTTPS,                           /* defport */
+   CURLPROTO_HTTPS,                      /* protocol */
+@@ -168,21 +167,6 @@ CURLcode Curl_http_setup_conn(struct connectdata *conn)
+   return CURLE_OK;
+ }
+ 
+-static CURLcode http_disconnect(struct connectdata *conn, bool dead_connection)
+-{
+-#ifdef USE_NGHTTP2
+-  struct HTTP *http = conn->data->req.protop;
+-  if(http) {
+-    Curl_add_buffer_free(http->header_recvbuf);
+-    http->header_recvbuf = NULL; /* clear the pointer */
+-  }
+-#else
+-  (void)conn;
+-#endif
+-  (void)dead_connection;
+-  return CURLE_OK;
+-}
+-
+ /*
+  * checkheaders() checks the linked list of custom HTTP headers for a
+  * particular header (prefix).
+diff --git a/lib/http2.c b/lib/http2.c
+index 1a2c486..eec0c9f 100644
+--- a/lib/http2.c
++++ b/lib/http2.c
+@@ -79,6 +79,7 @@ static int http2_getsock(struct connectdata *conn,
+ static CURLcode http2_disconnect(struct connectdata *conn,
+                                  bool dead_connection)
+ {
++  struct HTTP *http = conn->data->req.protop;
+   struct http_conn *c = &conn->proto.httpc;
+   (void)dead_connection;
+ 
+@@ -88,6 +89,11 @@ static CURLcode http2_disconnect(struct connectdata *conn,
+   Curl_safefree(c->inbuf);
+   Curl_hash_destroy(&c->streamsh);
+ 
++  if(http) {
++    Curl_add_buffer_free(http->header_recvbuf);
++    http->header_recvbuf = NULL; /* clear the pointer */
++  }
++
+   DEBUGF(infof(conn->data, "HTTP/2 DISCONNECT done\n"));
+ 
+   return CURLE_OK;
+-- 
+2.4.6
+
