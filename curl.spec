@@ -1,11 +1,14 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.44.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
+
+# prevent NSS from incorrectly re-using a session (#1104597)
+Patch1:   0001-curl-7.44.0-958d2ffb.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -117,6 +120,7 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -236,6 +240,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Sep 18 2015 Kamil Dudka <kdudka@redhat.com> 7.44.0-2
+- prevent NSS from incorrectly re-using a session (#1104597)
+
 * Wed Aug 12 2015 Kamil Dudka <kdudka@redhat.com> 7.44.0-1
 - new upstream release
 

@@ -1,0 +1,71 @@
+From 98dee5ab5a862a506beb8a7bf60c0aaec3b08a0f Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Fri, 18 Sep 2015 17:07:22 +0200
+Subject: [PATCH 1/2] nss: check return values of NSS functions
+
+Upstream-commit: a9fd53887ba07cd8313a8b9706f2dc71d6b8ed1b
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ lib/vtls/nss.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/lib/vtls/nss.c b/lib/vtls/nss.c
+index 91727c7..1fa1c64 100644
+--- a/lib/vtls/nss.c
++++ b/lib/vtls/nss.c
+@@ -1792,9 +1792,13 @@ static CURLcode nss_setup_connect(struct connectdata *conn, int sockindex)
+ 
+ 
+   /* Force handshake on next I/O */
+-  SSL_ResetHandshake(connssl->handle, /* asServer */ PR_FALSE);
++  if(SSL_ResetHandshake(connssl->handle, /* asServer */ PR_FALSE)
++      != SECSuccess)
++    goto error;
+ 
+-  SSL_SetURL(connssl->handle, conn->host.name);
++  /* propagate hostname to the TLS layer */
++  if(SSL_SetURL(connssl->handle, conn->host.name) != SECSuccess)
++    goto error;
+ 
+   return CURLE_OK;
+ 
+-- 
+2.5.2
+
+
+From d082ad368ecec7894d8e9e9a35336b2350c30ade Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Fri, 18 Sep 2015 17:10:05 +0200
+Subject: [PATCH 2/2] nss: prevent NSS from incorrectly re-using a session
+
+Without this workaround, NSS re-uses a session cache entry despite the
+server name does not match.  This causes SNI host name to differ from
+the actual host name.  Consequently, certain servers (e.g. github.com)
+respond by 400 to such requests.
+
+Bug: https://bugzilla.mozilla.org/1202264
+
+Upstream-commit: 958d2ffb198166a062a0ff20d009c64972a2b374
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ lib/vtls/nss.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/lib/vtls/nss.c b/lib/vtls/nss.c
+index 1fa1c64..3d73ffe 100644
+--- a/lib/vtls/nss.c
++++ b/lib/vtls/nss.c
+@@ -1800,6 +1800,10 @@ static CURLcode nss_setup_connect(struct connectdata *conn, int sockindex)
+   if(SSL_SetURL(connssl->handle, conn->host.name) != SECSuccess)
+     goto error;
+ 
++  /* prevent NSS from re-using the session for a different hostname */
++  if(SSL_SetSockPeerID(connssl->handle, conn->host.name) != SECSuccess)
++    goto error;
++
+   return CURLE_OK;
+ 
+ error:
+-- 
+2.5.2
+
