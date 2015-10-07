@@ -1,14 +1,11 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.44.0
-Release: 2%{?dist}
+Version: 7.45.0
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
-
-# prevent NSS from incorrectly re-using a session (#1104597)
-Patch1:   0001-curl-7.44.0-958d2ffb.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -120,7 +117,7 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
-%patch1 -p1
+# (none)
 
 # Fedora patches
 %patch101 -p1
@@ -213,7 +210,6 @@ rm -rf $RPM_BUILD_ROOT
 %postun -n libcurl -p /sbin/ldconfig
 
 %files
-%defattr(-,root,root,-)
 %doc CHANGES README*
 %doc docs/BUGS docs/FAQ docs/FEATURES
 %doc docs/MANUAL docs/RESOURCES
@@ -222,13 +218,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/curl.1*
 
 %files -n libcurl
-%defattr(-,root,root,-)
 %{!?_licensedir:%global license %%doc}
 %license COPYING
 %{_libdir}/libcurl.so.*
 
 %files -n libcurl-devel
-%defattr(-,root,root,-)
 %doc docs/examples/*.c docs/examples/Makefile.example docs/INTERNALS
 %doc docs/CONTRIBUTE docs/libcurl/ABI
 %{_bindir}/curl-config*
@@ -240,6 +234,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Oct  7 2015 Paul Howarth <paul@city-fan.org> 7.45.0-1
+- new upstream release
+- drop %%defattr, redundant since rpm 4.4
+
 * Fri Sep 18 2015 Kamil Dudka <kdudka@redhat.com> 7.44.0-2
 - prevent NSS from incorrectly re-using a session (#1104597)
 
