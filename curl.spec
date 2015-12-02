@@ -160,7 +160,7 @@ sed -i \
     -e 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' \
     -e 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
-make %{?_smp_mflags}
+make %{?_smp_mflags} V=1
 
 %check
 # we have to override LD_LIBRARY_PATH because we eliminated rpath
@@ -169,7 +169,7 @@ export LD_LIBRARY_PATH
 
 # compile upstream test-cases
 cd tests
-make %{?_smp_mflags}
+make %{?_smp_mflags} V=1
 
 # run the upstream test-suite
 ./runtests.pl -a -p -v '!flaky'
@@ -229,6 +229,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Dec  2 2015 Kamil Dudka <kdudka@redhat.com> 7.46.0-1
+- disable silent builds (suggested by Paul Howarth)
 - use default port numbers when running the upstream test-suite
 - install zsh completion script
 - new upstream release
