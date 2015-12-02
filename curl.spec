@@ -64,6 +64,9 @@ BuildRequires: valgrind
 
 Requires: libcurl%{?_isa} = %{version}-%{release}
 
+# for /usr/share/zsh/site-functions
+Requires: zsh
+
 # require at least the version of libssh2 that we were built against,
 # to ensure that we have the necessary symbols available (#525002, #642796)
 %global libssh2_version %(pkg-config --modversion libssh2 2>/dev/null || echo 0)
@@ -216,6 +219,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc docs/TheArtOfHttpScripting docs/TODO
 %{_bindir}/curl
 %{_mandir}/man1/curl.1*
+%{_datadir}/zsh/site-functions/_curl
 
 %files -n libcurl
 %{!?_licensedir:%global license %%doc}
@@ -235,6 +239,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Dec  2 2015 Kamil Dudka <kdudka@redhat.com> 7.46.0-1
+- install zsh completion script
 - new upstream release
 
 * Wed Oct  7 2015 Paul Howarth <paul@city-fan.org> 7.45.0-1
