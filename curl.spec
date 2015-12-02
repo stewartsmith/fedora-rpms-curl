@@ -128,13 +128,6 @@ documentation of the library, too.
 %patch104 -p1
 %patch107 -p1
 
-# replace hard wired port numbers in the test suite (this only boosts test
-# coverage by enabling tests that would otherwise be disabled due to using
-# runtests.pl -b)
-cd tests/data/
-sed -i s/899\\\([0-9]\\\)/%{?__isa_bits}9\\1/ test{309,1028,1055,1056}
-cd -
-
 # disable test 1112 (#565305) and test 1801
 # <https://github.com/bagder/curl/commit/21e82bd6#commitcomment-12226582>
 printf "1112\n1801\n" >> tests/data/DISABLED
@@ -170,19 +163,16 @@ sed -i \
 make %{?_smp_mflags}
 
 %check
-LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}
+# we have to override LD_LIBRARY_PATH because we eliminated rpath
+LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH
 
-# uncomment to use the non-stripped library in tests
-# LD_PRELOAD=`find -name \*.so`
-# LD_PRELOAD=`readlink -f $LD_PRELOAD`
-
+# compile upstream test-cases
 cd tests
 make %{?_smp_mflags}
 
-# use different port range for 32bit and 64bit build, thus make it possible
-# to run both in parallel on the same machine
-./runtests.pl -a -b%{?__isa_bits}90 -p -v '!flaky'
+# run the upstream test-suite
+./runtests.pl -a -p -v '!flaky'
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -239,6 +229,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Dec  2 2015 Kamil Dudka <kdudka@redhat.com> 7.46.0-1
+- use default port numbers when running the upstream test-suite
 - install zsh completion script
 - new upstream release
 
