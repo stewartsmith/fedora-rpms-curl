@@ -1,6 +1,6 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.45.0
+Version: 7.46.0
 Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
@@ -234,6 +234,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Dec  2 2015 Kamil Dudka <kdudka@redhat.com> 7.46.0-1
+- new upstream release
+
 * Wed Oct  7 2015 Paul Howarth <paul@city-fan.org> 7.45.0-1
 - new upstream release
 - drop %%defattr, redundant since rpm 4.4
