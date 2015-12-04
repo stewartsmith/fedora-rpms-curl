@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.46.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -63,9 +63,6 @@ BuildRequires: valgrind
 %endif
 
 Requires: libcurl%{?_isa} = %{version}-%{release}
-
-# for /usr/share/zsh/site-functions
-Requires: zsh
 
 # require at least the version of libssh2 that we were built against,
 # to ensure that we have the necessary symbols available (#525002, #642796)
@@ -209,7 +206,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc docs/TheArtOfHttpScripting docs/TODO
 %{_bindir}/curl
 %{_mandir}/man1/curl.1*
-%{_datadir}/zsh/site-functions/_curl
+%{_datadir}/zsh/site-functions
 
 %files -n libcurl
 %{!?_licensedir:%global license %%doc}
@@ -228,6 +225,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Dec  4 2015 Kamil Dudka <kdudka@redhat.com> 7.46.0-2
+- own /usr/share/zsh/site-functions instead of requiring zsh (#1288529)
+
 * Wed Dec  2 2015 Kamil Dudka <kdudka@redhat.com> 7.46.0-1
 - disable silent builds (suggested by Paul Howarth)
 - use default port numbers when running the upstream test-suite
