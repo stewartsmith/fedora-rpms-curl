@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.46.0
-Release: 2%{?dist}
+Version: 7.47.0
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -225,6 +225,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Jan 27 2016 Kamil Dudka <kdudka@redhat.com> 7.47.0-1
+- new upstream release (fixes CVE-2016-0755)
+
 * Fri Dec  4 2015 Kamil Dudka <kdudka@redhat.com> 7.46.0-2
 - own /usr/share/zsh/site-functions instead of requiring zsh (#1288529)
 
