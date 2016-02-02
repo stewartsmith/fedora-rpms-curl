@@ -183,9 +183,9 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 
 # Make libcurl-devel multilib-ready (bug #488922)
 %if 0%{?__isa_bits} == 64
-%define _curlbuild_h curlbuild-64.h
+%global _curlbuild_h curlbuild-64.h
 %else
-%define _curlbuild_h curlbuild-32.h
+%global _curlbuild_h curlbuild-32.h
 %endif
 mv $RPM_BUILD_ROOT%{_includedir}/curl/curlbuild.h \
    $RPM_BUILD_ROOT%{_includedir}/curl/%{_curlbuild_h}
