@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.53.1
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -122,6 +122,30 @@ The libcurl-devel package includes header files and libraries necessary for
 developing programs which use the libcurl library. It contains the API
 documentation of the library, too.
 
+%package -n curl-minimal
+Summary: Conservatively configured build of curl for minimal installations.
+Provides: curl = %{version}-%{release}
+Conflicts: curl
+RemovePathPostfixes: .minimal
+
+%description -n curl-minimal
+This is a replacement of the 'curl' package for minimal installations.  It
+comes with a limited set of features compared to the 'curl' package.  On the
+other hand, the package is smaller and requires fewer run-time dependencies to
+be installed.
+
+%package -n libcurl-minimal
+Summary: Conservatively configured build of libcurl for minimal installations.
+Provides: libcurl%{?_isa} = %{version}-%{release}
+Conflicts: libcurl
+RemovePathPostfixes: .minimal
+
+%description -n libcurl-minimal
+This is a replacement of the 'libcurl' package for minimal installations.  It
+comes with a limited set of features compared to the 'libcurl' package.  On the
+other hand, the package is smaller and requires fewer run-time dependencies to
+be installed.
+
 %prep
 %setup -q
 
@@ -152,29 +176,53 @@ printf "1034\n1035\n2046\n2047\n" >> tests/data/DISABLED
 
 %build
 [ -x /usr/kerberos/bin/krb5-config ] && KRB5_PREFIX="=/usr/kerberos"
-%configure --disable-static \
+mkdir build-{full,minimal}
+export common_configure_opts=" \
+    --cache-file=../config.cache \
+    --disable-static \
     --enable-symbol-hiding \
     --enable-ipv6 \
-    --enable-ldaps \
-    --enable-manual \
     --enable-threaded-resolver \
     --with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
     --with-gssapi${KRB5_PREFIX} \
-    --with-libidn2 \
-    --with-libmetalink \
-    --with-libpsl \
-    --with-libssh2 \
     --with-nghttp2 \
-    --without-ssl --with-nss
-#    --enable-debug
-# use ^^^ to turn off optimizations, etc.
+    --without-ssl --with-nss"
 
-# Remove bogus rpath
-sed -i \
-    -e 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' \
-    -e 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+%global _configure ../configure
 
-make %{?_smp_mflags} V=1
+# configure minimal build
+(
+    cd build-minimal
+    %configure $common_configure_opts \
+        --disable-ldap \
+        --disable-ldaps \
+        --disable-manual \
+        --without-libidn2 \
+        --without-libmetalink \
+        --without-libpsl \
+        --without-libssh2
+)
+
+# configure full build
+(
+    cd build-full
+    %configure $common_configure_opts \
+        --enable-ldap \
+        --enable-ldaps \
+        --enable-manual \
+        --with-libidn2 \
+        --with-libmetalink \
+        --with-libpsl \
+        --with-libssh2
+)
+
+# avoid using rpath
+sed -e 's/^runpath_var=.*/runpath_var=/' \
+    -e 's/^hardcode_libdir_flag_spec=".*"$/hardcode_libdir_flag_spec=""/' \
+    -i build-{full,minimal}/libtool
+
+make %{?_smp_mflags} V=1 -C build-minimal
+make %{?_smp_mflags} V=1 -C build-full
 
 %check
 # we have to override LD_LIBRARY_PATH because we eliminated rpath
@@ -182,21 +230,37 @@ LD_LIBRARY_PATH="$RPM_BUILD_ROOT%{_libdir}:$LD_LIBRARY_PATH"
 export LD_LIBRARY_PATH
 
 # compile upstream test-cases
-cd tests
+cd build-full/tests
 make %{?_smp_mflags} V=1
 
+# TODO: fix tests/manpage-scan.pl upstream to support out of source tree builds
+ln -s ../../docs/curl.1 ../docs
+
 # run the upstream test-suite
-./runtests.pl -a -p -v '!flaky'
+srcdir=../../tests perl -I../../tests ../../tests/runtests.pl -a -p -v '!flaky'
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install
+# install and rename the library that will be packaged as libcurl-minimal
+make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C build-minimal/lib
+rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.{la,so}
+for i in ${RPM_BUILD_ROOT}%{_libdir}/*; do
+    mv -v $i $i.minimal
+done
+
+# install and rename the executable that will be packaged as curl-minimal
+make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C build-minimal/src
+mv -v ${RPM_BUILD_ROOT}%{_bindir}/curl{,.minimal}
+
+# install the executable and library that will be packaged as curl and libcurl
+make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C build-full
 
 # install zsh completion for curl
 # (we have to override LD_LIBRARY_PATH because we eliminated rpath)
 LD_LIBRARY_PATH="$RPM_BUILD_ROOT%{_libdir}:$LD_LIBRARY_PATH" \
-    make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C scripts
+    make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" \
+    install -C build-full/scripts
 
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
@@ -225,7 +289,8 @@ rm -rf $RPM_BUILD_ROOT
 %files -n libcurl
 %{!?_licensedir:%global license %%doc}
 %license COPYING
-%{_libdir}/libcurl.so.*
+%{_libdir}/libcurl.so.[0-9]
+%{_libdir}/libcurl.so.[0-9].[0-9].[0-9]
 
 %files -n libcurl-devel
 %doc docs/examples/*.c docs/examples/Makefile.example docs/INTERNALS.md
@@ -238,7 +303,19 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 %{_datadir}/aclocal/libcurl.m4
 
+%files -n curl-minimal
+%{_bindir}/curl.minimal
+%{_mandir}/man1/curl.1*
+
+%files -n libcurl-minimal
+%license COPYING
+%{_libdir}/libcurl.so.[0-9].minimal
+%{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
+
 %changelog
+* Wed Apr 12 2017 Kamil Dudka <kdudka@redhat.com> 7.53.1-6
+- provide (lib)curl-minimal subpackages with lightweight build of (lib)curl
+
 * Mon Apr 10 2017 Kamil Dudka <kdudka@redhat.com> 7.53.1-5
 - disable upstream test 2033 (flaky test for HTTP/1 pipelining)
 
