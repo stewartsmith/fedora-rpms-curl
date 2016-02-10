@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.47.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -27,6 +27,7 @@ BuildRequires: krb5-devel
 BuildRequires: libidn-devel
 BuildRequires: libmetalink-devel
 BuildRequires: libnghttp2-devel
+BuildRequires: libpsl-devel
 BuildRequires: libssh2-devel
 BuildRequires: nss-devel
 BuildRequires: openldap-devel
@@ -146,6 +147,7 @@ echo "1319" >> tests/data/DISABLED
     --with-gssapi${KRB5_PREFIX} \
     --with-libidn \
     --with-libmetalink \
+    --with-libpsl \
     --with-libssh2 \
     --with-nghttp2 \
     --without-ssl --with-nss
@@ -225,6 +227,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Feb 10 2016 Kamil Dudka <kdudka@redhat.com> 7.47.1-2
+- enable support for Public Suffix List (#1305701)
+
 * Mon Feb 08 2016 Kamil Dudka <kdudka@redhat.com> 7.47.1-1
 - new upstream release
 
