@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.47.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -126,6 +126,10 @@ documentation of the library, too.
 %patch104 -p1
 %patch107 -p1
 
+# use RSA instead of DSA for host authentication in SCP and SFTP test-cases
+# because DSA is no longer supported by OpenSSH
+sed -e 's/ds[as]/rsa/g' -i tests/ssh{help.pm,server.pl}
+
 # disable test 1112 (#565305) and test 1801
 # <https://github.com/bagder/curl/commit/21e82bd6#commitcomment-12226582>
 printf "1112\n1801\n" >> tests/data/DISABLED
@@ -163,7 +167,7 @@ make %{?_smp_mflags} V=1
 
 %check
 # we have to override LD_LIBRARY_PATH because we eliminated rpath
-LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir}:$LD_LIBRARY_PATH
+LD_LIBRARY_PATH="$RPM_BUILD_ROOT%{_libdir}:$LD_LIBRARY_PATH"
 export LD_LIBRARY_PATH
 
 # compile upstream test-cases
@@ -227,6 +231,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Feb 17 2016 Kamil Dudka <kdudka@redhat.com> 7.47.1-3
+- make SCP and SFTP test-cases work with up2date OpenSSH
+
 * Wed Feb 10 2016 Kamil Dudka <kdudka@redhat.com> 7.47.1-2
 - enable support for Public Suffix List (#1305701)
 
