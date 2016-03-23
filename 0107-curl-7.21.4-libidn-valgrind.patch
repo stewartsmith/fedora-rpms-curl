@@ -12,8 +12,8 @@ diff --git a/tests/data/test165 b/tests/data/test165
 index ddfe1e9..b2cbc4f 100644
 --- a/tests/data/test165
 +++ b/tests/data/test165
-@@ -54,5 +54,8 @@ Accept: */*
- Proxy-Connection: Keep-Alive
+@@ -53,5 +53,8 @@ Host: www.xn--4cab6c.se
+ Accept: */*
  
  </protocol>
 +<valgrind>

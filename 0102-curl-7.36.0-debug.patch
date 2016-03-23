@@ -12,7 +12,7 @@ diff --git a/configure b/configure
 index 8f079a3..53b4774 100755
 --- a/configure
 +++ b/configure
-@@ -16017,18 +16017,11 @@ $as_echo "yes" >&6; }
+@@ -16617,18 +16617,11 @@ $as_echo "yes" >&6; }
      gccvhi=`echo $gccver | cut -d . -f1`
      gccvlo=`echo $gccver | cut -d . -f2`
      compiler_num=`(expr $gccvhi "*" 100 + $gccvlo) 2>/dev/null`
@@ -33,7 +33,7 @@ index 8f079a3..53b4774 100755
 +    flags_opt_yes=""
      flags_opt_off="-O0"
  
-       if test -z "$SED"; then
+     OLDCPPFLAGS=$CPPFLAGS
 diff --git a/m4/curl-compilers.m4 b/m4/curl-compilers.m4
 index 0cbba7a..9175b5b 100644
 --- a/m4/curl-compilers.m4
