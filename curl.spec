@@ -6,6 +6,8 @@ License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
+Source3: https://raw.githubusercontent.com/bagder/curl/curl-7_49_0/tests/manpage-scan.pl
+Source4: https://raw.githubusercontent.com/bagder/curl/curl-7_49_0/tests/nroff-scan.pl
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -116,6 +118,7 @@ documentation of the library, too.
 
 %prep
 %setup -q
+install -m0644 %{SOURCE3} %{SOURCE4} tests/
 
 # upstream patches
 
