@@ -1,6 +1,6 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.48.0
+Version: 7.49.0
 Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
@@ -181,6 +181,9 @@ rm -rf $RPM_BUILD_ROOT
 
 make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install
 
+# install zsh completion for curl
+make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C scripts
+
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
 install -d $RPM_BUILD_ROOT%{_datadir}/aclocal
@@ -230,6 +233,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed May 18 2016 Kamil Dudka <kdudka@redhat.com> 7.49.0-1
+- new upstream release
+
 * Wed Mar 23 2016 Kamil Dudka <kdudka@redhat.com> 7.48.0-1
 - new upstream release
 
