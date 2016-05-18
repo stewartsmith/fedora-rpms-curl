@@ -120,6 +120,9 @@ documentation of the library, too.
 %setup -q
 install -m0644 %{SOURCE3} %{SOURCE4} tests/
 
+# prevent test1140 from failing
+echo '.so man3/curl_multi_socket.3' > docs/libcurl/curl_multi_socket_all.3
+
 # upstream patches
 
 # Fedora patches
