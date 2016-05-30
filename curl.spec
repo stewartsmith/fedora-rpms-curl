@@ -1,13 +1,11 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.49.0
+Version: 7.49.1
 Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
-Source3: https://raw.githubusercontent.com/bagder/curl/curl-7_49_0/tests/manpage-scan.pl
-Source4: https://raw.githubusercontent.com/bagder/curl/curl-7_49_0/tests/nroff-scan.pl
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -118,10 +116,6 @@ documentation of the library, too.
 
 %prep
 %setup -q
-install -m0644 %{SOURCE3} %{SOURCE4} tests/
-
-# prevent test1140 from failing
-echo '.so man3/curl_multi_socket.3' > docs/libcurl/curl_multi_socket_all.3
 
 # upstream patches
 
@@ -239,6 +233,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon May 30 2016 Kamil Dudka <kdudka@redhat.com> 7.49.1-1
+- new upstream release
+
 * Wed May 18 2016 Kamil Dudka <kdudka@redhat.com> 7.49.0-1
 - new upstream release
 
