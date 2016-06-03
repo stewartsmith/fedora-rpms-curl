@@ -1,11 +1,14 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.49.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 Source2: curlbuild.h
+
+# fix SIGSEGV of the curl tool while parsing URL with too many globs (#1340757)
+Patch7:   0007-curl-7.49.1-urlglob.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -118,6 +121,7 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
+%patch7 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -233,6 +237,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Jun 03 2016 Kamil Dudka <kdudka@redhat.com> 7.49.1-2
+- fix SIGSEGV of the curl tool while parsing URL with too many globs (#1340757)
+
 * Mon May 30 2016 Kamil Dudka <kdudka@redhat.com> 7.49.1-1
 - new upstream release
 

@@ -1,0 +1,35 @@
+From 5a3eddc9c327dcc20620d8ae47b27f5085811c7e Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Fri, 3 Jun 2016 11:26:20 +0200
+Subject: [PATCH] tool_urlglob: fix off-by-one error in glob_parse()
+
+... causing SIGSEGV while parsing URL with too many globs.
+Minimal example:
+
+$ curl $(for i in $(seq 101); do printf '{a}'; done)
+
+Reported-by: Romain Coltel
+Bug: https://bugzilla.redhat.com/1340757
+
+Upstream-commit: 584d0121c353ed855115c39f6cbc009854018029
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ src/tool_urlglob.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/tool_urlglob.c b/src/tool_urlglob.c
+index 70d17fe..a357b8b 100644
+--- a/src/tool_urlglob.c
++++ b/src/tool_urlglob.c
+@@ -401,7 +401,7 @@ static CURLcode glob_parse(URLGlob *glob, char *pattern,
+       }
+     }
+ 
+-    if(++glob->size > GLOB_PATTERN_NUM)
++    if(++glob->size >= GLOB_PATTERN_NUM)
+       return GLOBERROR("too many globs", pos, CURLE_URL_MALFORMAT);
+   }
+   return res;
+-- 
+2.5.5
+
