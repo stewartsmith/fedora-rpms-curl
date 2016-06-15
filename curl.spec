@@ -129,10 +129,6 @@ documentation of the library, too.
 %patch104 -p1
 %patch107 -p1
 
-# use RSA instead of DSA for host authentication in SCP and SFTP test-cases
-# because DSA is no longer supported by OpenSSH
-sed -e 's/ds[as]/rsa/g' -i tests/ssh{help.pm,server.pl}
-
 # disable test 1112 (#565305) and test 1801
 # <https://github.com/bagder/curl/commit/21e82bd6#commitcomment-12226582>
 printf "1112\n1801\n" >> tests/data/DISABLED
