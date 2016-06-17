@@ -1,11 +1,10 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.49.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
-Source2: curlbuild.h
 
 # fix SIGSEGV of the curl tool while parsing URL with too many globs (#1340757)
 Patch7:   0007-curl-7.49.1-urlglob.patch
@@ -32,6 +31,7 @@ BuildRequires: libmetalink-devel
 BuildRequires: libnghttp2-devel
 BuildRequires: libpsl-devel
 BuildRequires: libssh2-devel
+BuildRequires: multilib-rpm-config
 BuildRequires: nss-devel
 BuildRequires: openldap-devel
 BuildRequires: openssh-clients
@@ -190,15 +190,7 @@ install -d $RPM_BUILD_ROOT%{_datadir}/aclocal
 install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 
 # Make libcurl-devel multilib-ready (bug #488922)
-%if 0%{?__isa_bits} == 64
-%global _curlbuild_h curlbuild-64.h
-%else
-%global _curlbuild_h curlbuild-32.h
-%endif
-mv $RPM_BUILD_ROOT%{_includedir}/curl/curlbuild.h \
-   $RPM_BUILD_ROOT%{_includedir}/curl/%{_curlbuild_h}
-
-install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_includedir}/curl/curlbuild.h
+%multilib_fix_c_header --file %{_includedir}/curl/curlbuild.h
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -233,6 +225,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Jun 17 2016 Kamil Dudka <kdudka@redhat.com> 7.49.1-3
+- use multilib-rpm-config to install arch-dependent header files
+
 * Fri Jun 03 2016 Kamil Dudka <kdudka@redhat.com> 7.49.1-2
 - fix SIGSEGV of the curl tool while parsing URL with too many globs (#1340757)
 
