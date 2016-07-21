@@ -6,6 +6,12 @@ License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 
+# tmp workaround for https://github.com/curl/curl/commit/curl-7_50_0-2-g8b9ba13
+Source1: https://raw.githubusercontent.com/curl/curl/curl-7_50_0/docs/libcurl/opts/CURLINFO_HTTP_VERSION.3
+
+# tmp workaround for https://github.com/curl/curl/commit/curl-7_50_0-3-g5e26d9c
+Source2: https://raw.githubusercontent.com/curl/curl/curl-7_50_0/tests/http2-server.pl
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
 
@@ -116,6 +122,10 @@ documentation of the library, too.
 
 %prep
 %setup -q
+
+# files not included in the upstream tarball by mistake
+install -p -m0644 %{SOURCE1} docs/libcurl/opts/CURLINFO_HTTP_VERSION.3
+install -p -m0755 %{SOURCE2} tests/http2-server.pl
 
 # upstream patches
 
