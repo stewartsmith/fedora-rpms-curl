@@ -44,6 +44,9 @@ BuildRequires: python
 BuildRequires: stunnel
 BuildRequires: zlib-devel
 
+# nghttpx (an HTTP/2 proxy) is used by the upstream test-suite
+BuildRequires: nghttp2
+
 # perl modules used in the test suite
 BuildRequires: perl(Cwd)
 BuildRequires: perl(Digest::MD5)
