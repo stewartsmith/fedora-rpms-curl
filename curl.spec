@@ -94,6 +94,9 @@ Summary: A library for getting files from web servers
 Group: Development/Libraries
 Requires: libssh2%{?_isa} >= %{libssh2_version}
 
+# libnsspem.so is no longer included in the nss package (#1347336)
+Requires: nss-pem
+
 %description -n libcurl
 libcurl is a free and easy-to-use client-side URL transfer library, supporting
 FTP, FTPS, HTTP, HTTPS, SCP, SFTP, TFTP, TELNET, DICT, LDAP, LDAPS, FILE, IMAP,
@@ -239,6 +242,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Thu Jul 21 2016 Kamil Dudka <kdudka@redhat.com> 7.50.0-1
+- require nss-pem because it is no longer included in the nss package (#1347336)
 - fix HTTPS and FTPS tests (work around stunnel bug #1358810)
 - new upstream release
 
