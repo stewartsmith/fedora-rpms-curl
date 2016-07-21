@@ -47,8 +47,11 @@ BuildRequires: python
 BuildRequires: stunnel
 BuildRequires: zlib-devel
 
+# run HTTP/2 tests only on Intel for now to work around #1358845
+%ifarch %{ix86} x86_64
 # nghttpx (an HTTP/2 proxy) is used by the upstream test-suite
 BuildRequires: nghttp2
+%endif
 
 # perl modules used in the test suite
 BuildRequires: perl(Cwd)
@@ -242,6 +245,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Thu Jul 21 2016 Kamil Dudka <kdudka@redhat.com> 7.50.0-1
+- run HTTP/2 tests only on Intel for now to work around #1358845
 - require nss-pem because it is no longer included in the nss package (#1347336)
 - fix HTTPS and FTPS tests (work around stunnel bug #1358810)
 - new upstream release
