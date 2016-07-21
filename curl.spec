@@ -18,6 +18,9 @@ Patch101: 0101-curl-7.32.0-multilib.patch
 # prevent configure script from discarding -g in CFLAGS (#496778)
 Patch102: 0102-curl-7.36.0-debug.patch
 
+# fix HTTPS and FTPS tests (work around stunnel bug #1358810)
+Patch103: 0103-curl-7.50.0-stunnel.patch
+
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
 
@@ -135,6 +138,7 @@ install -p -m0755 %{SOURCE2} tests/http2-server.pl
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
+%patch103 -p1
 %patch104 -p1
 %patch107 -p1
 
@@ -234,7 +238,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
-* Wed Jul 21 2016 Kamil Dudka <kdudka@redhat.com> 7.50.0-1
+* Thu Jul 21 2016 Kamil Dudka <kdudka@redhat.com> 7.50.0-1
+- fix HTTPS and FTPS tests (work around stunnel bug #1358810)
 - new upstream release
 
 * Fri Jun 17 2016 Kamil Dudka <kdudka@redhat.com> 7.49.1-3
