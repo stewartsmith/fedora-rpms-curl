@@ -10,6 +10,9 @@ Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 # (related to CVE-2016-5420)
 Patch1:   0001-curl-7.51.0-cert-reuse.patch
 
+# work around race condition in PK11_FindSlotByName()
+Patch2:   0002-curl-7.51.0-find-slot-race.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
 
@@ -133,6 +136,7 @@ documentation of the library, too.
 
 # upstream patches
 %patch1 -p1
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -238,6 +242,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Fri Aug 26 2016 Kamil Dudka <kdudka@redhat.com> 7.50.1-2
+- work around race condition in PK11_FindSlotByName()
 - fix incorrect use of a previously loaded certificate from file
   (related to CVE-2016-5420)
 

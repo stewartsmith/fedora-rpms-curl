@@ -1,0 +1,97 @@
+From 5812a71c283936b85a77bd2745d4c6bb673cb55f Mon Sep 17 00:00:00 2001
+From: Peter Wang <novalazy@gmail.com>
+Date: Fri, 26 Aug 2016 16:28:39 +1000
+Subject: [PATCH] nss: work around race condition in PK11_FindSlotByName()
+
+Serialise the call to PK11_FindSlotByName() to avoid spurious errors in
+a multi-threaded environment. The underlying cause is a race condition
+in nssSlot_IsTokenPresent().
+
+Bug: https://bugzilla.mozilla.org/1297397
+
+Closes #985
+
+Upstream-commit: 3a5d5de9ef52ebe8ca2bda2165edc1b34c242e54
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ lib/vtls/nss.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
+
+diff --git a/lib/vtls/nss.c b/lib/vtls/nss.c
+index e467360..1465c03 100644
+--- a/lib/vtls/nss.c
++++ b/lib/vtls/nss.c
+@@ -81,6 +81,7 @@ PRFileDesc *PR_ImportTCPSocket(PRInt32 osfd);
+ 
+ PRLock * nss_initlock = NULL;
+ PRLock * nss_crllock = NULL;
++PRLock *nss_findslot_lock = NULL;
+ struct curl_llist *nss_crl_list = NULL;
+ NSSInitContext * nss_context = NULL;
+ 
+@@ -340,6 +341,19 @@ static char* dup_nickname(struct Curl_easy *data, enum dupstring cert_kind)
+   return NULL;
+ }
+ 
++/* Lock/unlock wrapper for PK11_FindSlotByName() to work around race condition
++ * in nssSlot_IsTokenPresent() causing spurious SEC_ERROR_NO_TOKEN.  For more
++ * details, go to <https://bugzilla.mozilla.org/1297397>.
++ */
++static PK11SlotInfo* nss_find_slot_by_name(const char *slot_name)
++{
++  PK11SlotInfo *slot;
++  PR_Lock(nss_initlock);
++  slot = PK11_FindSlotByName(slot_name);
++  PR_Unlock(nss_initlock);
++  return slot;
++}
++
+ /* Call PK11_CreateGenericObject() with the given obj_class and filename.  If
+  * the call succeeds, append the object handle to the list of objects so that
+  * the object can be destroyed in Curl_nss_close(). */
+@@ -362,7 +376,7 @@ static CURLcode nss_create_object(struct ssl_connect_data *ssl,
+   if(!slot_name)
+     return CURLE_OUT_OF_MEMORY;
+ 
+-  slot = PK11_FindSlotByName(slot_name);
++  slot = nss_find_slot_by_name(slot_name);
+   free(slot_name);
+   if(!slot)
+     return result;
+@@ -563,7 +577,7 @@ static CURLcode nss_load_key(struct connectdata *conn, int sockindex,
+     return result;
+   }
+ 
+-  slot = PK11_FindSlotByName("PEM Token #1");
++  slot = nss_find_slot_by_name("PEM Token #1");
+   if(!slot)
+     return CURLE_SSL_CERTPROBLEM;
+ 
+@@ -1013,7 +1027,7 @@ static SECStatus SelectClientCert(void *arg, PRFileDesc *sock,
+     struct CERTCertificateStr *cert;
+     struct SECKEYPrivateKeyStr *key;
+ 
+-    PK11SlotInfo *slot = PK11_FindSlotByName(pem_slotname);
++    PK11SlotInfo *slot = nss_find_slot_by_name(pem_slotname);
+     if(NULL == slot) {
+       failf(data, "NSS: PK11 slot not found: %s", pem_slotname);
+       return SECFailure;
+@@ -1249,6 +1263,7 @@ int Curl_nss_init(void)
+     PR_Init(PR_USER_THREAD, PR_PRIORITY_NORMAL, 256);
+     nss_initlock = PR_NewLock();
+     nss_crllock = PR_NewLock();
++    nss_findslot_lock = PR_NewLock();
+   }
+ 
+   /* We will actually initialize NSS later */
+@@ -1303,6 +1318,7 @@ void Curl_nss_cleanup(void)
+ 
+   PR_DestroyLock(nss_initlock);
+   PR_DestroyLock(nss_crllock);
++  PR_DestroyLock(nss_findslot_lock);
+   nss_initlock = NULL;
+ 
+   initialized = 0;
+-- 
+2.7.4
+
