@@ -1,17 +1,10 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.50.1
-Release: 2%{?dist}
+Version: 7.50.2
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
-
-# fix incorrect use of a previously loaded certificate from file
-# (related to CVE-2016-5420)
-Patch1:   0001-curl-7.51.0-cert-reuse.patch
-
-# work around race condition in PK11_FindSlotByName()
-Patch2:   0002-curl-7.51.0-find-slot-race.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -135,8 +128,6 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
-%patch1 -p1
-%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -230,8 +221,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libcurl.so.*
 
 %files -n libcurl-devel
-%doc docs/examples/*.c docs/examples/Makefile.example docs/INTERNALS
-%doc docs/CONTRIBUTE docs/libcurl/ABI
+%doc docs/examples/*.c docs/examples/Makefile.example docs/INTERNALS.md
+%doc docs/CONTRIBUTE.md docs/libcurl/ABI
 %{_bindir}/curl-config*
 %{_includedir}/curl
 %{_libdir}/*.so
@@ -241,6 +232,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Sep 07 2016 Kamil Dudka <kdudka@redhat.com> 7.50.2-1
+- new upstream release
+
 * Fri Aug 26 2016 Kamil Dudka <kdudka@redhat.com> 7.50.1-2
 - work around race condition in PK11_FindSlotByName()
 - fix incorrect use of a previously loaded certificate from file
