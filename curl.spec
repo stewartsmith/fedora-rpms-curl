@@ -1,6 +1,6 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.50.2
+Version: 7.50.3
 Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
@@ -232,6 +232,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Sep 14 2016 Kamil Dudka <kdudka@redhat.com> 7.50.3-1
+- new upstream release (fixes CVE-2016-7167)
+
 * Wed Sep 07 2016 Kamil Dudka <kdudka@redhat.com> 7.50.2-1
 - new upstream release
 
