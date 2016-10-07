@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.50.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -189,7 +189,9 @@ rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install
 
 # install zsh completion for curl
-make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C scripts
+# (we have to override LD_LIBRARY_PATH because we eliminated rpath)
+LD_LIBRARY_PATH="$RPM_BUILD_ROOT%{_libdir}:$LD_LIBRARY_PATH" \
+    make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C scripts
 
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
@@ -232,6 +234,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Oct 07 2016 Kamil Dudka <kdudka@redhat.com> 7.50.3-2
+- use the just built version of libcurl while generating zsh completion
+
 * Wed Sep 14 2016 Kamil Dudka <kdudka@redhat.com> 7.50.3-1
 - new upstream release (fixes CVE-2016-7167)
 
