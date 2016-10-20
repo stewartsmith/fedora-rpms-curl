@@ -12,9 +12,6 @@ Patch101: 0101-curl-7.32.0-multilib.patch
 # prevent configure script from discarding -g in CFLAGS (#496778)
 Patch102: 0102-curl-7.36.0-debug.patch
 
-# fix HTTPS and FTPS tests (work around stunnel bug #1358810)
-Patch103: 0103-curl-7.50.0-stunnel.patch
-
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
 
@@ -132,7 +129,6 @@ documentation of the library, too.
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
-%patch103 -p1
 %patch104 -p1
 %patch107 -p1
 
@@ -234,6 +230,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Oct 20 2016 Kamil Dudka <kdudka@redhat.com> 7.50.3-3
+- drop 0103-curl-7.50.0-stunnel.patch no longer needed
+
 * Fri Oct 07 2016 Kamil Dudka <kdudka@redhat.com> 7.50.3-2
 - use the just built version of libcurl while generating zsh completion
 
