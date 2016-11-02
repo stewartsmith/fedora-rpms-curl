@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.50.3
-Release: 2%{?dist}
+Version: 7.51.0
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -15,15 +15,12 @@ Patch102: 0102-curl-7.36.0-debug.patch
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
 
-# work around valgrind bug (#678518)
-Patch107: 0107-curl-7.21.4-libidn-valgrind.patch
-
 Provides: webclient
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(id -nu)
 BuildRequires: groff
 BuildRequires: krb5-devel
-BuildRequires: libidn-devel
+BuildRequires: libidn2-devel
 BuildRequires: libmetalink-devel
 BuildRequires: libnghttp2-devel
 BuildRequires: libpsl-devel
@@ -130,7 +127,6 @@ documentation of the library, too.
 %patch101 -p1
 %patch102 -p1
 %patch104 -p1
-%patch107 -p1
 
 # disable test 1112 (#565305) and test 1801
 # <https://github.com/bagder/curl/commit/21e82bd6#commitcomment-12226582>
@@ -151,7 +147,7 @@ echo "1319" >> tests/data/DISABLED
     --enable-threaded-resolver \
     --with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
     --with-gssapi${KRB5_PREFIX} \
-    --with-libidn \
+    --with-libidn2 \
     --with-libmetalink \
     --with-libpsl \
     --with-libssh2 \
@@ -230,6 +226,20 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Wed Nov 02 2016 Kamil Dudka <kdudka@redhat.com> 7.51.0-1
+- new upstream release, which fixes the following vulnerabilities
+    CVE-2016-8615 - Cookie injection for other servers
+    CVE-2016-8616 - Case insensitive password comparison
+    CVE-2016-8617 - Out-of-bounds write via unchecked multiplication
+    CVE-2016-8618 - Double-free in curl_maprintf
+    CVE-2016-8619 - Double-free in krb5 code
+    CVE-2016-8620 - Glob parser write/read out of bounds
+    CVE-2016-8621 - curl_getdate out-of-bounds read
+    CVE-2016-8622 - URL unescape heap overflow via integer truncation
+    CVE-2016-8623 - Use-after-free via shared cookies
+    CVE-2016-8624 - Invalid URL parsing with '#'
+    CVE-2016-8625 - IDNA 2003 makes curl use wrong host
+
 * Thu Oct 20 2016 Kamil Dudka <kdudka@redhat.com> 7.50.3-3
 - drop 0103-curl-7.50.0-stunnel.patch no longer needed
 
