@@ -1,10 +1,13 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.51.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
+
+# ssh: check md5 fingerprints case insensitively
+Patch1:   0001-curl-7.51.0-ssh-md5.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -122,6 +125,7 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -229,6 +233,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Tue Nov 15 2016 Kamil Dudka <kdudka@redhat.com> 7.51.0-2
+- ssh: check md5 fingerprints case insensitively
+
 * Wed Nov 02 2016 Kamil Dudka <kdudka@redhat.com> 7.51.0-1
 - temporarily disable failing libidn2 test-cases
 - new upstream release, which fixes the following vulnerabilities
