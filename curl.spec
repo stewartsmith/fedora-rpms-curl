@@ -9,6 +9,9 @@ Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 # ssh: check md5 fingerprints case insensitively
 Patch1:   0001-curl-7.51.0-ssh-md5.patch
 
+# stricter host name checking for file:// URLs
+Patch2:   0002-curl-7.51.0-file-host.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
 
@@ -126,6 +129,7 @@ documentation of the library, too.
 
 # upstream patches
 %patch1 -p1
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -234,6 +238,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Tue Nov 15 2016 Kamil Dudka <kdudka@redhat.com> 7.51.0-2
+- stricter host name checking for file:// URLs
 - ssh: check md5 fingerprints case insensitively
 
 * Wed Nov 02 2016 Kamil Dudka <kdudka@redhat.com> 7.51.0-1
