@@ -1,19 +1,10 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.51.0
-Release: 3%{?dist}
+Version: 7.52.1
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
-Source: http://curl.haxx.se/download/%{name}-%{version}.tar.lzma
-
-# ssh: check md5 fingerprints case insensitively
-Patch1:   0001-curl-7.51.0-ssh-md5.patch
-
-# stricter host name checking for file:// URLs
-Patch2:   0002-curl-7.51.0-file-host.patch
-
-# map CURL_SSLVERSION_DEFAULT to NSS default, add support for TLS 1.3 (#1396719)
-Patch3:   0003-curl-7.51.0-tls-version.patch
+Source: https://curl.haxx.se/download/%{name}-%{version}.tar.lzma
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -25,7 +16,7 @@ Patch102: 0102-curl-7.36.0-debug.patch
 Patch104: 0104-curl-7.19.7-localhost6.patch
 
 Provides: webclient
-URL: http://curl.haxx.se/
+URL: https://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(id -nu)
 BuildRequires: groff
 BuildRequires: krb5-devel
@@ -131,9 +122,6 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -241,6 +229,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Dec 23 2016 Kamil Dudka <kdudka@redhat.com> 7.52.1-1
+- new upstream release (fixes CVE-2016-9586)
+
 * Mon Nov 21 2016 Kamil Dudka <kdudka@redhat.com> 7.51.0-3
 - map CURL_SSLVERSION_DEFAULT to NSS default, add support for TLS 1.3 (#1396719)
 
