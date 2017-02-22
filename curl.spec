@@ -59,7 +59,7 @@ BuildRequires: perl(vars)
 # to be less reliable, in order to avoid unnecessary build failures (see RHBZ
 # #810992, #816175, and #886891).  Nevertheless developers are free to install
 # valgrind manually to improve test coverage on any architecture.
-%ifarch %{ix86} x86_64
+%ifarch x86_64
 BuildRequires: valgrind
 %endif
 
@@ -230,6 +230,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Feb 22 2017 Kamil Dudka <kdudka@redhat.com> 7.53.0-1
+- do not use valgrind on ix86 until sqlite is rebuilt by patched GCC (#1423434)
 - new upstream release (fixes CVE-2017-2629)
 
 * Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 7.52.1-2
