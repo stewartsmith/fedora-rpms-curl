@@ -1,6 +1,6 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.53.0
+Version: 7.53.1
 Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
@@ -229,6 +229,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Feb 24 2017 Kamil Dudka <kdudka@redhat.com> 7.53.1-1
+- new upstream release
+
 * Wed Feb 22 2017 Kamil Dudka <kdudka@redhat.com> 7.53.0-1
 - do not use valgrind on ix86 until sqlite is rebuilt by patched GCC (#1423434)
 - new upstream release (fixes CVE-2017-2629)
