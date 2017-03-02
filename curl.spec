@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.53.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -59,7 +59,7 @@ BuildRequires: perl(vars)
 # to be less reliable, in order to avoid unnecessary build failures (see RHBZ
 # #810992, #816175, and #886891).  Nevertheless developers are free to install
 # valgrind manually to improve test coverage on any architecture.
-%ifarch x86_64
+%ifarch x86_64 %{ix86}
 BuildRequires: valgrind
 %endif
 
@@ -229,6 +229,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Thu Mar 02 2017 Kamil Dudka <kdudka@redhat.com> 7.53.1-2
+- re-enable valgrind on ix86 because sqlite is fixed (#1428286)
+
 * Fri Feb 24 2017 Kamil Dudka <kdudka@redhat.com> 7.53.1-1
 - new upstream release
 
