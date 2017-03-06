@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.53.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -84,7 +84,7 @@ Requires: libssh2%{?_isa} >= %{libssh2_version}
 
 # libnsspem.so is no longer included in the nss package (#1347336)
 BuildRequires: nss-pem
-Requires: nss-pem
+Requires: nss-pem%{?_isa}
 
 %description -n libcurl
 libcurl is a free and easy-to-use client-side URL transfer library, supporting
@@ -229,6 +229,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Mar 06 2017 Kamil Dudka <kdudka@redhat.com> 7.53.1-3
+- make the dependency on nss-pem arch-specific (#1428550)
+
 * Thu Mar 02 2017 Kamil Dudka <kdudka@redhat.com> 7.53.1-2
 - re-enable valgrind on ix86 because sqlite is fixed (#1428286)
 
