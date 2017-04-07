@@ -1,10 +1,13 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.53.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.lzma
+
+# fix out of bounds read in curl --write-out (CVE-2017-7407)
+Patch1:   0001-curl-7.53.1-CVE-2017-7407.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -18,6 +21,7 @@ Patch104: 0104-curl-7.19.7-localhost6.patch
 Provides: webclient
 URL: https://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(id -nu)
+BuildRequires: automake
 BuildRequires: groff
 BuildRequires: krb5-devel
 BuildRequires: libidn2-devel
@@ -122,11 +126,16 @@ documentation of the library, too.
 %setup -q
 
 # upstream patches
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
 %patch104 -p1
+
+# regenerate Makefile.in files
+aclocal -I m4
+automake
 
 # disable test 1112 (#565305) and test 1801
 # <https://github.com/bagder/curl/commit/21e82bd6#commitcomment-12226582>
@@ -229,6 +238,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Fri Apr 07 2017 Kamil Dudka <kdudka@redhat.com> 7.53.1-4
+- fix out of bounds read in curl --write-out (CVE-2017-7407)
+
 * Mon Mar 06 2017 Kamil Dudka <kdudka@redhat.com> 7.53.1-3
 - make the dependency on nss-pem arch-specific (#1428550)
 
