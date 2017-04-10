@@ -139,7 +139,8 @@ automake
 
 # disable test 1112 (#565305) and test 1801
 # <https://github.com/bagder/curl/commit/21e82bd6#commitcomment-12226582>
-printf "1112\n1801\n" >> tests/data/DISABLED
+# and test 2033, which is a flaky test for HTTP/1 pipelining
+printf "1112\n1801\n2033\n" >> tests/data/DISABLED
 
 # disable test 1319 on ppc64 (server times out)
 %ifarch ppc64
@@ -238,6 +239,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libcurl.m4
 
 %changelog
+* Mon Apr 10 2017 Kamil Dudka <kdudka@redhat.com> 7.53.1-5
+- disable upstream test 2033 (flaky test for HTTP/1 pipelining)
+
 * Fri Apr 07 2017 Kamil Dudka <kdudka@redhat.com> 7.53.1-4
 - fix out of bounds read in curl --write-out (CVE-2017-7407)
 
