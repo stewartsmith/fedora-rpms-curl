@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.53.1
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -57,7 +57,7 @@ BuildRequires: perl(Time::HiRes)
 BuildRequires: perl(warnings)
 BuildRequires: perl(vars)
 
-# The test-suite runs automatically trough valgrind if valgrind is available
+# The test-suite runs automatically through valgrind if valgrind is available
 # on the system.  By not installing valgrind into mock's chroot, we disable
 # this feature for production builds on architectures where valgrind is known
 # to be less reliable, in order to avoid unnecessary build failures (see RHBZ
@@ -103,16 +103,6 @@ Summary: Files needed for building applications with libcurl
 Group: Development/Libraries
 Requires: libcurl%{?_isa} = %{version}-%{release}
 
-# From Fedora 14, %%{_datadir}/aclocal is included in the filesystem package
-%if 0%{?fedora} < 14
-Requires: %{_datadir}/aclocal
-%endif
-
-# From Fedora 11, RHEL-6, pkgconfig dependency is auto-detected
-%if 0%{?fedora} < 11 && 0%{?rhel} < 6
-Requires: pkgconfig
-%endif
-
 Provides: curl-devel = %{version}-%{release}
 Provides: curl-devel%{?_isa} = %{version}-%{release}
 Obsoletes: curl-devel < %{version}-%{release}
@@ -123,7 +113,7 @@ developing programs which use the libcurl library. It contains the API
 documentation of the library, too.
 
 %package -n curl-minimal
-Summary: Conservatively configured build of curl for minimal installations.
+Summary: Conservatively configured build of curl for minimal installations
 Provides: curl = %{version}-%{release}
 Conflicts: curl
 RemovePathPostfixes: .minimal
@@ -135,7 +125,8 @@ other hand, the package is smaller and requires fewer run-time dependencies to
 be installed.
 
 %package -n libcurl-minimal
-Summary: Conservatively configured build of libcurl for minimal installations.
+Summary: Conservatively configured build of libcurl for minimal installations
+Provides: libcurl = %{version}-%{release}
 Provides: libcurl%{?_isa} = %{version}-%{release}
 Conflicts: libcurl
 RemovePathPostfixes: .minimal
@@ -175,7 +166,6 @@ echo "1319" >> tests/data/DISABLED
 printf "1034\n1035\n2046\n2047\n" >> tests/data/DISABLED
 
 %build
-[ -x /usr/kerberos/bin/krb5-config ] && KRB5_PREFIX="=/usr/kerberos"
 mkdir build-{full,minimal}
 export common_configure_opts=" \
     --cache-file=../config.cache \
@@ -184,7 +174,7 @@ export common_configure_opts=" \
     --enable-ipv6 \
     --enable-threaded-resolver \
     --with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt \
-    --with-gssapi${KRB5_PREFIX} \
+    --with-gssapi \
     --with-nghttp2 \
     --without-ssl --with-nss"
 
@@ -240,8 +230,6 @@ ln -s ../../docs/curl.1 ../docs
 srcdir=../../tests perl -I../../tests ../../tests/runtests.pl -a -p -v '!flaky'
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
 # install and rename the library that will be packaged as libcurl-minimal
 make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C build-minimal/lib
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.{la,so}
@@ -270,12 +258,13 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 # Make libcurl-devel multilib-ready (bug #488922)
 %multilib_fix_c_header --file %{_includedir}/curl/curlbuild.h
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %post -n libcurl -p /sbin/ldconfig
 
 %postun -n libcurl -p /sbin/ldconfig
+
+%post -n libcurl-minimal -p /sbin/ldconfig
+
+%postun -n libcurl-minimal -p /sbin/ldconfig
 
 %files
 %doc CHANGES README*
@@ -287,7 +276,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/zsh/site-functions
 
 %files -n libcurl
-%{!?_licensedir:%global license %%doc}
 %license COPYING
 %{_libdir}/libcurl.so.[0-9]
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9]
@@ -313,6 +301,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Thu Apr 13 2017 Paul Howarth <paul@city-fan.org> 7.53.1-7
+- add %%post and %%postun scriptlets for libcurl-minimal
+- libcurl-minimal provides both libcurl and libcurl%%{?_isa}
+- remove some legacy spec file cruft
+
 * Wed Apr 12 2017 Kamil Dudka <kdudka@redhat.com> 7.53.1-6
 - provide (lib)curl-minimal subpackages with lightweight build of (lib)curl
 
