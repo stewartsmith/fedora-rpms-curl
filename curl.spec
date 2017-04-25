@@ -1,10 +1,13 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.54.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.lzma
+
+# nss: do not leak PKCS #11 slot while loading a key (#1444860)
+Patch1:   0001-curl-7.54.0-nss-pem-slot-leak.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -138,6 +141,7 @@ be installed.
 %setup -q
 
 # upstream patches
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -297,6 +301,9 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Tue Apr 25 2017 Kamil Dudka <kdudka@redhat.com> 7.54.0-2
+- nss: do not leak PKCS #11 slot while loading a key (#1444860)
+
 * Thu Apr 20 2017 Kamil Dudka <kdudka@redhat.com> 7.54.0-1
 - new upstream release (fixes CVE-2017-7468)
 
