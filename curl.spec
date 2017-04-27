@@ -1,16 +1,10 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.54.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.lzma
-
-# nss: do not leak PKCS #11 slot while loading a key (#1444860)
-Patch1:   0001-curl-7.54.0-nss-pem-slot-leak.patch
-
-# nss: use libnssckbi.so as the default source of trust
-Patch2:   0002-curl-7.54.0-libnssckbi.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -33,10 +27,10 @@ BuildRequires: libnghttp2-devel
 BuildRequires: libpsl-devel
 BuildRequires: libssh2-devel
 BuildRequires: multilib-rpm-config
-BuildRequires: nss-devel
 BuildRequires: openldap-devel
 BuildRequires: openssh-clients
 BuildRequires: openssh-server
+BuildRequires: openssl-devel
 BuildRequires: pkgconfig
 BuildRequires: python
 BuildRequires: stunnel
@@ -89,10 +83,6 @@ Summary: A library for getting files from web servers
 Group: Development/Libraries
 Requires: libssh2%{?_isa} >= %{libssh2_version}
 
-# libnsspem.so is no longer included in the nss package (#1347336)
-BuildRequires: nss-pem
-Requires: nss-pem%{?_isa}
-
 %description -n libcurl
 libcurl is a free and easy-to-use client-side URL transfer library, supporting
 FTP, FTPS, HTTP, HTTPS, SCP, SFTP, TFTP, TELNET, DICT, LDAP, LDAPS, FILE, IMAP,
@@ -144,8 +134,6 @@ be installed.
 %setup -q
 
 # upstream patches
-%patch1 -p1
-%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -179,7 +167,7 @@ export common_configure_opts=" \
     --enable-threaded-resolver \
     --with-gssapi \
     --with-nghttp2 \
-    --without-ssl --with-nss --without-ca-bundle"
+    --with-ssl --with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt"
 
 %global _configure ../configure
 
@@ -304,6 +292,9 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Thu Apr 27 2017 Kamil Dudka <kdudka@redhat.com> 7.54.0-3
+- switch the TLS backend back to OpenSSL (#1445153)
+
 * Tue Apr 25 2017 Kamil Dudka <kdudka@redhat.com> 7.54.0-2
 - nss: use libnssckbi.so as the default source of trust
 - nss: do not leak PKCS #11 slot while loading a key (#1444860)
