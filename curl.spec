@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.54.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -64,7 +64,8 @@ BuildRequires: perl(vars)
 BuildRequires: valgrind
 %endif
 
-Requires: libcurl%{?_isa} = %{version}-%{release}
+# using an older version of libcurl could result in CURLE_UNKNOWN_OPTION
+Requires: libcurl%{?_isa} >= %{version}-%{release}
 
 # require at least the version of libssh2 that we were built against,
 # to ensure that we have the necessary symbols available (#525002, #642796)
@@ -110,6 +111,9 @@ Summary: Conservatively configured build of curl for minimal installations
 Provides: curl = %{version}-%{release}
 Conflicts: curl
 RemovePathPostfixes: .minimal
+
+# using an older version of libcurl could result in CURLE_UNKNOWN_OPTION
+Requires: libcurl%{?_isa} >= %{version}-%{release}
 
 %description -n curl-minimal
 This is a replacement of the 'curl' package for minimal installations.  It
@@ -292,6 +296,9 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Thu May 04 2017 Kamil Dudka <kdudka@redhat.com> 7.54.0-4
+- make curl-minimal require a new enough version of libcurl
+
 * Thu Apr 27 2017 Kamil Dudka <kdudka@redhat.com> 7.54.0-3
 - switch the TLS backend back to OpenSSL (#1445153)
 
