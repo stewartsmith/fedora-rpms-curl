@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.54.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -15,6 +15,7 @@ Patch102: 0102-curl-7.36.0-debug.patch
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
 
+Provides: curl-full = %{version}-%{release}
 Provides: webclient
 URL: https://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(id -nu)
@@ -83,6 +84,8 @@ resume, proxy tunneling and a busload of other useful tricks.
 Summary: A library for getting files from web servers
 Group: Development/Libraries
 Requires: libssh2%{?_isa} >= %{libssh2_version}
+Provides: libcurl-full = %{version}-%{release}
+Provides: libcurl-full%{?_isa} = %{version}-%{release}
 
 %description -n libcurl
 libcurl is a free and easy-to-use client-side URL transfer library, supporting
@@ -296,6 +299,9 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Tue May 16 2017 Kamil Dudka <kdudka@redhat.com> 7.54.0-5
+- add *-full provides for curl and libcurl to make them explicitly installable
+
 * Thu May 04 2017 Kamil Dudka <kdudka@redhat.com> 7.54.0-4
 - make curl-minimal require a new enough version of libcurl
 
