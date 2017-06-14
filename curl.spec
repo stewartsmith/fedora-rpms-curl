@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.54.0
-Release: 5%{?dist}
+Version: 7.54.1
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -221,9 +221,6 @@ export LD_LIBRARY_PATH
 cd build-full/tests
 make %{?_smp_mflags} V=1
 
-# TODO: fix tests/manpage-scan.pl upstream to support out of source tree builds
-ln -s ../../docs/curl.1 ../docs
-
 # run the upstream test-suite
 srcdir=../../tests perl -I../../tests ../../tests/runtests.pl -a -p -v '!flaky'
 
@@ -299,6 +296,9 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Wed Jun 14 2017 Kamil Dudka <kdudka@redhat.com> 7.54.1-1
+- new upstream release
+
 * Tue May 16 2017 Kamil Dudka <kdudka@redhat.com> 7.54.0-5
 - add *-full provides for curl and libcurl to make them explicitly installable
 

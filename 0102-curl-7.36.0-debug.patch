@@ -12,7 +12,7 @@ diff --git a/configure b/configure
 index 8f079a3..53b4774 100755
 --- a/configure
 +++ b/configure
-@@ -16623,18 +16623,11 @@ $as_echo "yes" >&6; }
+@@ -17044,18 +17044,11 @@ $as_echo "yes" >&6; }
      gccvhi=`echo $gccver | cut -d . -f1`
      gccvlo=`echo $gccver | cut -d . -f2`
      compiler_num=`(expr $gccvhi "*" 100 + $gccvlo) 2>/dev/null`
@@ -27,7 +27,7 @@ index 8f079a3..53b4774 100755
 +    flags_dbg_all=""
      flags_dbg_yes="-g"
      flags_dbg_off=""
--    flags_opt_all="-O -O0 -O1 -O2 -O3 -Os"
+-    flags_opt_all="-O -O0 -O1 -O2 -O3 -Os -Og -Ofast"
 -    flags_opt_yes="-O2"
 +    flags_opt_all=""
 +    flags_opt_yes=""
@@ -53,7 +53,7 @@ index 0cbba7a..9175b5b 100644
 +    flags_dbg_all=""
      flags_dbg_yes="-g"
      flags_dbg_off=""
--    flags_opt_all="-O -O0 -O1 -O2 -O3 -Os"
+-    flags_opt_all="-O -O0 -O1 -O2 -O3 -Os -Og -Ofast"
 -    flags_opt_yes="-O2"
 +    flags_opt_all=""
 +    flags_opt_yes=""

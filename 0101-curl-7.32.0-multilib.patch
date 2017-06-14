@@ -58,7 +58,7 @@ diff --git a/docs/curl-config.1 b/docs/curl-config.1
 index 14a9d2b..ffcc004 100644
 --- a/docs/curl-config.1
 +++ b/docs/curl-config.1
-@@ -65,7 +65,9 @@ be listed using uppercase and are separated by newlines. There may be none,
+@@ -66,7 +66,9 @@ be listed using uppercase and are separated by newlines. There may be none,
  one, or several protocols in the list. (Added in 7.13.0)
  .IP "--static-libs"
  Shows the complete set of libs and other linker options you will need in order
