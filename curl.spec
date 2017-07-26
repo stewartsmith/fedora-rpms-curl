@@ -1,7 +1,11 @@
+# avoid build failure caused broken RPM code that produces debuginfo packages
+# reported at https://github.com/rpm-software-management/rpm/issues/280
+%undefine _debuginfo_subpackages
+
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.54.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -302,6 +306,9 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Wed Jul 26 2017 Kamil Dudka <kdudka@redhat.com> 7.54.1-4
+- avoid build failure caused broken RPM code that produces debuginfo packages
+
 * Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 7.54.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
