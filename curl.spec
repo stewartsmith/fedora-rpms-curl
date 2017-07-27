@@ -5,7 +5,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.54.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -306,6 +306,9 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Thu Jul 27 2017 Kamil Dudka <kdudka@redhat.com> 7.54.1-5
+- rebuild to fix broken linkage of cmake on ppc64le
+
 * Wed Jul 26 2017 Kamil Dudka <kdudka@redhat.com> 7.54.1-4
 - avoid build failure caused broken RPM code that produces debuginfo packages
 
