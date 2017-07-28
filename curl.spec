@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.54.1
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.lzma
@@ -302,6 +302,9 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Fri Jul 28 2017 Florian Weimer <fweimer@redhat.com> - 7.54.1-7
+- Rebuild with fixed binutils (#1475636)
+
 * Fri Jul 28 2017 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 7.54.1-6
 - Enable separate debuginfo back
 
