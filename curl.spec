@@ -27,7 +27,6 @@ BuildRequires: libmetalink-devel
 BuildRequires: libnghttp2-devel
 BuildRequires: libpsl-devel
 BuildRequires: libssh2-devel
-BuildRequires: multilib-rpm-config
 BuildRequires: openldap-devel
 BuildRequires: openssh-clients
 BuildRequires: openssh-server
@@ -256,9 +255,6 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 install -d $RPM_BUILD_ROOT%{_datadir}/aclocal
 install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 
-# Make libcurl-devel multilib-ready (bug #488922)
-%multilib_fix_c_header --file %{_includedir}/curl/curlbuild.h
-
 %post -n libcurl -p /sbin/ldconfig
 
 %postun -n libcurl -p /sbin/ldconfig
@@ -303,6 +299,7 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 
 %changelog
 * Wed Aug 09 2017 Kamil Dudka <kdudka@redhat.com> 7.55.0-1
+- drop multilib fix for libcurl header files no longer needed
 - new upstream release, which fixes the following vulnerabilities
     CVE-2017-1000099 - FILE buffer read out of bounds
     CVE-2017-1000100 - TFTP sends more than buffer size
