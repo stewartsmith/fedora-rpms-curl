@@ -12,7 +12,7 @@ diff --git a/configure b/configure
 index 8f079a3..53b4774 100755
 --- a/configure
 +++ b/configure
-@@ -17044,18 +17044,11 @@ $as_echo "yes" >&6; }
+@@ -17079,18 +17079,11 @@ $as_echo "yes" >&6; }
      gccvhi=`echo $gccver | cut -d . -f1`
      gccvlo=`echo $gccver | cut -d . -f2`
      compiler_num=`(expr $gccvhi "*" 100 + $gccvlo) 2>/dev/null`
@@ -38,7 +38,7 @@ diff --git a/m4/curl-compilers.m4 b/m4/curl-compilers.m4
 index 0cbba7a..9175b5b 100644
 --- a/m4/curl-compilers.m4
 +++ b/m4/curl-compilers.m4
-@@ -148,18 +148,11 @@ AC_DEFUN([CURL_CHECK_COMPILER_GNU_C], [
+@@ -157,18 +157,11 @@ AC_DEFUN([CURL_CHECK_COMPILER_GNU_C], [
      gccvhi=`echo $gccver | cut -d . -f1`
      gccvlo=`echo $gccver | cut -d . -f2`
      compiler_num=`(expr $gccvhi "*" 100 + $gccvlo) 2>/dev/null`

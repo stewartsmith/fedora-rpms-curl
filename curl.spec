@@ -1,10 +1,10 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.54.1
-Release: 8%{?dist}
+Version: 7.55.0
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
-Source: https://curl.haxx.se/download/%{name}-%{version}.tar.lzma
+Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -302,6 +302,12 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Wed Aug 09 2017 Kamil Dudka <kdudka@redhat.com> 7.55.0-1
+- new upstream release, which fixes the following vulnerabilities
+    CVE-2017-1000099 - FILE buffer read out of bounds
+    CVE-2017-1000100 - TFTP sends more than buffer size
+    CVE-2017-1000101 - URL globbing out of bounds read
+
 * Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 7.54.1-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
