@@ -241,19 +241,23 @@ done
 make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C build-minimal/src
 mv -v ${RPM_BUILD_ROOT}%{_bindir}/curl{,.minimal}
 
+# install libcurl.m4
+install -d $RPM_BUILD_ROOT%{_datadir}/aclocal
+install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
+
 # install the executable and library that will be packaged as curl and libcurl
-make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C build-full
+cd build-full
+make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install
+
+# install libcurl man pages, which will be included in libcurl-devel
+make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C docs/libcurl
 
 # install zsh completion for curl
 # (we have to override LD_LIBRARY_PATH because we eliminated rpath)
 LD_LIBRARY_PATH="$RPM_BUILD_ROOT%{_libdir}:$LD_LIBRARY_PATH" \
-    make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" \
-    install -C build-full/scripts
+    make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C scripts
 
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
-
-install -d $RPM_BUILD_ROOT%{_datadir}/aclocal
-install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 
 %post -n libcurl -p /sbin/ldconfig
 
