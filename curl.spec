@@ -6,6 +6,10 @@ License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
+# add tests/{dictserver,negtelnetserver}.py not included in EXTRA_DIST
+# https://github.com/curl/curl/pull/1744
+Patch1:   0001-curl-7.55.0-tests-missing-py-scripts.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
 
@@ -146,6 +150,8 @@ be installed.
 %setup -q
 
 # upstream patches
+%patch1 -p1
+chmod +x tests/{dictserver,negtelnetserver}.py
 
 # Fedora patches
 %patch101 -p1
