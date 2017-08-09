@@ -40,6 +40,9 @@ BuildRequires: python
 BuildRequires: stunnel
 BuildRequires: zlib-devel
 
+# gnutls-serv is used by the upstream test-suite
+BuildRequires: gnutls-utils
+
 # nghttpx (an HTTP/2 proxy) is used by the upstream test-suite
 BuildRequires: nghttp2
 
@@ -255,7 +258,8 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 cd build-full
 make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install
 
-# install libcurl man pages, which will be included in libcurl-devel
+# install libcurl man pages (TODO: drop this when updating to latest upstream)
+# fixed by https://github.com/curl/curl/commit/curl-7_54_0-461-gf864bd8c8
 make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C docs/libcurl
 
 # install zsh completion for curl
