@@ -10,6 +10,10 @@ Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 # https://github.com/curl/curl/pull/1744
 Patch1:   0001-curl-7.55.0-tests-missing-py-scripts.patch
 
+# avoid int overflow on arches with 32bit long
+# https://github.com/curl/curl/pull/1748
+Patch2:   0002-curl-7.55.0-32bit-overflow.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
 
@@ -155,6 +159,9 @@ be installed.
 # upstream patches
 %patch1 -p1
 chmod +x tests/{dictserver,negtelnetserver}.py
+
+# not yet upstream
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
