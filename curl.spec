@@ -1,18 +1,10 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.55.0
+Version: 7.55.1
 Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
-
-# add tests/{dictserver,negtelnetserver}.py not included in EXTRA_DIST
-# https://github.com/curl/curl/pull/1744
-Patch1:   0001-curl-7.55.0-tests-missing-py-scripts.patch
-
-# avoid int overflow on arches with 32bit long
-# https://github.com/curl/curl/pull/1748
-Patch2:   0002-curl-7.55.0-32bit-overflow.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -157,11 +149,6 @@ be installed.
 %setup -q
 
 # upstream patches
-%patch1 -p1
-chmod +x tests/{dictserver,negtelnetserver}.py
-
-# not yet upstream
-%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -265,10 +252,6 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 cd build-full
 make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install
 
-# install libcurl man pages (TODO: drop this when updating to latest upstream)
-# fixed by https://github.com/curl/curl/commit/curl-7_54_0-461-gf864bd8c8
-make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C docs/libcurl
-
 # install zsh completion for curl
 # (we have to override LD_LIBRARY_PATH because we eliminated rpath)
 LD_LIBRARY_PATH="$RPM_BUILD_ROOT%{_libdir}:$LD_LIBRARY_PATH" \
@@ -319,6 +302,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Mon Aug 14 2017 Kamil Dudka <kdudka@redhat.com> 7.55.1-1
+- new upstream release
+
 * Wed Aug 09 2017 Kamil Dudka <kdudka@redhat.com> 7.55.0-1
 - drop multilib fix for libcurl header files no longer needed
 - new upstream release, which fixes the following vulnerabilities
