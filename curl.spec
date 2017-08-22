@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.55.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
@@ -14,6 +14,9 @@ Patch101: 0101-curl-7.32.0-multilib.patch
 
 # prevent configure script from discarding -g in CFLAGS (#496778)
 Patch102: 0102-curl-7.36.0-debug.patch
+
+# utilize system wide crypto policies for TLS (#1483972)
+Patch103: 0103-curl-7.55.1-system-crypto-policy.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
@@ -157,6 +160,7 @@ be installed.
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
+%patch103 -p1
 %patch104 -p1
 
 # regenerate Makefile.in files
@@ -306,6 +310,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Tue Aug 22 2017 Kamil Dudka <kdudka@redhat.com> 7.55.1-3
+- utilize system wide crypto policies for TLS (#1483972)
+
 * Tue Aug 15 2017 Kamil Dudka <kdudka@redhat.com> 7.55.1-2
 - make zsh completion work again
 
