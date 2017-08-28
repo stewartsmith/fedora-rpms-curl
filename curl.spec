@@ -1,10 +1,14 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.55.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
+
+# https://github.com/curl/curl/pull/1803
+# https://bugzilla.redhat.com/show_bug.cgi?id=1485702
+Patch0:   0001-http-Don-t-wait-on-CONNECT-when-there-is-no-proxy.patch
 
 # make zsh completion work again
 Patch1:   0001-curl-7.55.1-zsh-completion.patch
@@ -310,6 +314,10 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Mon Aug 28 2017 Bastien Nocera <bnocera@redhat.com> - 7.55.1-4
++ curl-7.55.1-4
+- Fix NetworkManager connectivity check not working (#1485702)
+
 * Tue Aug 22 2017 Kamil Dudka <kdudka@redhat.com> 7.55.1-3
 - utilize system wide crypto policies for TLS (#1483972)
 
