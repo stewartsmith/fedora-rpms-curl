@@ -1,17 +1,16 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.55.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
-# https://github.com/curl/curl/pull/1803
-# https://bugzilla.redhat.com/show_bug.cgi?id=1485702
-Patch0:   0001-http-Don-t-wait-on-CONNECT-when-there-is-no-proxy.patch
-
 # make zsh completion work again
 Patch1:   0001-curl-7.55.1-zsh-completion.patch
+
+# http: Don't wait on CONNECT when there is no proxy (#1485702)
+Patch2:   0002-curl-7.55.1-proxy-connect.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -160,6 +159,7 @@ be installed.
 
 # upstream patches
 %patch1 -p1
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -314,8 +314,10 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Mon Aug 28 2017 Kamil Dudka <kdudka@redhat.com> - 7.55.1-5
+- apply the patch for the previous commit and fix its name (#1485702)
+
 * Mon Aug 28 2017 Bastien Nocera <bnocera@redhat.com> - 7.55.1-4
-+ curl-7.55.1-4
 - Fix NetworkManager connectivity check not working (#1485702)
 
 * Tue Aug 22 2017 Kamil Dudka <kdudka@redhat.com> 7.55.1-3

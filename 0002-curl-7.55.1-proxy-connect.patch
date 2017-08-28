@@ -15,6 +15,9 @@ Closes #1803
 Fixes #1804
 
 Also-fixed-by: Gergely Nagy
+
+Upstream-commit: 74dac344b2feb2e0f4baddb70532dc8e45d2d817
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
 ---
  lib/http.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
