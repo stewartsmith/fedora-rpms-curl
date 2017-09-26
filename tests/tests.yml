@@ -1,0 +1,26 @@
+---
+# Tests for Classic
+- hosts: localhost
+  roles:
+  - role: standard-test-beakerlib
+    tags:
+    - classic
+    tests:
+    - scp-and-sftp-download-test
+    - non-root-user-download
+    required_packages:
+    - findutils         # non-root-user-download needs find command
+                        # scp-and-sftp-download-test needs find command
+    - passwd            # non-root-user-download needs passwd command
+    - openssh-clients   # non-root-user-download needs ssh-keyscan command
+
+# Tests for Atomic
+- hosts: localhost
+  roles:
+  - role: standard-test-beakerlib
+    tags:
+    - atomic
+    tests:
+    - scp-and-sftp-download-test
+    - non-root-user-download
+

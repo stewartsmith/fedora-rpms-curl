@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/curl/Sanity/non-root-user-download
+Description: various download methods with non-root user
+Author: Karel Srot <ksrot@redhat.com>

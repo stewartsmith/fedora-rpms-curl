@@ -1,0 +1,64 @@
+- hosts: '{{ hosts | default("localhost") }}'
+  vars:
+    package: "curl"
+  tasks:
+    - name: "Set Content variables"
+      set_fact:
+        content: "a276e06d244e04b765f0a35532d9036ad84f340b0bdcc32e0233a8fbc31d5bed"
+        password: "pAssw0rd"
+        crypt_password: "$6$/5GE87XLYLLfB3qx$w84Kct34UZG/4buTSXWkaaVIsw2xGXSAdmnS2QYdG8TtRgTsBnHdFdSkhoy.tKIE6A6LKlxczIZjQbpB19k7B1"
+    - name: "Create user curltester"
+      user: 
+        name: "curltester"
+        password: "{{ crypt_password }}"
+    - name: "Copy testfile"
+      copy:
+          dest: "/home/curltester/testfile"
+          content: "{{ content }}"
+    - block:
+      - name: "http download"
+        command: "curl https://archives.fedoraproject.org/pub/archive/fedora/linux/releases/18/Live/x86_64/Fedora-18-x86_64-Live-CHECKSUM"
+        args:
+            warn: false
+        register: http
+        become: yes
+        become_user: curltester
+      - name: "Compare http output"
+        fail:
+            msg: "{{ content }} not in {{ http.stdout }}"
+        when: content not in http.stdout
+      - name: "ftp download"
+        command: "curl ftp://ftp.scientificlinux.org/linux/fedora/releases/18/Live/x86_64/Fedora-18-x86_64-Live-CHECKSUM"
+        args:
+            warn: false
+        register: ftp
+        become: yes
+        become_user: curltester
+      - name: "Compare ftp output"
+        fail:
+            msg: "{{ content }} not in {{ ftp.stdout }}"
+        when: content not in ftp.stdout
+      - name: "scp download"
+        command: "curl -u curltester:{{ password }} --insecure scp://localhost/home/curltester/testfile"
+        args:
+            warn: false
+        register: scp
+      - name: "Compare scp output"
+        fail:
+            msg: "{{ content }} not in {{ scp.stdout }}"
+        when: content not in scp.stdout
+      - name: "sftp download"
+        command: "curl -u curltester:{{ password }} --insecure sftp://localhost/home/curltester/testfile"
+        args:
+            warn: false
+        register: sftp
+      - name: "Compare sftp output"
+        fail:
+            msg: "{{ content }} not in {{ sftp.stdout }}"
+        when: content not in sftp.stdout
+      always:
+      - name: "Remove user curltester"
+        user: 
+            name: "curltester"
+            remove: yes
+            state: absent

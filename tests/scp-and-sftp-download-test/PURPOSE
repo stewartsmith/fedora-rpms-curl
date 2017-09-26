@@ -1,0 +1,12 @@
+PURPOSE of /CoreOS/curl/Sanity/scp-and-sftp-download-test
+Description: downloads test file through scp and sftp
+Author: Karel Srot <ksrot@redhat.com>
+
+Test scenario:
+- scp download
+- sftp download
+- scp upload
+- sftp upload
+
+When PUBKEY_PARAM global variable is set to 'empty' or 'none', scenarios are executed
+with empty --pubkey parameter (--pubkey "") or with the paramiter omitted
