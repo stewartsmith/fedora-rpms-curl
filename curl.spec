@@ -1,25 +1,16 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.55.1
-Release: 5%{?dist}
+Version: 7.56.0
+Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
-
-# make zsh completion work again
-Patch1:   0001-curl-7.55.1-zsh-completion.patch
-
-# http: Don't wait on CONNECT when there is no proxy (#1485702)
-Patch2:   0002-curl-7.55.1-proxy-connect.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
 
 # prevent configure script from discarding -g in CFLAGS (#496778)
 Patch102: 0102-curl-7.36.0-debug.patch
-
-# utilize system wide crypto policies for TLS (#1483972)
-Patch103: 0103-curl-7.55.1-system-crypto-policy.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
@@ -158,13 +149,10 @@ be installed.
 %setup -q
 
 # upstream patches
-%patch1 -p1
-%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
-%patch103 -p1
 %patch104 -p1
 
 # regenerate Makefile.in files
@@ -314,6 +302,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Wed Oct 04 2017 Kamil Dudka <kdudka@redhat.com> - 7.56.0-1
+- new upstream release (fixes CVE-2017-1000254)
+
 * Mon Aug 28 2017 Kamil Dudka <kdudka@redhat.com> - 7.55.1-5
 - apply the patch for the previous commit and fix its name (#1485702)
 
