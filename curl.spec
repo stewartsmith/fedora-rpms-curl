@@ -161,16 +161,12 @@ be installed.
 
 # disable test 1112 (#565305) and test 1801
 # <https://github.com/bagder/curl/commit/21e82bd6#commitcomment-12226582>
-# and test 2033, which is a flaky test for HTTP/1 pipelining
-printf "1112\n1801\n2033\n" >> tests/data/DISABLED
+printf "1112\n1801\n" >> tests/data/DISABLED
 
 # disable test 1319 on ppc64 (server times out)
 %ifarch ppc64
 echo "1319" >> tests/data/DISABLED
 %endif
-
-# temporarily disable failing libidn2 test-cases
-printf "1034\n1035\n2046\n2047\n" >> tests/data/DISABLED
 
 %build
 mkdir build-{full,minimal}
