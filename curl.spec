@@ -1,6 +1,6 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.56.1
+Version: 7.57.0
 Release: 1%{?dist}
 License: MIT
 Group: Applications/Internet
@@ -298,6 +298,12 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Wed Nov 29 2017 Kamil Dudka <kdudka@redhat.com> - 7.57.0-1
+- new upstream release, which fixes the following vulnerabilities
+    CVE-2017-8816 - curl: NTLM buffer overflow via integer overflow
+    CVE-2017-8817 - curl: FTP wildcard out of bounds read
+    CVE-2017-8818 - curl: SSL out of buffer access
+
 * Mon Oct 23 2017 Kamil Dudka <kdudka@redhat.com> - 7.56.1-1
 - new upstream release (fixes CVE-2017-1000257)
 
