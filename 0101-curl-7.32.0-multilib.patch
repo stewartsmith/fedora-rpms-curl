@@ -13,7 +13,7 @@ diff --git a/curl-config.in b/curl-config.in
 index 150004d..95d0759 100644
 --- a/curl-config.in
 +++ b/curl-config.in
-@@ -75,7 +75,7 @@ while test $# -gt 0; do
+@@ -76,7 +76,7 @@ while test $# -gt 0; do
          ;;
  
      --cc)
@@ -22,7 +22,7 @@ index 150004d..95d0759 100644
          ;;
  
      --prefix)
-@@ -142,29 +142,14 @@ while test $# -gt 0; do
+@@ -143,32 +143,17 @@ while test $# -gt 0; do
          ;;
  
      --libs)
@@ -37,6 +37,9 @@ index 150004d..95d0759 100644
 -          echo ${CURLLIBDIR}-lcurl
 -        fi
 +        echo -lcurl
+         ;;
+     --ssl-backends)
+         echo "@SSL_BACKENDS@"
          ;;
  
      --static-libs)
@@ -58,8 +61,8 @@ diff --git a/docs/curl-config.1 b/docs/curl-config.1
 index 14a9d2b..ffcc004 100644
 --- a/docs/curl-config.1
 +++ b/docs/curl-config.1
-@@ -66,7 +66,9 @@ be listed using uppercase and are separated by newlines. There may be none,
- one, or several protocols in the list. (Added in 7.13.0)
+@@ -70,7 +70,9 @@ no, one or several names. If more than one name, they will appear
+ comma-separated. (Added in 7.58.0)
  .IP "--static-libs"
  Shows the complete set of libs and other linker options you will need in order
 -to link your application with libcurl statically. (Added in 7.17.1)
