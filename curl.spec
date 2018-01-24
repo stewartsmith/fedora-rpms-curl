@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.58.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
@@ -26,7 +26,7 @@ BuildRequires: libidn2-devel
 BuildRequires: libmetalink-devel
 BuildRequires: libnghttp2-devel
 BuildRequires: libpsl-devel
-BuildRequires: libssh2-devel
+BuildRequires: libssh-devel
 BuildRequires: openldap-devel
 BuildRequires: openssh-clients
 BuildRequires: openssh-server
@@ -70,10 +70,6 @@ BuildRequires: valgrind
 # using an older version of libcurl could result in CURLE_UNKNOWN_OPTION
 Requires: libcurl%{?_isa} >= %{version}-%{release}
 
-# require at least the version of libssh2 that we were built against,
-# to ensure that we have the necessary symbols available (#525002, #642796)
-%global libssh2_version %(pkg-config --modversion libssh2 2>/dev/null || echo 0)
-
 # require at least the version of openssl-libs that we were built against,
 # to ensure that we have the necessary symbols available (#1462184, #1462211)
 %global openssl_version %(pkg-config --modversion openssl 2>/dev/null || echo 0)
@@ -89,7 +85,6 @@ resume, proxy tunneling and a busload of other useful tricks.
 %package -n libcurl
 Summary: A library for getting files from web servers
 Group: Development/Libraries
-Requires: libssh2%{?_isa} >= %{libssh2_version}
 Requires: openssl-libs%{?_isa} >= 1:%{openssl_version}
 Provides: libcurl-full = %{version}-%{release}
 Provides: libcurl-full%{?_isa} = %{version}-%{release}
@@ -192,7 +187,7 @@ export common_configure_opts=" \
         --without-libidn2 \
         --without-libmetalink \
         --without-libpsl \
-        --without-libssh2
+        --without-libssh
 )
 
 # configure full build
@@ -205,7 +200,7 @@ export common_configure_opts=" \
         --with-libidn2 \
         --with-libmetalink \
         --with-libpsl \
-        --with-libssh2
+        --with-libssh
 )
 
 # avoid using rpath
@@ -298,6 +293,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Wed Jan 24 2018 Andreas Schneider <asn@redhat.com> - 7.58.0-2
+- use libssh (instead of libssh2) to implement SCP/SFTP in libcurl (#1531483)
+
 * Wed Jan 24 2018 Kamil Dudka <kdudka@redhat.com> - 7.58.0-1
 - new upstream release, which fixes the following vulnerabilities
     CVE-2018-1000005 - curl: HTTP/2 trailer out-of-bounds read
