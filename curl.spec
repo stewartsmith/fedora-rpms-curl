@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.58.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
@@ -133,6 +133,8 @@ Provides: libcurl = %{version}-%{release}
 Provides: libcurl%{?_isa} = %{version}-%{release}
 Conflicts: libcurl
 RemovePathPostfixes: .minimal
+# needed for RemovePathPostfixes to work with shared libraries
+%undefine __brp_ldconfig
 
 %description -n libcurl-minimal
 This is a replacement of the 'libcurl' package for minimal installations.  It
@@ -293,6 +295,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Wed Jan 31 2018 Kamil Dudka <kdudka@redhat.com> - 7.58.0-3
+- disable brp-ldconfig to make RemovePathPostfixes work with shared libs again
+
 * Wed Jan 24 2018 Andreas Schneider <asn@redhat.com> - 7.58.0-2
 - use libssh (instead of libssh2) to implement SCP/SFTP in libcurl (#1531483)
 
