@@ -158,8 +158,10 @@ be installed.
 
 # temporarily work around internal compiler error on x86_64 (#1540549)
 %ifarch x86_64
+%if 0%{?fedora} >= 28
 sed -e 's|-c -o tftpd-tftpd.o|-fcf-protection=none &|' \
     -i tests/server/Makefile.in
+%endif
 %endif
 
 # disable test 1112 (#565305) and test 1801
