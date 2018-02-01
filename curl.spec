@@ -156,6 +156,12 @@ be installed.
 #aclocal -I m4
 #automake
 
+# temporarily work around internal compiler error on x86_64 (#1540549)
+%ifarch x86_64
+sed -e 's|-c -o tftpd-tftpd.o|-fcf-protection=none &|' \
+    -i tests/server/Makefile.in
+%endif
+
 # disable test 1112 (#565305) and test 1801
 # <https://github.com/bagder/curl/commit/21e82bd6#commitcomment-12226582>
 printf "1112\n1801\n" >> tests/data/DISABLED
@@ -296,6 +302,7 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
 %changelog
 * Wed Jan 31 2018 Kamil Dudka <kdudka@redhat.com> - 7.58.0-3
+- temporarily work around internal compiler error on x86_64 (#1540549)
 - disable brp-ldconfig to make RemovePathPostfixes work with shared libs again
 
 * Wed Jan 24 2018 Andreas Schneider <asn@redhat.com> - 7.58.0-2
