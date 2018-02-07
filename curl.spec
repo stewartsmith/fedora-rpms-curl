@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.58.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
@@ -303,6 +303,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 7.58.0-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Wed Jan 31 2018 Kamil Dudka <kdudka@redhat.com> - 7.58.0-3
 - temporarily work around internal compiler error on x86_64 (#1540549)
 - disable brp-ldconfig to make RemovePathPostfixes work with shared libs again
