@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.58.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: MIT
 Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
@@ -156,14 +156,6 @@ be installed.
 #aclocal -I m4
 #automake
 
-# temporarily work around internal compiler error on x86_64 (#1540549)
-%ifarch x86_64
-%if 0%{?fedora} >= 28
-sed -e 's|-c -o tftpd-tftpd.o|-fcf-protection=none &|' \
-    -i tests/server/Makefile.in
-%endif
-%endif
-
 # disable test 1112 (#565305) and test 1801
 # <https://github.com/bagder/curl/commit/21e82bd6#commitcomment-12226582>
 printf "1112\n1801\n" >> tests/data/DISABLED
@@ -303,6 +295,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Tue Feb 13 2018 Kamil Dudka <kdudka@redhat.com> - 7.58.0-5
+- drop temporary workaround for #1540549
+
 * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 7.58.0-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
