@@ -18,7 +18,6 @@ Patch104: 0104-curl-7.19.7-localhost6.patch
 Provides: curl-full = %{version}-%{release}
 Provides: webclient
 URL: https://curl.haxx.se/
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(id -nu)
 #BuildRequires: automake
 BuildRequires: groff
 BuildRequires: krb5-devel
