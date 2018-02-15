@@ -1,9 +1,8 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.58.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: MIT
-Group: Applications/Internet
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
 # patch making libcurl multilib ready
@@ -69,6 +68,10 @@ BuildRequires: valgrind
 # using an older version of libcurl could result in CURLE_UNKNOWN_OPTION
 Requires: libcurl%{?_isa} >= %{version}-%{release}
 
+# require at least the version of libssh that we were built against,
+# to ensure that we have the necessary symbols available (#525002, #642796)
+%global libssh_version %(pkg-config --modversion libssh 2>/dev/null || echo 0)
+
 # require at least the version of openssl-libs that we were built against,
 # to ensure that we have the necessary symbols available (#1462184, #1462211)
 %global openssl_version %(pkg-config --modversion openssl 2>/dev/null || echo 0)
@@ -83,7 +86,7 @@ resume, proxy tunneling and a busload of other useful tricks.
 
 %package -n libcurl
 Summary: A library for getting files from web servers
-Group: Development/Libraries
+Requires: libssh%{?_isa} >= %{libssh_version}
 Requires: openssl-libs%{?_isa} >= 1:%{openssl_version}
 Provides: libcurl-full = %{version}-%{release}
 Provides: libcurl-full%{?_isa} = %{version}-%{release}
@@ -98,7 +101,6 @@ resume, http proxy tunneling and more.
 
 %package -n libcurl-devel
 Summary: Files needed for building applications with libcurl
-Group: Development/Libraries
 Requires: libcurl%{?_isa} = %{version}-%{release}
 
 Provides: curl-devel = %{version}-%{release}
@@ -251,13 +253,9 @@ LD_LIBRARY_PATH="$RPM_BUILD_ROOT%{_libdir}:$LD_LIBRARY_PATH" \
 
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
-%post -n libcurl -p /sbin/ldconfig
+%ldconfig_scriptlets -n libcurl
 
-%postun -n libcurl -p /sbin/ldconfig
-
-%post -n libcurl-minimal -p /sbin/ldconfig
-
-%postun -n libcurl-minimal -p /sbin/ldconfig
+%ldconfig_scriptlets -n libcurl-minimal
 
 %files
 %doc CHANGES README*
@@ -294,6 +292,11 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
 
 %changelog
+* Thu Feb 15 2018 Paul Howarth <paul@city-fan.org> - 7.58.0-6
+- switch to %%ldconfig_scriptlets
+- drop legacy BuildRoot: and Group: tags
+- enforce versioned libssh dependency for libcurl
+
 * Tue Feb 13 2018 Kamil Dudka <kdudka@redhat.com> - 7.58.0-5
 - drop temporary workaround for #1540549
 
