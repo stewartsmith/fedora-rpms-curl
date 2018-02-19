@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.58.0
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
@@ -18,6 +18,8 @@ Provides: curl-full = %{version}-%{release}
 Provides: webclient
 URL: https://curl.haxx.se/
 #BuildRequires: automake
+BuildRequires: coreutils
+BuildRequires: gcc
 BuildRequires: groff
 BuildRequires: krb5-devel
 BuildRequires: libidn2-devel
@@ -25,12 +27,14 @@ BuildRequires: libmetalink-devel
 BuildRequires: libnghttp2-devel
 BuildRequires: libpsl-devel
 BuildRequires: libssh-devel
+BuildRequires: make
 BuildRequires: openldap-devel
 BuildRequires: openssh-clients
 BuildRequires: openssh-server
 BuildRequires: openssl-devel
 BuildRequires: pkgconfig
 BuildRequires: python
+BuildRequires: sed
 BuildRequires: stunnel
 BuildRequires: zlib-devel
 
@@ -268,8 +272,8 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
 %files -n libcurl
 %license COPYING
-%{_libdir}/libcurl.so.[0-9]
-%{_libdir}/libcurl.so.[0-9].[0-9].[0-9]
+%{_libdir}/libcurl.so.4
+%{_libdir}/libcurl.so.4.[0-9].[0-9]
 
 %files -n libcurl-devel
 %doc docs/examples/*.c docs/examples/Makefile.example docs/INTERNALS.md
@@ -288,10 +292,15 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
 %files -n libcurl-minimal
 %license COPYING
-%{_libdir}/libcurl.so.[0-9].minimal
-%{_libdir}/libcurl.so.[0-9].[0-9].[0-9].minimal
+%{_libdir}/libcurl.so.4.minimal
+%{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Mon Feb 19 2018 Paul Howarth <paul@city-fan.org> - 7.58.0-7
+- Add explicity-used build requirements
+- Fix libcurl soname version number in %%files list to avoid accidental soname
+  bumps
+
 * Thu Feb 15 2018 Paul Howarth <paul@city-fan.org> - 7.58.0-6
 - switch to %%ldconfig_scriptlets
 - drop legacy BuildRoot: and Group: tags
