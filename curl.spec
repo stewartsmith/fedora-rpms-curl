@@ -1,9 +1,12 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.58.0
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
+
+# http2: mark the connection for close on GOAWAY
+Patch1:   0001-curl-7.58.0-h2-goaway.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -151,6 +154,7 @@ be installed.
 %setup -q
 
 # upstream patches
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -296,6 +300,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Mon Mar 12 2018 Kamil Dudka <kdudka@redhat.com> - 7.58.0-8
+- http2: mark the connection for close on GOAWAY
+
 * Mon Feb 19 2018 Paul Howarth <paul@city-fan.org> - 7.58.0-7
 - Add explicity-used build requirements
 - Fix libcurl soname version number in %%files list to avoid accidental soname

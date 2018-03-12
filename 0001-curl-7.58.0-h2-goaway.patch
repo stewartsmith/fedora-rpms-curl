@@ -1,0 +1,206 @@
+From d9a3018050ce24e1ee416c33f4907f238e860ce3 Mon Sep 17 00:00:00 2001
+From: Daniel Stenberg <daniel@haxx.se>
+Date: Sat, 10 Mar 2018 23:48:43 +0100
+Subject: [PATCH] http2: mark the connection for close on GOAWAY
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+... don't consider it an error!
+
+Assisted-by: Jay Satiro
+Reported-by: Łukasz Domeradzki
+Fixes #2365
+Closes #2375
+
+Upstream-commit: 8b498a875c975294545581282289991bbcfeabf4
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ lib/http.h  |  5 ++---
+ lib/http2.c | 33 +++++++++++++++++++++------------
+ lib/multi.c |  9 +++------
+ 3 files changed, 26 insertions(+), 21 deletions(-)
+
+diff --git a/lib/http.h b/lib/http.h
+index d2781bc..2ce44bb 100644
+--- a/lib/http.h
++++ b/lib/http.h
+@@ -7,7 +7,7 @@
+  *                            | (__| |_| |  _ <| |___
+  *                             \___|\___/|_| \_\_____|
+  *
+- * Copyright (C) 1998 - 2017, Daniel Stenberg, <daniel@haxx.se>, et al.
++ * Copyright (C) 1998 - 2018, Daniel Stenberg, <daniel@haxx.se>, et al.
+  *
+  * This software is licensed as described in the file COPYING, which
+  * you should have received as part of this distribution. The terms
+@@ -172,8 +172,6 @@ struct HTTP {
+   size_t pauselen; /* the number of bytes left in data */
+   bool closed; /* TRUE on HTTP2 stream close */
+   bool close_handled; /* TRUE if stream closure is handled by libcurl */
+-  uint32_t error_code; /* HTTP/2 error code */
+-
+   char *mem;     /* points to a buffer in memory to store received data */
+   size_t len;    /* size of the buffer 'mem' points to */
+   size_t memlen; /* size of data copied to mem */
+@@ -226,6 +224,7 @@ struct http_conn {
+   /* list of settings that will be sent */
+   nghttp2_settings_entry local_settings[3];
+   size_t local_settings_num;
++  uint32_t error_code; /* HTTP/2 error code */
+ #else
+   int unused; /* prevent a compiler warning */
+ #endif
+diff --git a/lib/http2.c b/lib/http2.c
+index 6992879..13a79d1 100644
+--- a/lib/http2.c
++++ b/lib/http2.c
+@@ -204,7 +204,6 @@ void Curl_http2_setup_req(struct Curl_easy *data)
+   http->status_code = -1;
+   http->pausedata = NULL;
+   http->pauselen = 0;
+-  http->error_code = NGHTTP2_NO_ERROR;
+   http->closed = FALSE;
+   http->close_handled = FALSE;
+   http->mem = data->state.buffer;
+@@ -217,6 +216,7 @@ void Curl_http2_setup_conn(struct connectdata *conn)
+ {
+   conn->proto.httpc.settings.max_concurrent_streams =
+     DEFAULT_MAX_CONCURRENT_STREAMS;
++  conn->proto.httpc.error_code = NGHTTP2_NO_ERROR;
+ }
+ 
+ /*
+@@ -777,6 +777,7 @@ static int on_stream_close(nghttp2_session *session, int32_t stream_id,
+   (void)stream_id;
+ 
+   if(stream_id) {
++    struct http_conn *httpc;
+     /* get the stream from the hash based on Stream ID, stream ID zero is for
+        connection-oriented stuff */
+     data_s = nghttp2_session_get_stream_user_data(session, stream_id);
+@@ -791,10 +792,11 @@ static int on_stream_close(nghttp2_session *session, int32_t stream_id,
+     if(!stream)
+       return NGHTTP2_ERR_CALLBACK_FAILURE;
+ 
+-    stream->error_code = error_code;
+     stream->closed = TRUE;
+     data_s->state.drain++;
+-    conn->proto.httpc.drain_total++;
++    httpc = &conn->proto.httpc;
++    httpc->drain_total++;
++    httpc->error_code = error_code;
+ 
+     /* remove the entry from the hash as the stream is now gone */
+     nghttp2_session_set_stream_user_data(session, stream_id, 0);
+@@ -1225,13 +1227,14 @@ static int h2_session_send(struct Curl_easy *data,
+  * This function returns 0 if it succeeds, or -1 and error code will
+  * be assigned to *err.
+  */
+-static int h2_process_pending_input(struct Curl_easy *data,
++static int h2_process_pending_input(struct connectdata *conn,
+                                     struct http_conn *httpc,
+                                     CURLcode *err)
+ {
+   ssize_t nread;
+   char *inbuf;
+   ssize_t rv;
++  struct Curl_easy *data = conn->data;
+ 
+   nread = httpc->inbuflen - httpc->nread_inbuf;
+   inbuf = httpc->inbuf + httpc->nread_inbuf;
+@@ -1269,7 +1272,13 @@ static int h2_process_pending_input(struct Curl_easy *data,
+   if(should_close_session(httpc)) {
+     DEBUGF(infof(data,
+                  "h2_process_pending_input: nothing to do in this session\n"));
+-    *err = CURLE_HTTP2;
++    if(httpc->error_code)
++      *err = CURLE_HTTP2;
++    else {
++      /* not an error per se, but should still close the connection */
++      connclose(conn, "GOAWAY received");
++      *err = CURLE_OK;
++    }
+     return -1;
+   }
+ 
+@@ -1300,7 +1309,7 @@ CURLcode Curl_http2_done_sending(struct connectdata *conn)
+          that it can signal EOF to nghttp2 */
+       (void)nghttp2_session_resume_data(h2, stream->stream_id);
+ 
+-      (void)h2_process_pending_input(conn->data, httpc, &result);
++      (void)h2_process_pending_input(conn, httpc, &result);
+     }
+   }
+   return result;
+@@ -1324,7 +1333,7 @@ static ssize_t http2_handle_stream_close(struct connectdata *conn,
+   data->state.drain = 0;
+ 
+   if(httpc->pause_stream_id == 0) {
+-    if(h2_process_pending_input(data, httpc, err) != 0) {
++    if(h2_process_pending_input(conn, httpc, err) != 0) {
+       return -1;
+     }
+   }
+@@ -1333,10 +1342,10 @@ static ssize_t http2_handle_stream_close(struct connectdata *conn,
+ 
+   /* Reset to FALSE to prevent infinite loop in readwrite_data function. */
+   stream->closed = FALSE;
+-  if(stream->error_code != NGHTTP2_NO_ERROR) {
++  if(httpc->error_code != NGHTTP2_NO_ERROR) {
+     failf(data, "HTTP/2 stream %u was not closed cleanly: %s (err %d)",
+-          stream->stream_id, Curl_http2_strerror(stream->error_code),
+-          stream->error_code);
++          stream->stream_id, Curl_http2_strerror(httpc->error_code),
++          httpc->error_code);
+     *err = CURLE_HTTP2_STREAM;
+     return -1;
+   }
+@@ -1484,7 +1493,7 @@ static ssize_t http2_recv(struct connectdata *conn, int sockindex,
+       /* We have paused nghttp2, but we have no pause data (see
+          on_data_chunk_recv). */
+       httpc->pause_stream_id = 0;
+-      if(h2_process_pending_input(data, httpc, &result) != 0) {
++      if(h2_process_pending_input(conn, httpc, &result) != 0) {
+         *err = result;
+         return -1;
+       }
+@@ -1514,7 +1523,7 @@ static ssize_t http2_recv(struct connectdata *conn, int sockindex,
+          frames, then we have to call it again with 0-length data.
+          Without this, on_stream_close callback will not be called,
+          and stream could be hanged. */
+-      if(h2_process_pending_input(data, httpc, &result) != 0) {
++      if(h2_process_pending_input(conn, httpc, &result) != 0) {
+         *err = result;
+         return -1;
+       }
+diff --git a/lib/multi.c b/lib/multi.c
+index 43823cc..50f4d87 100644
+--- a/lib/multi.c
++++ b/lib/multi.c
+@@ -5,7 +5,7 @@
+  *                            | (__| |_| |  _ <| |___
+  *                             \___|\___/|_| \_\_____|
+  *
+- * Copyright (C) 1998 - 2017, Daniel Stenberg, <daniel@haxx.se>, et al.
++ * Copyright (C) 1998 - 2018, Daniel Stenberg, <daniel@haxx.se>, et al.
+  *
+  * This software is licensed as described in the file COPYING, which
+  * you should have received as part of this distribution. The terms
+@@ -535,11 +535,8 @@ static CURLcode multi_done(struct connectdata **connp,
+       result = CURLE_ABORTED_BY_CALLBACK;
+   }
+ 
+-  if(conn->send_pipe.size + conn->recv_pipe.size != 0 &&
+-     !data->set.reuse_forbid &&
+-     !conn->bits.close) {
+-    /* Stop if pipeline is not empty and we do not have to close
+-       connection. */
++  if(conn->send_pipe.size || conn->recv_pipe.size) {
++    /* Stop if pipeline is not empty . */
+     data->easy_conn = NULL;
+     DEBUGF(infof(data, "Connection still in use, no more multi_done now!\n"));
+     return CURLE_OK;
+-- 
+2.14.3
+
