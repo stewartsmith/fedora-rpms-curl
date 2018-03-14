@@ -1,12 +1,9 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.58.0
-Release: 8%{?dist}
+Version: 7.59.0
+Release: 1%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
-
-# http2: mark the connection for close on GOAWAY
-Patch1:   0001-curl-7.58.0-h2-goaway.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -154,7 +151,6 @@ be installed.
 %setup -q
 
 # upstream patches
-%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -300,6 +296,12 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Mar 14 2018 Kamil Dudka <kdudka@redhat.com> - 7.59.0-1
+- new upstream release, which fixes the following vulnerabilities
+    CVE-2018-1000120 - FTP path trickery leads to NIL byte out of bounds write
+    CVE-2018-1000121 - LDAP NULL pointer dereference
+    CVE-2018-1000122 - RTSP RTP buffer over-read
+
 * Mon Mar 12 2018 Kamil Dudka <kdudka@redhat.com> - 7.58.0-8
 - http2: mark the connection for close on GOAWAY
 
