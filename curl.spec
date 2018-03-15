@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.59.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
@@ -13,6 +13,9 @@ Patch101: 0101-curl-7.32.0-multilib.patch
 
 # prevent configure script from discarding -g in CFLAGS (#496778)
 Patch102: 0102-curl-7.36.0-debug.patch
+
+# migrate tests/http_pipe.py to Python 3
+Patch103: 0103-curl-7.59.0-python3.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
@@ -36,7 +39,7 @@ BuildRequires: openssh-clients
 BuildRequires: openssh-server
 BuildRequires: openssl-devel
 BuildRequires: pkgconfig
-BuildRequires: python
+BuildRequires: python3
 BuildRequires: sed
 BuildRequires: stunnel
 BuildRequires: zlib-devel
@@ -159,7 +162,11 @@ be installed.
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
+%patch103 -p1
 %patch104 -p1
+
+# make tests/*.py use Python 3
+sed -e '1 s|^#!/.*python|&3|' -i tests/*.py
 
 # regenerate Makefile.in files
 #aclocal -I m4
@@ -300,6 +307,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Thu Mar 15 2018 Kamil Dudka <kdudka@redhat.com> - 7.59.0-3
+- make the test-suite use Python 3
+
 * Wed Mar 14 2018 Kamil Dudka <kdudka@redhat.com> - 7.59.0-2
 - ftp: fix typo in recursive callback detection for seeking
 
