@@ -69,6 +69,7 @@ BuildRequires: perl(vars)
 # #810992, #816175, and #886891).  Nevertheless developers are free to install
 # valgrind manually to improve test coverage on any architecture.
 %ifarch x86_64 %{ix86}
+BuildRequires: glibc-debuginfo
 BuildRequires: valgrind
 %endif
 
