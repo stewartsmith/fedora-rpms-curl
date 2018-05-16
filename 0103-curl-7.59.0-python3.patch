@@ -32,7 +32,7 @@ diff --git a/tests/runtests.pl b/tests/runtests.pl
 index d6aa5ca..4d395ef 100755
 --- a/tests/runtests.pl
 +++ b/tests/runtests.pl
-@@ -1437,7 +1437,7 @@ sub runhttpserver {
+@@ -1438,7 +1438,7 @@ sub runhttpserver {
      elsif($alt eq "pipe") {
          # basically the same, but another ID
          $idnum = 3;
