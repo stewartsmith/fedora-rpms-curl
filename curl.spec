@@ -69,8 +69,7 @@ BuildRequires: perl(vars)
 # #810992, #816175, and #886891).  Nevertheless developers are free to install
 # valgrind manually to improve test coverage on any architecture.
 %ifarch x86_64 %{ix86}
-# temporarily disabled completely because of https://bugzilla.redhat.com/1570246
-# BuildRequires: valgrind
+BuildRequires: valgrind
 %endif
 
 # using an older version of libcurl could result in CURLE_UNKNOWN_OPTION
