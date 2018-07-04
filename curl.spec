@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.60.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
@@ -36,7 +36,7 @@ BuildRequires: openssh-clients
 BuildRequires: openssh-server
 BuildRequires: openssl-devel
 BuildRequires: pkgconfig
-BuildRequires: python3
+BuildRequires: python3-devel
 BuildRequires: sed
 BuildRequires: stunnel
 BuildRequires: zlib-devel
@@ -162,7 +162,7 @@ be installed.
 %patch104 -p1
 
 # make tests/*.py use Python 3
-sed -e '1 s|^#!/.*python|&3|' -i tests/*.py
+sed -e '1 s|^#!/.*python|#!%{__python3}|' -i tests/*.py
 
 # regenerate Makefile.in files
 #aclocal -I m4
@@ -303,6 +303,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Jul 04 2018 Kamil Dudka <kdudka@redhat.com> - 7.60.0-2
+- do not hard-wire path of the Python 3 interpreter
+
 * Wed May 16 2018 Kamil Dudka <kdudka@redhat.com> - 7.60.0-1
 - new upstream release, which fixes the following vulnerabilities
     CVE-2018-1000300 - FTP shutdown response buffer overflow
