@@ -179,6 +179,11 @@ printf "1112\n1455\n1801\n" >> tests/data/DISABLED
 echo "1319" >> tests/data/DISABLED
 %endif
 
+# temporarily disable test 582 on s390x (client times out)
+%ifarch s390x
+echo "582" >> tests/data/DISABLED
+%endif
+
 %build
 mkdir build-{full,minimal}
 export common_configure_opts=" \
