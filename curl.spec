@@ -169,9 +169,10 @@ sed -e '1 s|^#!/.*python|#!%{__python3}|' -i tests/*.py
 #aclocal -I m4
 #automake
 
-# disable test 1112 (#565305) and test 1801
+# disable test 1112 (#565305), test 1455 (occasionally fails with 'bind failed
+# with errno 98: Address already in use' in Koji environment), and test 1801
 # <https://github.com/bagder/curl/commit/21e82bd6#commitcomment-12226582>
-printf "1112\n1801\n" >> tests/data/DISABLED
+printf "1112\n1455\n1801\n" >> tests/data/DISABLED
 
 # disable test 1319 on ppc64 (server times out)
 %ifarch ppc64
