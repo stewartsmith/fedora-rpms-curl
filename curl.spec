@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.60.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
@@ -21,6 +21,7 @@ Provides: curl-full = %{version}-%{release}
 Provides: webclient
 URL: https://curl.haxx.se/
 #BuildRequires: automake
+BuildRequires: brotli-devel
 BuildRequires: coreutils
 BuildRequires: gcc
 BuildRequires: groff
@@ -198,6 +199,7 @@ export common_configure_opts=" \
         --disable-ldap \
         --disable-ldaps \
         --disable-manual \
+        --without-brotli \
         --without-libidn2 \
         --without-libmetalink \
         --without-libpsl \
@@ -211,6 +213,7 @@ export common_configure_opts=" \
         --enable-ldap \
         --enable-ldaps \
         --enable-manual \
+        --with-brotli \
         --with-libidn2 \
         --with-libmetalink \
         --with-libpsl \
@@ -303,6 +306,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Tue Jul 10 2018 Kamil Dudka <kdudka@redhat.com> - 7.60.0-3
+- enable support for brotli compression in libcurl-full
+
 * Wed Jul 04 2018 Kamil Dudka <kdudka@redhat.com> - 7.60.0-2
 - do not hard-wire path of the Python 3 interpreter
 
