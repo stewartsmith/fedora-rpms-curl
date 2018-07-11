@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.60.0
-Release: 3%{?dist}
+Version: 7.61.0
+Release: 1%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
@@ -307,6 +307,10 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Jul 11 2018 Kamil Dudka <kdudka@redhat.com> - 7.61.0-1
+- new upstream release, which fixes the following vulnerability
+    CVE-2018-0500 - SMTP send heap buffer overflow
+
 * Tue Jul 10 2018 Kamil Dudka <kdudka@redhat.com> - 7.60.0-3
 - enable support for brotli compression in libcurl-full
 
