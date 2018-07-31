@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.61.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
@@ -184,6 +184,9 @@ echo "1319" >> tests/data/DISABLED
 echo "582" >> tests/data/DISABLED
 %endif
 
+# adapt test 323 for updated OpenSSL
+sed -e 's/^35$/35,52/' -i tests/data/test323
+
 %build
 mkdir build-{full,minimal}
 export common_configure_opts=" \
@@ -312,6 +315,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Tue Jul 31 2018 Kamil Dudka <kdudka@redhat.com> - 7.61.0-3
+- adapt test 323 for updated OpenSSL
+
 * Thu Jul 12 2018 Fedora Release Engineering <releng@fedoraproject.org> - 7.61.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
