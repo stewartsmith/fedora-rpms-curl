@@ -172,7 +172,9 @@ sed -e '1 s|^#!/.*python|#!%{__python3}|' -i tests/*.py
 # disable test 1112 (#565305), test 1455 (occasionally fails with 'bind failed
 # with errno 98: Address already in use' in Koji environment), and test 1801
 # <https://github.com/bagder/curl/commit/21e82bd6#commitcomment-12226582>
-printf "1112\n1455\n1801\n" >> tests/data/DISABLED
+# and test 1900, which is flaky and covers a deprecated feature of libcurl
+# <https://github.com/curl/curl/pull/2705>
+printf "1112\n1455\n1801\n1900\n" >> tests/data/DISABLED
 
 # disable test 1319 on ppc64 (server times out)
 %ifarch ppc64
@@ -316,6 +318,7 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
 %changelog
 * Tue Jul 31 2018 Kamil Dudka <kdudka@redhat.com> - 7.61.0-3
+- disable flaky test 1900, which covers deprecated HTTP pipelining
 - adapt test 323 for updated OpenSSL
 
 * Thu Jul 12 2018 Fedora Release Engineering <releng@fedoraproject.org> - 7.61.0-2
