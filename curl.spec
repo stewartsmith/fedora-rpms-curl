@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.61.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
@@ -248,6 +248,10 @@ export LD_LIBRARY_PATH
 cd build-full/tests
 make %{?_smp_mflags} V=1
 
+# relax crypto policy for the test-suite to make it pass again (#1610888)
+export OPENSSL_SYSTEM_CIPHERS_OVERRIDE=XXX
+export OPENSSL_CONF=
+
 # run the upstream test-suite
 srcdir=../../tests perl -I../../tests ../../tests/runtests.pl -a -p -v '!flaky'
 
@@ -317,6 +321,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Tue Aug 07 2018 Kamil Dudka <kdudka@redhat.com> - 7.61.0-4
+- relax crypto policy for the test-suite to make it pass again (#1610888)
+
 * Tue Jul 31 2018 Kamil Dudka <kdudka@redhat.com> - 7.61.0-3
 - disable flaky test 1900, which covers deprecated HTTP pipelining
 - adapt test 323 for updated OpenSSL
