@@ -1,0 +1,272 @@
+From a9a65ae9f6516faf042b36eca2450db7d34bff47 Mon Sep 17 00:00:00 2001
+From: Anderson Toshiyuki Sasaki <ansasaki@redhat.com>
+Date: Mon, 19 Feb 2018 14:31:06 +0100
+Subject: [PATCH 1/2] ssl: set engine implicitly when a PKCS#11 URI is provided
+
+This allows the use of PKCS#11 URI for certificates and keys without
+setting the corresponding type as "ENG" and the engine as "pkcs11"
+explicitly. If a PKCS#11 URI is provided for certificate, key,
+proxy_certificate or proxy_key, the corresponding type is set as "ENG"
+if not provided and the engine is set to "pkcs11" if not provided.
+
+Acked-by: Nikos Mavrogiannopoulos
+Closes #2333
+
+Upstream-commit: 298d2565e2a2f06a859b7f5a1cc24ba7c87a8ce2
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ docs/cmdline-opts/cert.d |  7 ++++++
+ docs/cmdline-opts/key.d  |  7 ++++++
+ lib/vtls/openssl.c       | 38 ++++++++++++++++++++++++++++
+ src/tool_getparam.c      |  2 +-
+ src/tool_operate.c       | 53 ++++++++++++++++++++++++++++++++++++++++
+ tests/unit/unit1394.c    |  3 +++
+ 6 files changed, 109 insertions(+), 1 deletion(-)
+
+diff --git a/docs/cmdline-opts/cert.d b/docs/cmdline-opts/cert.d
+index adf62fc..510b833 100644
+--- a/docs/cmdline-opts/cert.d
++++ b/docs/cmdline-opts/cert.d
+@@ -23,6 +23,13 @@ nickname contains ":", it needs to be preceded by "\\" so that it is not
+ recognized as password delimiter.  If the nickname contains "\\", it needs to
+ be escaped as "\\\\" so that it is not recognized as an escape character.
+ 
++If curl is built against OpenSSL library, and the engine pkcs11 is available,
++then a PKCS#11 URI (RFC 7512) can be used to specify a certificate located in
++a PKCS#11 device. A string beginning with "pkcs11:" will be interpreted as a
++PKCS#11 URI. If a PKCS#11 URI is provided, then the --engine option will be set
++as "pkcs11" if none was provided and the --cert-type option will be set as
++"ENG" if none was provided.
++
+ (iOS and macOS only) If curl is built against Secure Transport, then the
+ certificate string can either be the name of a certificate/private key in the
+ system or user keychain, or the path to a PKCS#12-encoded certificate and
+diff --git a/docs/cmdline-opts/key.d b/docs/cmdline-opts/key.d
+index fbf583a..4877b42 100644
+--- a/docs/cmdline-opts/key.d
++++ b/docs/cmdline-opts/key.d
+@@ -7,4 +7,11 @@ Private key file name. Allows you to provide your private key in this separate
+ file. For SSH, if not specified, curl tries the following candidates in order:
+ '~/.ssh/id_rsa', '~/.ssh/id_dsa', './id_rsa', './id_dsa'.
+ 
++If curl is built against OpenSSL library, and the engine pkcs11 is available,
++then a PKCS#11 URI (RFC 7512) can be used to specify a private key located in a
++PKCS#11 device. A string beginning with "pkcs11:" will be interpreted as a
++PKCS#11 URI. If a PKCS#11 URI is provided, then the --engine option will be set
++as "pkcs11" if none was provided and the --key-type option will be set as
++"ENG" if none was provided.
++
+ If this option is used several times, the last one will be used.
+diff --git a/lib/vtls/openssl.c b/lib/vtls/openssl.c
+index 0b1929b..bc46eca 100644
+--- a/lib/vtls/openssl.c
++++ b/lib/vtls/openssl.c
+@@ -558,8 +558,25 @@ static int ssl_ui_writer(UI *ui, UI_STRING *uis)
+   }
+   return (UI_method_get_writer(UI_OpenSSL()))(ui, uis);
+ }
++
++/*
++ * Check if a given string is a PKCS#11 URI
++ */
++static bool is_pkcs11_uri(const char *string)
++{
++  if(strncasecompare(string, "pkcs11:", 7)) {
++    return TRUE;
++  }
++  else {
++    return FALSE;
++  }
++}
++
+ #endif
+ 
++static CURLcode Curl_ossl_set_engine(struct Curl_easy *data,
++                                     const char *engine);
++
+ static
+ int cert_stuff(struct connectdata *conn,
+                SSL_CTX* ctx,
+@@ -622,6 +639,16 @@ int cert_stuff(struct connectdata *conn,
+     case SSL_FILETYPE_ENGINE:
+ #if defined(USE_OPENSSL_ENGINE) && defined(ENGINE_CTRL_GET_CMD_FROM_NAME)
+       {
++        /* Implicitly use pkcs11 engine if none was provided and the
++         * cert_file is a PKCS#11 URI */
++        if(!data->state.engine) {
++          if(is_pkcs11_uri(cert_file)) {
++            if(Curl_ossl_set_engine(data, "pkcs11") != CURLE_OK) {
++              return 0;
++            }
++          }
++        }
++
+         if(data->state.engine) {
+           const char *cmd_name = "LOAD_CERT_CTRL";
+           struct {
+@@ -798,6 +825,17 @@ int cert_stuff(struct connectdata *conn,
+ #ifdef USE_OPENSSL_ENGINE
+       {                         /* XXXX still needs some work */
+         EVP_PKEY *priv_key = NULL;
++
++        /* Implicitly use pkcs11 engine if none was provided and the
++         * key_file is a PKCS#11 URI */
++        if(!data->state.engine) {
++          if(is_pkcs11_uri(key_file)) {
++            if(Curl_ossl_set_engine(data, "pkcs11") != CURLE_OK) {
++              return 0;
++            }
++          }
++        }
++
+         if(data->state.engine) {
+           UI_METHOD *ui_method =
+             UI_create_method((char *)"curl user interface");
+diff --git a/src/tool_getparam.c b/src/tool_getparam.c
+index cc3fcf3..a7bb7f9 100644
+--- a/src/tool_getparam.c
++++ b/src/tool_getparam.c
+@@ -342,7 +342,7 @@ void parse_cert_parameter(const char *cert_parameter,
+    * looks like a RFC7512 PKCS#11 URI which can be used as-is.
+    * Also if cert_parameter contains no colon nor backslash, this
+    * means no passphrase was given and no characters escaped */
+-  if(!strncmp(cert_parameter, "pkcs11:", 7) ||
++  if(curl_strnequal(cert_parameter, "pkcs11:", 7) ||
+      !strpbrk(cert_parameter, ":\\")) {
+     *certname = strdup(cert_parameter);
+     return;
+diff --git a/src/tool_operate.c b/src/tool_operate.c
+index 26fc251..25d450c 100644
+--- a/src/tool_operate.c
++++ b/src/tool_operate.c
+@@ -113,6 +113,19 @@ static bool is_fatal_error(CURLcode code)
+   return FALSE;
+ }
+ 
++/*
++ * Check if a given string is a PKCS#11 URI
++ */
++static bool is_pkcs11_uri(const char *string)
++{
++  if(curl_strnequal(string, "pkcs11:", 7)) {
++    return TRUE;
++  }
++  else {
++    return FALSE;
++  }
++}
++
+ #ifdef __VMS
+ /*
+  * get_vms_file_size does what it takes to get the real size of the file
+@@ -1073,6 +1086,46 @@ static CURLcode operate_do(struct GlobalConfig *global,
+           my_setopt_str(curl, CURLOPT_PINNEDPUBLICKEY, config->pinnedpubkey);
+ 
+         if(curlinfo->features & CURL_VERSION_SSL) {
++          /* Check if config->cert is a PKCS#11 URI and set the
++           * config->cert_type if necessary */
++          if(config->cert) {
++            if(!config->cert_type) {
++              if(is_pkcs11_uri(config->cert)) {
++                config->cert_type = strdup("ENG");
++              }
++            }
++          }
++
++          /* Check if config->key is a PKCS#11 URI and set the
++           * config->key_type if necessary */
++          if(config->key) {
++            if(!config->key_type) {
++              if(is_pkcs11_uri(config->key)) {
++                config->key_type = strdup("ENG");
++              }
++            }
++          }
++
++          /* Check if config->proxy_cert is a PKCS#11 URI and set the
++           * config->proxy_type if necessary */
++          if(config->proxy_cert) {
++            if(!config->proxy_cert_type) {
++              if(is_pkcs11_uri(config->proxy_cert)) {
++                config->proxy_cert_type = strdup("ENG");
++              }
++            }
++          }
++
++          /* Check if config->proxy_key is a PKCS#11 URI and set the
++           * config->proxy_key_type if necessary */
++          if(config->proxy_key) {
++            if(!config->proxy_key_type) {
++              if(is_pkcs11_uri(config->proxy_key)) {
++                config->proxy_key_type = strdup("ENG");
++              }
++            }
++          }
++
+           my_setopt_str(curl, CURLOPT_SSLCERT, config->cert);
+           my_setopt_str(curl, CURLOPT_PROXY_SSLCERT, config->proxy_cert);
+           my_setopt_str(curl, CURLOPT_SSLCERTTYPE, config->cert_type);
+diff --git a/tests/unit/unit1394.c b/tests/unit/unit1394.c
+index 667991d..010f052 100644
+--- a/tests/unit/unit1394.c
++++ b/tests/unit/unit1394.c
+@@ -56,6 +56,9 @@ UNITTEST_START
+     "foo:bar\\\\",            "foo",                "bar\\\\",
+     "foo:bar:",               "foo",                "bar:",
+     "foo\\::bar\\:",          "foo:",               "bar\\:",
++    "pkcs11:foobar",          "pkcs11:foobar",      NULL,
++    "PKCS11:foobar",          "PKCS11:foobar",      NULL,
++    "PkCs11:foobar",          "PkCs11:foobar",      NULL,
+ #ifdef WIN32
+     "c:\\foo:bar:baz",        "c:\\foo",            "bar:baz",
+     "c:\\foo\\:bar:baz",      "c:\\foo:bar",        "baz",
+-- 
+2.17.1
+
+
+From 2be42ac65f4c345ed3ddc97917c8ef54e13fcbfd Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Thu, 9 Aug 2018 15:34:22 +0200
+Subject: [PATCH 2/2] docs: add files needed to regenerate curl.1 man page
+
+Bug: https://github.com/curl/curl/pull/2856
+---
+ docs/cmdline-opts/disallow-username-in-url.d |  7 +++++++
+ docs/cmdline-opts/haproxy-protocol.d         | 11 +++++++++++
+ 2 files changed, 18 insertions(+)
+ create mode 100644 docs/cmdline-opts/disallow-username-in-url.d
+ create mode 100644 docs/cmdline-opts/haproxy-protocol.d
+
+diff --git a/docs/cmdline-opts/disallow-username-in-url.d b/docs/cmdline-opts/disallow-username-in-url.d
+new file mode 100644
+index 0000000..a7f46ea
+--- /dev/null
++++ b/docs/cmdline-opts/disallow-username-in-url.d
+@@ -0,0 +1,7 @@
++Long: disallow-username-in-url
++Help: Disallow username in url
++Protocols: HTTP
++Added: 7.61.0
++See-also: proto
++---
++This tells curl to exit if passed a url containing a username.
+diff --git a/docs/cmdline-opts/haproxy-protocol.d b/docs/cmdline-opts/haproxy-protocol.d
+new file mode 100644
+index 0000000..cc41c9c
+--- /dev/null
++++ b/docs/cmdline-opts/haproxy-protocol.d
+@@ -0,0 +1,11 @@
++Long: haproxy-protocol
++Help: Send HAProxy PROXY protocol v1 header
++Protocols: HTTP
++Added: 7.60.0
++---
++Send a HAProxy PROXY protocol v1 header at the beginning of the connection. This
++is used by some load balancers and reverse proxies to indicate the client's
++true IP address and port.
++
++This option is primarily useful when sending test requests to a service that
++expects this header.
+-- 
+2.17.1
+
