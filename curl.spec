@@ -1,12 +1,15 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.61.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
 # ssl: set engine implicitly when a PKCS#11 URI is provided (#1219544)
 Patch1:   0001-curl-7.61.0-pkcs11.patch
+
+# scp/sftp: fix infinite connect loop on invalid private key (#1595135)
+Patch2:   0002-curl-7.61.0-libssh.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -23,7 +26,7 @@ Patch104: 0104-curl-7.19.7-localhost6.patch
 Provides: curl-full = %{version}-%{release}
 Provides: webclient
 URL: https://curl.haxx.se/
-#BuildRequires: automake
+BuildRequires: automake
 BuildRequires: brotli-devel
 BuildRequires: coreutils
 BuildRequires: gcc
@@ -159,6 +162,7 @@ be installed.
 
 # upstream patches
 %patch1 -p1
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -170,8 +174,8 @@ be installed.
 sed -e '1 s|^#!/.*python|#!%{__python3}|' -i tests/*.py
 
 # regenerate Makefile.in files
-#aclocal -I m4
-#automake
+aclocal -I m4
+automake
 
 # disable test 1112 (#565305), test 1455 (occasionally fails with 'bind failed
 # with errno 98: Address already in use' in Koji environment), and test 1801
@@ -325,6 +329,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Aug 15 2018 Kamil Dudka <kdudka@redhat.com> - 7.61.0-6
+- scp/sftp: fix infinite connect loop on invalid private key (#1595135)
+
 * Thu Aug 09 2018 Kamil Dudka <kdudka@redhat.com> - 7.61.0-5
 - ssl: set engine implicitly when a PKCS#11 URI is provided (#1219544)
 

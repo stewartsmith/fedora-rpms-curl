@@ -1,0 +1,130 @@
+From 155d4ffb7d40daf2afa0102f91f810675220ab6e Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Tue, 14 Aug 2018 13:14:49 +0200
+Subject: [PATCH] ssh-libssh: reduce excessive verbose output about pubkey auth
+
+The verbose message "Authentication using SSH public key file" was
+printed each time the ssh_userauth_publickey_auto() was called, which
+meant each time a packet was transferred over network because the API
+operates in non-blocking mode.
+
+This patch makes sure that the verbose message is printed just once
+(when the authentication state is entered by the SSH state machine).
+
+Upstream-commit: 1e843a31a49484aeddf8f358e71392205f5fd6b1
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ lib/ssh-libssh.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/lib/ssh-libssh.c b/lib/ssh-libssh.c
+index cecf477ac..f40f074b9 100644
+--- a/lib/ssh-libssh.c
++++ b/lib/ssh-libssh.c
+@@ -618,6 +618,7 @@ static CURLcode myssh_statemach_act(struct connectdata *conn, bool *block)
+         sshc->auth_methods = ssh_userauth_list(sshc->ssh_session, NULL);
+         if(sshc->auth_methods & SSH_AUTH_METHOD_PUBLICKEY) {
+           state(conn, SSH_AUTH_PKEY_INIT);
++          infof(data, "Authentication using SSH public key file\n");
+         }
+         else if(sshc->auth_methods & SSH_AUTH_METHOD_GSSAPI_MIC) {
+           state(conn, SSH_AUTH_GSSAPI);
+@@ -670,8 +671,6 @@ static CURLcode myssh_statemach_act(struct connectdata *conn, bool *block)
+ 
+       }
+       else {
+-        infof(data, "Authentication using SSH public key file\n");
+-
+         rc = ssh_userauth_publickey_auto(sshc->ssh_session, NULL,
+                                          data->set.ssl.key_passwd);
+         if(rc == SSH_AUTH_AGAIN) {
+-- 
+2.17.1
+
+From 4b445519694ab620bd6376066844a7076e8ce4ab Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Tue, 14 Aug 2018 12:47:18 +0200
+Subject: [PATCH] ssh-libssh: fix infinite connect loop on invalid private key
+
+Added test 656 (based on test 604) to verify the fix.
+
+Bug: https://bugzilla.redhat.com/1595135
+
+Closes #2879
+
+Upstream-commit: a4c7911a48dadb4f68ba6b38bb1bf3f061b747f6
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ lib/ssh-libssh.c        |  1 +
+ tests/data/Makefile.inc |  2 +-
+ tests/data/test656      | 33 +++++++++++++++++++++++++++++++++
+ 3 files changed, 35 insertions(+), 1 deletion(-)
+ create mode 100644 tests/data/test656
+
+diff --git a/lib/ssh-libssh.c b/lib/ssh-libssh.c
+index f40f074b9..12d618cfe 100644
+--- a/lib/ssh-libssh.c
++++ b/lib/ssh-libssh.c
+@@ -663,6 +663,7 @@ static CURLcode myssh_statemach_act(struct connectdata *conn, bool *block)
+         if(rc != SSH_OK) {
+           failf(data, "Could not load private key file %s",
+                 data->set.str[STRING_SSH_PRIVATE_KEY]);
++          MOVE_TO_ERROR_STATE(CURLE_LOGIN_DENIED);
+           break;
+         }
+ 
+diff --git a/tests/data/Makefile.inc b/tests/data/Makefile.inc
+index 20274b37c..518a5a543 100644
+--- a/tests/data/Makefile.inc
++++ b/tests/data/Makefile.inc
+@@ -83,7 +83,7 @@ test617 test618 test619 test620 test621 test622 test623 test624 test625 \
+ test626 test627 test628 test629 test630 test631 test632 test633 test634 \
+ test635 test636 test637 test638 test639 test640 test641 test642 \
+ test643 test644 test645 test646 test647 test648 test649 test650 test651 \
+-test652 test653 test654 test655 \
++test652 test653 test654 test655 test656 \
+ \
+ test700 test701 test702 test703 test704 test705 test706 test707 test708 \
+ test709 test710 test711 test712 test713 test714 test715 \
+diff --git a/tests/data/test656 b/tests/data/test656
+new file mode 100644
+index 000000000..4107d3d17
+--- /dev/null
++++ b/tests/data/test656
+@@ -0,0 +1,33 @@
++<testcase>
++<info>
++<keywords>
++SFTP
++FAILURE
++</keywords>
++</info>
++
++#
++# Client-side
++<client>
++<server>
++sftp
++</server>
++ <name>
++SFTP retrieval with nonexistent private key file
++ </name>
++ <command>
++--key DOES_NOT_EXIST --pubkey curl_client_key.pub -u %USER: sftp://%HOSTIP:%SSHPORT%PWD/not-a-valid-file-moooo --insecure --connect-timeout 8
++</command>
++</client>
++
++#
++# Verify data after the test has been "shot"
++<verify>
++<valgrind>
++disable
++</valgrind>
++<errorcode>
++67
++</errorcode>
++</verify>
++</testcase>
+-- 
+2.17.1
+
