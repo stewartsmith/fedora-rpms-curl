@@ -1,0 +1,101 @@
+From 426b00d0587797d79806f9682b058d5c90a0ab79 Mon Sep 17 00:00:00 2001
+From: Jay Satiro <raysatiro@yahoo.com>
+Date: Fri, 31 Aug 2018 19:46:29 -0400
+Subject: [PATCH 1/2] openssl: Fix setting TLS 1.3 cipher suites
+
+The flag indicating TLS 1.3 cipher support in the OpenSSL backend was
+missing.
+
+Bug: https://github.com/curl/curl/pull/2607#issuecomment-417283187
+Reported-by: Kamil Dudka
+
+Closes #2926
+
+Upstream-commit: 978574b502294ae06eb97d4f590b54ed5d24cd7f
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ lib/vtls/openssl.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/lib/vtls/openssl.c b/lib/vtls/openssl.c
+index bc46eca..fad4287 100644
+--- a/lib/vtls/openssl.c
++++ b/lib/vtls/openssl.c
+@@ -3804,6 +3804,9 @@ const struct Curl_ssl Curl_ssl_openssl = {
+   SSLSUPP_CERTINFO |
+   SSLSUPP_PINNEDPUBKEY |
+   SSLSUPP_SSL_CTX |
++#ifdef HAVE_SSL_CTX_SET_CIPHERSUITES
++  SSLSUPP_TLS13_CIPHERSUITES |
++#endif
+   SSLSUPP_HTTPS_PROXY,
+ 
+   sizeof(struct ssl_backend_data),
+-- 
+2.17.1
+
+
+From 081afa4e2eb5e853833bd87ca43f48ab550fe657 Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Mon, 3 Sep 2018 13:04:00 +0200
+Subject: [PATCH 2/2] url, vtls: make CURLOPT{,_PROXY}_TLS13_CIPHERS work
+
+This is a follow-up to PR #2607 and PR #2926.
+
+Closes #2936
+
+Upstream-commit: 52c13d6328ff56b2d2e8313e88cfdfc78acda365
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ lib/url.c       | 4 ++++
+ lib/vtls/vtls.c | 5 ++++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/lib/url.c b/lib/url.c
+index 27b2c1e..46898c4 100644
+--- a/lib/url.c
++++ b/lib/url.c
+@@ -4356,6 +4356,10 @@ static CURLcode create_conn(struct Curl_easy *data,
+     data->set.str[STRING_SSL_CIPHER_LIST_ORIG];
+   data->set.proxy_ssl.primary.cipher_list =
+     data->set.str[STRING_SSL_CIPHER_LIST_PROXY];
++  data->set.ssl.primary.cipher_list13 =
++    data->set.str[STRING_SSL_CIPHER13_LIST_ORIG];
++  data->set.proxy_ssl.primary.cipher_list13 =
++    data->set.str[STRING_SSL_CIPHER13_LIST_PROXY];
+ 
+   data->set.ssl.CRLfile = data->set.str[STRING_SSL_CRLFILE_ORIG];
+   data->set.proxy_ssl.CRLfile = data->set.str[STRING_SSL_CRLFILE_PROXY];
+diff --git a/lib/vtls/vtls.c b/lib/vtls/vtls.c
+index bf96518..b61c640 100644
+--- a/lib/vtls/vtls.c
++++ b/lib/vtls/vtls.c
+@@ -96,7 +96,8 @@ Curl_ssl_config_matches(struct ssl_primary_config* data,
+      Curl_safe_strcasecompare(data->clientcert, needle->clientcert) &&
+      Curl_safe_strcasecompare(data->random_file, needle->random_file) &&
+      Curl_safe_strcasecompare(data->egdsocket, needle->egdsocket) &&
+-     Curl_safe_strcasecompare(data->cipher_list, needle->cipher_list))
++     Curl_safe_strcasecompare(data->cipher_list, needle->cipher_list) &&
++     Curl_safe_strcasecompare(data->cipher_list13, needle->cipher_list13))
+     return TRUE;
+ 
+   return FALSE;
+@@ -119,6 +120,7 @@ Curl_clone_primary_ssl_config(struct ssl_primary_config *source,
+   CLONE_STRING(random_file);
+   CLONE_STRING(egdsocket);
+   CLONE_STRING(cipher_list);
++  CLONE_STRING(cipher_list13);
+ 
+   return TRUE;
+ }
+@@ -131,6 +133,7 @@ void Curl_free_primary_ssl_config(struct ssl_primary_config* sslc)
+   Curl_safefree(sslc->random_file);
+   Curl_safefree(sslc->egdsocket);
+   Curl_safefree(sslc->cipher_list);
++  Curl_safefree(sslc->cipher_list13);
+ }
+ 
+ #ifdef USE_SSL
+-- 
+2.17.1
+
