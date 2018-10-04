@@ -5,6 +5,9 @@ Release: 2%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
+# test320: update expected output for gnutls-3.6.4
+Patch1:   0001-curl-7.61.1-test320-gnutls.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
 
@@ -155,6 +158,7 @@ be installed.
 %setup -q
 
 # upstream patches
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -322,6 +326,7 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
 %changelog
 * Thu Oct 04 2018 Kamil Dudka <kdudka@redhat.com> - 7.61.1-2
+- test320: update expected output for gnutls-3.6.4
 - drop 0105-curl-7.61.0-tests-ssh-keygen.patch no longer needed (#1622594)
 
 * Wed Sep 05 2018 Kamil Dudka <kdudka@redhat.com> - 7.61.1-1
