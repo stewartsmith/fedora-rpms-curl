@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.61.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
@@ -16,9 +16,6 @@ Patch103: 0103-curl-7.59.0-python3.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
-
-# tests: make ssh-keygen always produce PEM format (#1622594)
-Patch105: 0105-curl-7.61.0-tests-ssh-keygen.patch
 
 Provides: curl-full = %{version}-%{release}
 Provides: webclient
@@ -164,7 +161,6 @@ be installed.
 %patch102 -p1
 %patch103 -p1
 %patch104 -p1
-%patch105 -p1
 
 # make tests/*.py use Python 3
 sed -e '1 s|^#!/.*python|#!%{__python3}|' -i tests/*.py
@@ -325,6 +321,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Thu Oct 04 2018 Kamil Dudka <kdudka@redhat.com> - 7.61.1-2
+- drop 0105-curl-7.61.0-tests-ssh-keygen.patch no longer needed (#1622594)
+
 * Wed Sep 05 2018 Kamil Dudka <kdudka@redhat.com> - 7.61.1-1
 - new upstream release, which fixes the following vulnerability
     CVE-2018-14618 - NTLM password overflow via integer overflow
