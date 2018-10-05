@@ -79,6 +79,10 @@ BuildRequires: valgrind
 # using an older version of libcurl could result in CURLE_UNKNOWN_OPTION
 Requires: libcurl%{?_isa} >= %{version}-%{release}
 
+# require at least the version of libpsl that we were built against,
+# to ensure that we have the necessary symbols available (#1631804)
+%global libpsl_version %(pkg-config --modversion libpsl 2>/dev/null || echo 0)
+
 # require at least the version of libssh that we were built against,
 # to ensure that we have the necessary symbols available (#525002, #642796)
 %global libssh_version %(pkg-config --modversion libssh 2>/dev/null || echo 0)
@@ -97,6 +101,7 @@ resume, proxy tunneling and a busload of other useful tricks.
 
 %package -n libcurl
 Summary: A library for getting files from web servers
+Requires: libpsl%{?_isa} >= %{libpsl_version}
 Requires: libssh%{?_isa} >= %{libssh_version}
 Requires: openssl-libs%{?_isa} >= 1:%{openssl_version}
 Provides: libcurl-full = %{version}-%{release}
@@ -326,6 +331,7 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
 %changelog
 * Thu Oct 04 2018 Kamil Dudka <kdudka@redhat.com> - 7.61.1-2
+- enforce versioned libpsl dependency for libcurl (#1631804)
 - test320: update expected output for gnutls-3.6.4
 - drop 0105-curl-7.61.0-tests-ssh-keygen.patch no longer needed (#1622594)
 
