@@ -1,0 +1,28 @@
+From c574e05b0035f0d78e6bf6040d3f80430112ab4f Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Fri, 7 Sep 2018 16:50:45 +0200
+Subject: [PATCH] docs/cmdline-opts: update the documentation of --tlsv1.0
+
+... to reflect the changes in 6015cefb1b2cfde4b4850121c42405275e5e77d9
+
+Closes #2955
+
+Upstream-commit: 9ba22ce6b52751ed1e2abdd177b0a1d241819b4e
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ docs/cmdline-opts/tlsv1.0.d | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/docs/cmdline-opts/tlsv1.0.d b/docs/cmdline-opts/tlsv1.0.d
+index 8789025e0..54e259682 100644
+--- a/docs/cmdline-opts/tlsv1.0.d
++++ b/docs/cmdline-opts/tlsv1.0.d
+@@ -3,4 +3,4 @@ Help: Use TLSv1.0
+ Protocols: TLS
+ Added: 7.34.0
+ ---
+-Forces curl to use TLS version 1.0 when connecting to a remote TLS server.
++Forces curl to use TLS version 1.0 or later when connecting to a remote TLS server.
+-- 
+2.17.1
+

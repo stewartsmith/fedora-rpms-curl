@@ -1,12 +1,15 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.61.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
 # test320: update expected output for gnutls-3.6.4
 Patch1:   0001-curl-7.61.1-test320-gnutls.patch
+
+# update the documentation of --tlsv1.0 in curl(1) man page
+Patch2:   0002-curl-7.61.1-tlsv1.0-man.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -44,6 +47,9 @@ BuildRequires: python3-devel
 BuildRequires: sed
 BuildRequires: stunnel
 BuildRequires: zlib-devel
+
+# needed to compress content of tool_hugehelp.c after changing curl.1 man page
+BuildRequires: perl(IO::Compress::Gzip)
 
 # gnutls-serv is used by the upstream test-suite
 BuildRequires: gnutls-utils
@@ -164,6 +170,7 @@ be installed.
 
 # upstream patches
 %patch1 -p1
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -330,6 +337,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Thu Oct 11 2018 Kamil Dudka <kdudka@redhat.com> - 7.61.1-3
+- update the documentation of --tlsv1.0 in curl(1) man page
+
 * Thu Oct 04 2018 Kamil Dudka <kdudka@redhat.com> - 7.61.1-2
 - enforce versioned libpsl dependency for libcurl (#1631804)
 - test320: update expected output for gnutls-3.6.4
