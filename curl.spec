@@ -11,6 +11,9 @@ Patch1:   0001-curl-7.61.1-test320-gnutls.patch
 # update the documentation of --tlsv1.0 in curl(1) man page
 Patch2:   0002-curl-7.61.1-tlsv1.0-man.patch
 
+# enable TLS 1.3 post-handshake auth in OpenSSL
+Patch3:   0003-curl-7.61.1-TLS-1.3-PHA.patch
+
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
 
@@ -171,6 +174,7 @@ be installed.
 # upstream patches
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -338,6 +342,7 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
 %changelog
 * Thu Oct 11 2018 Kamil Dudka <kdudka@redhat.com> - 7.61.1-3
+- enable TLS 1.3 post-handshake auth in OpenSSL
 - update the documentation of --tlsv1.0 in curl(1) man page
 
 * Thu Oct 04 2018 Kamil Dudka <kdudka@redhat.com> - 7.61.1-2
