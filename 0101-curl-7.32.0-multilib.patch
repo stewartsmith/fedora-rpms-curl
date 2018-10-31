@@ -22,7 +22,7 @@ index 150004d..95d0759 100644
          ;;
  
      --prefix)
-@@ -143,32 +143,17 @@ while test $# -gt 0; do
+@@ -155,32 +155,17 @@ while test $# -gt 0; do
          ;;
  
      --libs)

@@ -1,88 +1,23 @@
-From bdba7b54224814055185513de1e7ff6619031553 Mon Sep 17 00:00:00 2001
-From: Kamil Dudka <kdudka@redhat.com>
-Date: Thu, 15 Mar 2018 13:21:40 +0100
-Subject: [PATCH 1/2] tests/http_pipe.py: migrate to Python 3
-
----
- tests/http_pipe.py | 4 ++--
- tests/runtests.pl  | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/tests/http_pipe.py b/tests/http_pipe.py
-index bc32173..75ac165 100755
---- a/tests/http_pipe.py
-+++ b/tests/http_pipe.py
-@@ -383,13 +383,13 @@ class PipelineRequestHandler(socketserver.BaseRequestHandler):
-           self.request.setblocking(True)
-           if not new_data:
-             return
--          new_requests = self._request_parser.ParseAdditionalData(new_data)
-+          new_requests = self._request_parser.ParseAdditionalData(new_data.decode('utf8'))
-           self._response_builder.QueueRequests(
-               new_requests, self._request_parser.were_all_requests_http_1_1)
-           self._num_queued += len(new_requests)
-           self._last_queued_time = time.time()
-         elif fileno in wlist:
--          num_bytes_sent = self.request.send(self._send_buffer[0:4096])
-+          num_bytes_sent = self.request.send(self._send_buffer[0:4096].encode('utf8'))
-           self._send_buffer = self._send_buffer[num_bytes_sent:]
-           time.sleep(0.05)
- 
-diff --git a/tests/runtests.pl b/tests/runtests.pl
-index d6aa5ca..4d395ef 100755
---- a/tests/runtests.pl
-+++ b/tests/runtests.pl
-@@ -1439,7 +1439,7 @@ sub runhttpserver {
-     elsif($alt eq "pipe") {
-         # basically the same, but another ID
-         $idnum = 3;
--        $exe = "python $srcdir/http_pipe.py";
-+        $exe = "python3 $srcdir/http_pipe.py";
-         $verbose_flag .= "1 ";
-     }
-     elsif($alt eq "unix") {
--- 
-2.14.3
-
-
 From 3c4c7340e455b7256c0786759422f34ec3e2d440 Mon Sep 17 00:00:00 2001
 From: Kamil Dudka <kdudka@redhat.com>
 Date: Thu, 15 Mar 2018 14:49:56 +0100
-Subject: [PATCH 2/2] tests/{negtelnet,smb}server.py: migrate to Python 3
+Subject: [PATCH] tests/{negtelnet,smb}server.py: migrate to Python 3
 
 Unfortunately, smbserver.py does not work with Python 3 because
 there is no 'impacket' module available for Python 3:
 
 https://github.com/CoreSecurity/impacket/issues/61
 ---
- tests/negtelnetserver.py | 12 ++++++------
- tests/smbserver.py       |  4 ++--
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ tests/negtelnetserver.py | 4 ++--
+ tests/smbserver.py       | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/tests/negtelnetserver.py b/tests/negtelnetserver.py
 index 8cfd409..72ee771 100755
 --- a/tests/negtelnetserver.py
 +++ b/tests/negtelnetserver.py
-@@ -23,7 +23,7 @@ IDENT = "NTEL"
- 
- # The strings that indicate the test framework is checking our aliveness
- VERIFIED_REQ = b"verifiedserver"
--VERIFIED_RSP = b"WE ROOLZ: {pid}"
-+VERIFIED_RSP = "WE ROOLZ: {pid}"
- 
- 
- def telnetserver(options):
-@@ -34,7 +34,7 @@ def telnetserver(options):
-     if options.pidfile:
-         pid = os.getpid()
-         with open(options.pidfile, "w") as f:
--            f.write(b"{0}".format(pid))
-+            f.write("{0}".format(pid))
- 
-     local_bind = (HOST, options.port)
-     log.info("Listening on %s", local_bind)
 @@ -73,11 +73,11 @@ class NegotiatingTelnetHandler(socketserver.BaseRequestHandler):
-                 response_data = VERIFIED_RSP.format(pid=os.getpid())
+                 response_data = response.encode('ascii')
              else:
                  log.debug("Received normal request - echoing back")
 -                response_data = data.strip()
@@ -95,24 +30,6 @@ index 8cfd409..72ee771 100755
  
          except IOError:
              log.exception("IOError hit during request")
-@@ -132,7 +132,7 @@ class Negotiator(object):
-         return buffer
- 
-     def byte_to_int(self, byte):
--        return struct.unpack(b'B', byte)[0]
-+        return int(byte)
- 
-     def no_neg(self, byte, byte_int, buffer):
-         # Not negotiating anything thus far. Check to see if we
-@@ -197,7 +197,7 @@ class Negotiator(object):
-         self.tcp.sendall(packed_message)
- 
-     def pack(self, arr):
--        return struct.pack(b'{0}B'.format(len(arr)), *arr)
-+        return struct.pack('{0}B'.format(len(arr)), *arr)
- 
-     def send_iac(self, arr):
-         message = [NegTokens.IAC]
 diff --git a/tests/smbserver.py b/tests/smbserver.py
 index 195ae39..b09cd44 100755
 --- a/tests/smbserver.py
