@@ -17,6 +17,9 @@ Patch103: 0103-curl-7.59.0-python3.patch
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
 
+# libtest: avoid symbol lookup error in libstubgss.so
+Patch105: 0105-curl-7.63.0-libstubgss-ldadd.patch
+
 Provides: curl-full = %{version}-%{release}
 Provides: webclient
 URL: https://curl.haxx.se/
@@ -169,6 +172,7 @@ be installed.
 %patch102 -p1
 %patch103 -p1
 %patch104 -p1
+%patch105 -p1
 
 # make tests/*.py use Python 3
 sed -e '1 s|^#!/.*python|#!%{__python3}|' -i tests/*.py
