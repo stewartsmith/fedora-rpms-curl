@@ -1,6 +1,6 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.62.0
+Version: 7.63.0
 Release: 1%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
@@ -329,6 +329,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Dec 12 2018 Kamil Dudka <kdudka@redhat.com> - 7.63.0-1
+- new upstream release
+
 * Wed Oct 31 2018 Kamil Dudka <kdudka@redhat.com> - 7.62.0-1
 - new upstream release, which fixes the following vulnerabilities
     CVE-2018-16839 - SASL password overflow via integer overflow
