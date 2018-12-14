@@ -1,9 +1,12 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.63.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
+
+# revert an upstream commit that broke `fedpkg new-sources` (#1659329)
+Patch1:   0001-curl-7.62.0-http-post-negotiate.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -164,6 +167,7 @@ be installed.
 
 %prep
 %setup -q
+%patch1 -p1 -R
 
 # upstream patches
 
@@ -333,6 +337,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Fri Dec 14 2018 Kamil Dudka <kdudka@redhat.com> - 7.63.0-2
+- revert an upstream commit that broke `fedpkg new-sources` (#1659329)
+
 * Wed Dec 12 2018 Kamil Dudka <kdudka@redhat.com> - 7.63.0-1
 - new upstream release
 
