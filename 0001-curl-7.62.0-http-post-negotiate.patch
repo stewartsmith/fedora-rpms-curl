@@ -1,69 +1,90 @@
-From be7395e31ae884cfaf87056f400130e3321767b3 Mon Sep 17 00:00:00 2001
-From: Elia Tufarolo <elia.tufarolo@hcl.com>
-Date: Tue, 13 Nov 2018 18:30:56 +0100
-Subject: [PATCH] http_negotiate: do not close connection until negotiation is
- completed
+From 46fe12fc1d35b8d2484811b9359f0de72114dee4 Mon Sep 17 00:00:00 2001
+From: Daniel Stenberg <daniel@haxx.se>
+Date: Fri, 4 Jan 2019 23:34:50 +0100
+Subject: [PATCH] Revert "http_negotiate: do not close connection until
+ negotiation is completed"
 
-Fix HTTP POST using CURLAUTH_NEGOTIATE.
+This reverts commit 07ebaf837843124ee670e5b8c218b80b92e06e47.
 
-Closes #3275
+This also reopens PR #3275 which brought the change now reverted.
 
-Upstream-commit: 07ebaf837843124ee670e5b8c218b80b92e06e47
+Fixes #3384
+Closes #3439
+
+Upstream-commit: ebe658c1e5a6577178981a7f406794699305be5c
 Signed-off-by: Kamil Dudka <kdudka@redhat.com>
 ---
- lib/http.c           | 1 -
- lib/http_negotiate.c | 8 ++++++++
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ lib/http.c           |  3 ++-
+ lib/http_negotiate.c | 10 +---------
+ 2 files changed, 3 insertions(+), 10 deletions(-)
 
 diff --git a/lib/http.c b/lib/http.c
-index 46ac15a6e..afc919b09 100644
+index 8866fdf0a..303535af6 100644
 --- a/lib/http.c
 +++ b/lib/http.c
-@@ -610,7 +610,6 @@ output_auth_headers(struct connectdata *conn,
+@@ -5,7 +5,7 @@
+  *                            | (__| |_| |  _ <| |___
+  *                             \___|\___/|_| \_\_____|
+  *
+- * Copyright (C) 1998 - 2018, Daniel Stenberg, <daniel@haxx.se>, et al.
++ * Copyright (C) 1998 - 2019, Daniel Stenberg, <daniel@haxx.se>, et al.
+  *
+  * This software is licensed as described in the file COPYING, which
+  * you should have received as part of this distribution. The terms
+@@ -616,6 +616,7 @@ output_auth_headers(struct connectdata *conn,
      result = Curl_output_negotiate(conn, proxy);
      if(result)
        return result;
--    authstatus->done = TRUE;
++    authstatus->done = TRUE;
      negdata->state = GSS_AUTHSENT;
    }
    else
 diff --git a/lib/http_negotiate.c b/lib/http_negotiate.c
-index ddcd65b3b..444265d11 100644
+index 444265d11..4713d1bd5 100644
 --- a/lib/http_negotiate.c
 +++ b/lib/http_negotiate.c
-@@ -49,6 +49,7 @@ CURLcode Curl_input_negotiate(struct connectdata *conn, bool proxy,
+@@ -5,7 +5,7 @@
+  *                            | (__| |_| |  _ <| |___
+  *                             \___|\___/|_| \_\_____|
+  *
+- * Copyright (C) 1998 - 2016, Daniel Stenberg, <daniel@haxx.se>, et al.
++ * Copyright (C) 1998 - 2019, Daniel Stenberg, <daniel@haxx.se>, et al.
+  *
+  * This software is licensed as described in the file COPYING, which
+  * you should have received as part of this distribution. The terms
+@@ -49,7 +49,6 @@ CURLcode Curl_input_negotiate(struct connectdata *conn, bool proxy,
  
    /* Point to the correct struct with this */
    struct negotiatedata *neg_ctx;
-+  struct auth *authp;
+-  struct auth *authp;
  
    if(proxy) {
      userp = conn->http_proxy.user;
-@@ -57,6 +58,7 @@ CURLcode Curl_input_negotiate(struct connectdata *conn, bool proxy,
+@@ -58,7 +57,6 @@ CURLcode Curl_input_negotiate(struct connectdata *conn, bool proxy,
                data->set.str[STRING_PROXY_SERVICE_NAME] : "HTTP";
      host = conn->http_proxy.host.name;
      neg_ctx = &data->state.proxyneg;
-+    authp = &conn->data->state.authproxy;
+-    authp = &conn->data->state.authproxy;
    }
    else {
      userp = conn->user;
-@@ -65,6 +67,7 @@ CURLcode Curl_input_negotiate(struct connectdata *conn, bool proxy,
+@@ -67,7 +65,6 @@ CURLcode Curl_input_negotiate(struct connectdata *conn, bool proxy,
                data->set.str[STRING_SERVICE_NAME] : "HTTP";
      host = conn->host.name;
      neg_ctx = &data->state.negotiate;
-+    authp = &conn->data->state.authhost;
+-    authp = &conn->data->state.authhost;
    }
  
    /* Not set means empty */
-@@ -95,6 +98,11 @@ CURLcode Curl_input_negotiate(struct connectdata *conn, bool proxy,
+@@ -98,11 +95,6 @@ CURLcode Curl_input_negotiate(struct connectdata *conn, bool proxy,
  
    if(result)
      Curl_auth_spnego_cleanup(neg_ctx);
-+  else
-+    /* If the status is different than 0 and we encountered no errors
-+    it means we have to continue. 0 is the OK value for both GSSAPI
-+    (GSS_S_COMPLETE) and SSPI (SEC_E_OK) */
-+    authp->done = !neg_ctx->status;
+-  else
+-    /* If the status is different than 0 and we encountered no errors
+-    it means we have to continue. 0 is the OK value for both GSSAPI
+-    (GSS_S_COMPLETE) and SSPI (SEC_E_OK) */
+-    authp->done = !neg_ctx->status;
  
    return result;
  }

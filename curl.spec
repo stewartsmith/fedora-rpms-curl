@@ -171,10 +171,8 @@ be installed.
 %prep
 %setup -q
 
-# upstream patches to revert
-%patch1 -p1 -R
-
 # upstream patches
+%patch1 -p1
 %patch2 -p1
 %patch7 -p1
 
