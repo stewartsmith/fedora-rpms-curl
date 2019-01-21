@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.63.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
@@ -13,6 +13,9 @@ Patch2:   0002-curl-7.62.0-libtest-stub_gssapi-snprintf.patch
 
 # curl -J: do not append to the destination file (#1658574)
 Patch7:   0007-curl-7.63.0-JO-preserve-local-file.patch
+
+# xattr: strip credentials from any URL that is stored (CVE-2018-20483)
+Patch8:   0008-curl-7.63.0-xattr-strip-credentials-from-any-URL.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -175,6 +178,7 @@ be installed.
 %patch1 -p1
 %patch2 -p1
 %patch7 -p1
+%patch8 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -341,6 +345,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Mon Jan 21 2019 Kamil Dudka <kdudka@redhat.com> - 7.63.0-5
+- xattr: strip credentials from any URL that is stored (CVE-2018-20483)
+
 * Fri Jan 04 2019 Kamil Dudka <kdudka@redhat.com> - 7.63.0-4
 - replace 0105-curl-7.63.0-libstubgss-ldadd.patch by upstream patch
 
