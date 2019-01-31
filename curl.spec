@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.63.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
@@ -345,6 +345,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 7.63.0-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Mon Jan 21 2019 Kamil Dudka <kdudka@redhat.com> - 7.63.0-5
 - xattr: strip credentials from any URL that is stored (CVE-2018-20483)
 
