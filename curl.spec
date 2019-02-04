@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.63.0
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
@@ -28,6 +28,9 @@ Patch103: 0103-curl-7.59.0-python3.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
+
+# prevent valgrind from reporting false positives on x86_64
+Patch105: 0105-curl-7.63.0-lib1560-valgrind.patch
 
 Provides: curl-full = %{version}-%{release}
 Provides: webclient
@@ -185,6 +188,7 @@ be installed.
 %patch102 -p1
 %patch103 -p1
 %patch104 -p1
+%patch105 -p1
 
 # make tests/*.py use Python 3
 sed -e '1 s|^#!/.*python|#!%{__python3}|' -i tests/*.py
@@ -345,6 +349,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Mon Feb 04 2019 Kamil Dudka <kdudka@redhat.com> - 7.63.0-7
+- prevent valgrind from reporting false positives on x86_64
+
 * Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 7.63.0-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
