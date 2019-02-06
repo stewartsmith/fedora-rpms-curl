@@ -1,21 +1,9 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.63.0
-Release: 7%{?dist}
+Version: 7.64.0
+Release: 1%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
-
-# revert an upstream commit that broke `fedpkg new-sources` (#1659329)
-Patch1:   0001-curl-7.62.0-http-post-negotiate.patch
-
-# libtest: avoid symbol lookup error in libstubgss.so
-Patch2:   0002-curl-7.62.0-libtest-stub_gssapi-snprintf.patch
-
-# curl -J: do not append to the destination file (#1658574)
-Patch7:   0007-curl-7.63.0-JO-preserve-local-file.patch
-
-# xattr: strip credentials from any URL that is stored (CVE-2018-20483)
-Patch8:   0008-curl-7.63.0-xattr-strip-credentials-from-any-URL.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -178,10 +166,6 @@ be installed.
 %setup -q
 
 # upstream patches
-%patch1 -p1
-%patch2 -p1
-%patch7 -p1
-%patch8 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -349,6 +333,12 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Feb 06 2019 Kamil Dudka <kdudka@redhat.com> - 7.64.0-1
+- new upstream release, which fixes the following vulnerabilities
+    CVE-2019-3823 - SMTP end-of-response out-of-bounds read
+    CVE-2019-3822 - NTLMv2 type-3 header stack buffer overflow
+    CVE-2018-16890 - NTLM type-2 out-of-bounds buffer read
+
 * Mon Feb 04 2019 Kamil Dudka <kdudka@redhat.com> - 7.63.0-7
 - prevent valgrind from reporting false positives on x86_64
 
