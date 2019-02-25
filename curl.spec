@@ -1,12 +1,15 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.64.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
 # make zsh completion work again
 Patch1:   0001-curl-7.64.0-zsh-completion.patch
+
+# prevent NetworkManager from leaking file descriptors (#1680198)
+Patch2:   0002-curl-7.64.0-nm-fd-leak.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -170,6 +173,7 @@ be installed.
 
 # upstream patches
 %patch1 -p1
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -337,6 +341,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Mon Feb 25 2019 Kamil Dudka <kdudka@redhat.com> - 7.64.0-3
+- prevent NetworkManager from leaking file descriptors (#1680198)
+
 * Mon Feb 11 2019 Kamil Dudka <kdudka@redhat.com> - 7.64.0-2
 - make zsh completion work again
 
