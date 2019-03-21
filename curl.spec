@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.64.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
@@ -13,6 +13,9 @@ Patch2:   0002-curl-7.64.0-nm-fd-leak.patch
 
 # fix NULL dereference if flushing cookies with no CookieInfo set (#1683676)
 Patch3:   0003-curl-7.64.0-cookie-segfault.patch
+
+# avoid spurious "Could not resolve host: [host name]" error messages
+Patch4:   0004-curl-7.64.0-spurious-resolver-error.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -178,6 +181,7 @@ be installed.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -345,6 +349,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Mar 21 2019 Kamil Dudka <kdudka@redhat.com> - 7.64.0-5
+- avoid spurious "Could not resolve host: [host name]" error messages
+
 * Wed Feb 27 2019 Kamil Dudka <kdudka@redhat.com> - 7.64.0-4
 - fix NULL dereference if flushing cookies with no CookieInfo set (#1683676)
 
