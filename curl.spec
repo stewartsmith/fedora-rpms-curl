@@ -356,7 +356,7 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 * Mon Mar 25 2019 Kamil Dudka <kdudka@redhat.com> - 7.64.0-6
 - remove verbose "Expire in" ... messages (#1690971)
 
-* Wed Mar 21 2019 Kamil Dudka <kdudka@redhat.com> - 7.64.0-5
+* Thu Mar 21 2019 Kamil Dudka <kdudka@redhat.com> - 7.64.0-5
 - avoid spurious "Could not resolve host: [host name]" error messages
 
 * Wed Feb 27 2019 Kamil Dudka <kdudka@redhat.com> - 7.64.0-4
