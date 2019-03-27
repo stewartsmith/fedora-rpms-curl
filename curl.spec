@@ -1,24 +1,9 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.64.0
-Release: 6%{?dist}
+Version: 7.64.1
+Release: 1%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
-
-# make zsh completion work again
-Patch1:   0001-curl-7.64.0-zsh-completion.patch
-
-# prevent NetworkManager from leaking file descriptors (#1680198)
-Patch2:   0002-curl-7.64.0-nm-fd-leak.patch
-
-# fix NULL dereference if flushing cookies with no CookieInfo set (#1683676)
-Patch3:   0003-curl-7.64.0-cookie-segfault.patch
-
-# avoid spurious "Could not resolve host: [host name]" error messages
-Patch4:   0004-curl-7.64.0-spurious-resolver-error.patch
-
-# remove verbose "Expire in" ... messages (#1690971)
-Patch5:   0005-curl-7.64.0-expire-in-verbose-msgs.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -181,11 +166,6 @@ be installed.
 %setup -q
 
 # upstream patches
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -312,6 +292,10 @@ make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install
 LD_LIBRARY_PATH="$RPM_BUILD_ROOT%{_libdir}:$LD_LIBRARY_PATH" \
     make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C scripts
 
+# do not install /usr/share/fish/completions/curl.fish which is also installed
+# by fish-3.0.2-1.module_f31+3716+57207597 and would trigger a conflict
+rm -rf ${RPM_BUILD_ROOT}%{_datadir}/fish
+
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
 %ldconfig_scriptlets -n libcurl
@@ -319,13 +303,17 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %ldconfig_scriptlets -n libcurl-minimal
 
 %files
-%doc CHANGES README*
-%doc docs/BUGS docs/FAQ docs/FEATURES
-%doc docs/MANUAL docs/RESOURCES
-%doc docs/TheArtOfHttpScripting docs/TODO
+%doc CHANGES
+%doc README
+%doc docs/BUGS
+%doc docs/FAQ
+%doc docs/FEATURES
+%doc docs/RESOURCES
+%doc docs/TODO
+%doc docs/TheArtOfHttpScripting
 %{_bindir}/curl
 %{_mandir}/man1/curl.1*
-%{_datadir}/zsh/site-functions
+%{_datadir}/zsh
 
 %files -n libcurl
 %license COPYING
@@ -353,6 +341,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Mar 27 2019 Kamil Dudka <kdudka@redhat.com> - 7.64.1-1
+- new upstream release
+
 * Mon Mar 25 2019 Kamil Dudka <kdudka@redhat.com> - 7.64.0-6
 - remove verbose "Expire in" ... messages (#1690971)
 
