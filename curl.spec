@@ -39,6 +39,7 @@ BuildRequires: openldap-devel
 BuildRequires: openssh-clients
 BuildRequires: openssh-server
 BuildRequires: openssl-devel
+BuildRequires: perl-interpreter
 BuildRequires: pkgconfig
 BuildRequires: python3-devel
 BuildRequires: sed
@@ -47,6 +48,12 @@ BuildRequires: zlib-devel
 
 # needed to compress content of tool_hugehelp.c after changing curl.1 man page
 BuildRequires: perl(IO::Compress::Gzip)
+
+# needed for generation of shell completions
+BuildRequires: perl(Getopt::Long)
+BuildRequires: perl(Pod::Usage)
+BuildRequires: perl(strict)
+BuildRequires: perl(warnings)
 
 # gnutls-serv is used by the upstream test-suite
 BuildRequires: gnutls-utils
@@ -63,10 +70,8 @@ BuildRequires: perl(File::Copy)
 BuildRequires: perl(File::Spec)
 BuildRequires: perl(IPC::Open2)
 BuildRequires: perl(MIME::Base64)
-BuildRequires: perl(strict)
 BuildRequires: perl(Time::Local)
 BuildRequires: perl(Time::HiRes)
-BuildRequires: perl(warnings)
 BuildRequires: perl(vars)
 
 # The test-suite runs automatically through valgrind if valgrind is available
