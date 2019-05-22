@@ -1,12 +1,9 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.64.1
-Release: 2%{?dist}
+Version: 7.65.0
+Release: 1%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
-
-# do not treat failure of gss_init_sec_context() with --negotiate as fatal
-Patch1:   0001-curl-7.64.1-negotiate-without-ticket.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -174,7 +171,6 @@ be installed.
 %setup -q
 
 # upstream patches
-%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -350,6 +346,11 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed May 22 2019 Kamil Dudka <kdudka@redhat.com> - 7.65.0-1
+- new upstream release, which fixes the following vulnerabilities
+    CVE-2019-5436 - TFTP receive buffer overflow
+    CVE-2019-5435 - integer overflows in curl_url_set()
+
 * Thu May 09 2019 Kamil Dudka <kdudka@redhat.com> - 7.64.1-2
 - do not treat failure of gss_init_sec_context() with --negotiate as fatal
 
