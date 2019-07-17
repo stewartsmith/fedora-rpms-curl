@@ -1,6 +1,6 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.65.1
+Version: 7.65.2
 Release: 1%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
@@ -346,6 +346,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Jul 17 2019 Kamil Dudka <kdudka@redhat.com> - 7.65.2-1
+- new upstream release
+
 * Wed Jun 05 2019 Kamil Dudka <kdudka@redhat.com> - 7.65.1-1
 - new upstream release
 
