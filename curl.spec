@@ -351,7 +351,7 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
 %changelog
 * Thu Aug 01 2019 Kamil Dudka <kdudka@redhat.com> - 7.65.3-3
-- new upstream release
+- improve handling of gss_init_sec_context() failures
 
 * Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 7.65.3-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
