@@ -1,0 +1,166 @@
+From 90f7ca7bec18b49bf2706430aa6493eda7d7a573 Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Tue, 30 Jul 2019 12:59:35 +0200
+Subject: [PATCH] http_negotiate: improve handling of gss_init_sec_context()
+ failures
+
+If HTTPAUTH_GSSNEGOTIATE was used for a POST request and
+gss_init_sec_context() failed, the POST request was sent
+with empty body.  This commit also restores the original
+behavior of `curl --fail --negotiate`, which was changed
+by commit 6c6035532383e300c712e4c1cd9fdd749ed5cf59.
+
+Add regression tests 2077 and 2078 to cover this.
+
+Fixes #3992
+Closes #4171
+
+Upstream-commit: 4c187043c5aac57f354ebb96cc6ff3263411e98d
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ lib/http_negotiate.c    |  2 +-
+ tests/data/Makefile.inc |  3 ++-
+ tests/data/test2077     | 42 ++++++++++++++++++++++++++++++++
+ tests/data/test2078     | 54 +++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 99 insertions(+), 2 deletions(-)
+ create mode 100644 tests/data/test2077
+ create mode 100644 tests/data/test2078
+
+diff --git a/lib/http_negotiate.c b/lib/http_negotiate.c
+index c8f406444..fe15dcefb 100644
+--- a/lib/http_negotiate.c
++++ b/lib/http_negotiate.c
+@@ -151,7 +151,7 @@ CURLcode Curl_output_negotiate(struct connectdata *conn, bool proxy)
+       if(result == CURLE_LOGIN_DENIED) {
+         /* negotiate auth failed, let's continue unauthenticated to stay
+          * compatible with the behavior before curl-7_64_0-158-g6c6035532 */
+-        conn->data->state.authproblem = TRUE;
++        authp->done = TRUE;
+         return CURLE_OK;
+       }
+       else if(result)
+diff --git a/tests/data/Makefile.inc b/tests/data/Makefile.inc
+index 693e53d7c..3ed4a03e4 100644
+--- a/tests/data/Makefile.inc
++++ b/tests/data/Makefile.inc
+@@ -199,7 +199,8 @@ test2040 test2041 test2042 test2043 test2044 test2045 test2046 test2047 \
+ test2048 test2049 test2050 test2051 test2052 test2053 test2054 test2055 \
+ test2056 test2057 test2058 test2059 test2060 test2061 test2062 test2063 \
+ test2064 test2065 test2066 test2067 test2068 test2069 \
+-         test2071 test2072 test2073 test2074 test2075 test2076 \
++         test2071 test2072 test2073 test2074 test2075 test2076 test2077 \
++test2078 \
+ test2080 \
+ test2100 \
+ \
+diff --git a/tests/data/test2077 b/tests/data/test2077
+new file mode 100644
+index 000000000..0c600f5c3
+--- /dev/null
++++ b/tests/data/test2077
+@@ -0,0 +1,42 @@
++<testcase>
++<info>
++<keywords>
++HTTP
++HTTP GET
++GSS-API
++</keywords>
++</info>
++
++# Server-side
++<reply>
++<data>
++HTTP/1.1 200 OK swsclose
++Content-Length: 23
++
++This IS the real page!
++</data>
++</reply>
++
++# Client-side
++<client>
++<server>
++http
++</server>
++<features>
++GSS-API
++</features>
++<name>
++curl --fail --negotiate to unauthenticated service fails
++</name>
++<command>
++http://%HOSTIP:%HTTPPORT/2077 -u : --fail --negotiate
++</command>
++</client>
++
++# Verify data after the test has been "shot"
++<verify>
++<errorcode>
++0
++</errorcode>
++</verify>
++</testcase>
+diff --git a/tests/data/test2078 b/tests/data/test2078
+new file mode 100644
+index 000000000..99bc2dbee
+--- /dev/null
++++ b/tests/data/test2078
+@@ -0,0 +1,54 @@
++<testcase>
++<info>
++<keywords>
++HTTP
++HTTP GET
++GSS-API
++</keywords>
++</info>
++
++# Server-side
++<reply>
++<data>
++HTTP/1.1 200 OK swsclose
++Content-Length: 23
++
++This IS the real page!
++</data>
++</reply>
++
++# Client-side
++<client>
++<server>
++http
++</server>
++<features>
++GSS-API
++</features>
++<name>
++curl --negotiate should not send empty POST request only
++</name>
++<command>
++http://%HOSTIP:%HTTPPORT/2078 -u : --negotiate --data name=value
++</command>
++</client>
++
++# Verify data after the test has been "shot"
++<verify>
++<errorcode>
++0
++</errorcode>
++<strip>
++^User-Agent:.*
++</strip>
++<protocol nonewline="yes">
++POST /2078 HTTP/1.1
++Host: 127.0.0.1:8990
++Accept: */*
++Content-Length: 10
++Content-Type: application/x-www-form-urlencoded
++
++name=value
++</protocol>
++</verify>
++</testcase>
+-- 
+2.20.1
+
