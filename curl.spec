@@ -1,12 +1,15 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.65.3
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
 # improve handling of gss_init_sec_context() failures
 Patch1:   0001-curl-7.65.3-negotiate-fails.patch
+
+# avoid reporting spurious error in the HTTP2 framing layer (#1690971)
+Patch2:   0002-curl-7.65.3-h2-framing-layer-error.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -175,6 +178,7 @@ be installed.
 
 # upstream patches
 %patch1 -p1
+%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -350,6 +354,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Tue Aug 27 2019 Kamil Dudka <kdudka@redhat.com> - 7.65.3-4
+- avoid reporting spurious error in the HTTP2 framing layer (#1690971)
+
 * Thu Aug 01 2019 Kamil Dudka <kdudka@redhat.com> - 7.65.3-3
 - improve handling of gss_init_sec_context() failures
 
