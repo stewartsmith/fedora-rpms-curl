@@ -1,12 +1,9 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.66.0
+Version: 7.67.0
 Release: 1%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
-
-# fix memory leaked by parse_metalink()
-Patch1:   0001-curl-7.66.0-metalink-memleak.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -174,7 +171,6 @@ be installed.
 %setup -q
 
 # upstream patches
-%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -350,6 +346,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Nov 06 2019 Kamil Dudka <kdudka@redhat.com> - 7.67.1-1
+- new upstream release
+
 * Wed Sep 11 2019 Kamil Dudka <kdudka@redhat.com> - 7.66.0-1
 - new upstream release, which fixes the following vulnerabilities
     CVE-2019-5481 - double free due to subsequent call of realloc()
