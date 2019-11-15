@@ -83,7 +83,7 @@ BuildRequires: perl(vars)
 # to be less reliable, in order to avoid unnecessary build failures (see RHBZ
 # #810992, #816175, and #886891).  Nevertheless developers are free to install
 # valgrind manually to improve test coverage on any architecture.
-%ifarch x86_64 %{ix86}
+%ifarch x86_64
 BuildRequires: valgrind
 %endif
 
