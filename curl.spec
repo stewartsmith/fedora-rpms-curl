@@ -350,10 +350,10 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
-* Thu Nov 14 2019 Kamil Dudka <kdudka@redhat.com> - 7.67.1-2
+* Thu Nov 14 2019 Kamil Dudka <kdudka@redhat.com> - 7.67.0-2
 - fix infinite loop on upload using a glob (#1771025)
 
-* Wed Nov 06 2019 Kamil Dudka <kdudka@redhat.com> - 7.67.1-1
+* Wed Nov 06 2019 Kamil Dudka <kdudka@redhat.com> - 7.67.0-1
 - new upstream release
 
 * Wed Sep 11 2019 Kamil Dudka <kdudka@redhat.com> - 7.66.0-1
