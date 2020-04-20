@@ -1,9 +1,12 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.69.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
+
+# SSH: use new ECDSA key types to check known hosts (#1824926)
+Patch1:   0001-curl-7.69.1-ssh-ecdsa-keys.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -169,6 +172,7 @@ be installed.
 
 %prep
 %setup -q
+%patch1 -p1
 
 # upstream patches
 
@@ -346,6 +350,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Mon Apr 20 2020 Kamil Dudka <kdudka@redhat.com> - 7.69.1-3
+- SSH: use new ECDSA key types to check known hosts (#1824926)
+
 * Fri Apr 17 2020 Tom Stellard <tstellar@redhat.com> - 7.69.1-2
 - Prevent discarding of -g when compiling with clang
 
