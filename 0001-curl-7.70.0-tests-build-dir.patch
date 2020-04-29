@@ -1,0 +1,63 @@
+From a6d36d6795d18895a63ced7b01a2b1ba2e9e04e5 Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Wed, 29 Apr 2020 13:26:14 +0200
+Subject: [PATCH 1/2] tests: look for preprocessed tests in build directory
+
+... which is not always the same directory as source directory
+
+Closes #5310
+
+Upstream-commit: 1066f5f0d4b304f7ba46f912cf13e12f45e39553
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ tests/server/util.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/server/util.c b/tests/server/util.c
+index f576b9c..09bb515 100644
+--- a/tests/server/util.c
++++ b/tests/server/util.c
+@@ -199,7 +199,7 @@ FILE *test2fopen(long testno)
+   FILE *stream;
+   char filename[256];
+   /* first try the alternative, preprocessed, file */
+-  msnprintf(filename, sizeof(filename), ALTTEST_DATA_PATH, path, testno);
++  msnprintf(filename, sizeof(filename), ALTTEST_DATA_PATH, ".", testno);
+   stream = fopen(filename, "rb");
+   if(stream)
+     return stream;
+-- 
+2.21.1
+
+
+From 540709d145c875c4cf67ce0c7acd6416c05f773c Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Wed, 29 Apr 2020 13:27:20 +0200
+Subject: [PATCH 2/2] test1177: look for curl.h in source directory
+
+If we use a separate build directory, there is no copy of the header.
+
+Closes #5310
+
+Upstream-commit: 68774da9ca5f39dbb403d63a7d9326b28263bdcb
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ tests/data/test1177 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/data/test1177 b/tests/data/test1177
+index 75a1ab3..85b520c 100644
+--- a/tests/data/test1177
++++ b/tests/data/test1177
+@@ -18,7 +18,7 @@ Verify that CURL_VERSION_* in headers and docs are in sync
+  </name>
+ 
+ <command type="perl">
+-%SRCDIR/version-scan.pl %SRCDIR/../docs/libcurl/curl_version_info.3 ../include/curl/curl.h
++%SRCDIR/version-scan.pl %SRCDIR/../docs/libcurl/curl_version_info.3 %SRCDIR/../include/curl/curl.h
+ </command>
+ </client>
+ 
+-- 
+2.21.1
+

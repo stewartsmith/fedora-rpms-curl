@@ -1,21 +1,18 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.69.1
-Release: 3%{?dist}
+Version: 7.70.0
+Release: 1%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
-# SSH: use new ECDSA key types to check known hosts (#1824926)
-Patch1:   0001-curl-7.69.1-ssh-ecdsa-keys.patch
+# make test-suite work with separate build dir
+Patch1:   0001-curl-7.70.0-tests-build-dir.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
 
 # prevent configure script from discarding -g in CFLAGS (#496778)
 Patch102: 0102-curl-7.36.0-debug.patch
-
-# migrate tests/http_pipe.py to Python 3
-Patch103: 0103-curl-7.59.0-python3.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
 Patch104: 0104-curl-7.19.7-localhost6.patch
@@ -37,6 +34,7 @@ BuildRequires: libmetalink-devel
 BuildRequires: libnghttp2-devel
 BuildRequires: libpsl-devel
 BuildRequires: libssh-devel
+BuildRequires: libtool
 BuildRequires: make
 BuildRequires: openldap-devel
 BuildRequires: openssh-clients
@@ -172,23 +170,21 @@ be installed.
 
 %prep
 %setup -q
-%patch1 -p1
 
 # upstream patches
+%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
-%patch103 -p1
 %patch104 -p1
 %patch105 -p1
 
 # make tests/*.py use Python 3
 sed -e '1 s|^#!/.*python|#!%{__python3}|' -i tests/*.py
 
-# regenerate Makefile.in files
-aclocal -I m4
-automake
+# regenerate the configure script and Makefile.in files
+autoreconf -fiv
 
 # disable test 1112 (#565305), test 1455 (occasionally fails with 'bind failed
 # with errno 98: Address already in use' in Koji environment), and test 1801
@@ -350,6 +346,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Apr 29 2020 Kamil Dudka <kdudka@redhat.com> - 7.70.0-1
+- new upstream release
+
 * Mon Apr 20 2020 Kamil Dudka <kdudka@redhat.com> - 7.69.1-3
 - SSH: use new ECDSA key types to check known hosts (#1824926)
 
