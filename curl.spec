@@ -203,6 +203,11 @@ echo "1319" >> tests/data/DISABLED
 echo "582" >> tests/data/DISABLED
 %endif
 
+# temporarily disable tests 702 703 716 on armv7hl (#1829180)
+%ifarch armv7hl
+printf "702\n703\n716\n" >> tests/data/DISABLED
+%endif
+
 # adapt test 323 for updated OpenSSL
 sed -e 's/^35$/35,52/' -i tests/data/test323
 
