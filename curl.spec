@@ -59,6 +59,9 @@ BuildRequires: perl(warnings)
 # gnutls-serv is used by the upstream test-suite
 BuildRequires: gnutls-utils
 
+# hostname(1) is used by the test-suite but it is missing in armv7hl buildroot
+BuildRequires: hostname
+
 # nghttpx (an HTTP/2 proxy) is used by the upstream test-suite
 BuildRequires: nghttp2
 
