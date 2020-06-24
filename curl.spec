@@ -1,12 +1,9 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.70.0
+Version: 7.71.0
 Release: 1%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
-
-# make test-suite work with separate build dir
-Patch1:   0001-curl-7.70.0-tests-build-dir.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -175,7 +172,6 @@ be installed.
 %setup -q
 
 # upstream patches
-%patch1 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -335,7 +331,7 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
 %files -n libcurl-devel
 %doc docs/examples/*.c docs/examples/Makefile.example docs/INTERNALS.md
-%doc docs/CONTRIBUTE.md docs/libcurl/ABI
+%doc docs/CONTRIBUTE.md docs/libcurl/ABI.md
 %{_bindir}/curl-config*
 %{_includedir}/curl
 %{_libdir}/*.so
@@ -354,6 +350,11 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Jun 24 2020 Kamil Dudka <kdudka@redhat.com> - 7.71.0-1
+- new upstream release, which fixes the following vulnerabilities
+    CVE-2020-8169 - curl: Partial password leak over DNS on HTTP redirect
+    CVE-2020-8177 - curl: overwrite local file with -J
+
 * Wed Apr 29 2020 Kamil Dudka <kdudka@redhat.com> - 7.70.0-1
 - new upstream release
 
