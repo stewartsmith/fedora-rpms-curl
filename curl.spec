@@ -1,6 +1,6 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.71.0
+Version: 7.71.1
 Release: 1%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
@@ -350,6 +350,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Jul 01 2020 Kamil Dudka <kdudka@redhat.com> - 7.71.1-1
+- new upstream release
+
 * Wed Jun 24 2020 Kamil Dudka <kdudka@redhat.com> - 7.71.0-1
 - new upstream release, which fixes the following vulnerabilities
     CVE-2020-8169 - curl: Partial password leak over DNS on HTTP redirect
