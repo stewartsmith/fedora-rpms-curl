@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.71.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
@@ -261,8 +261,8 @@ sed -e 's/^runpath_var=.*/runpath_var=/' \
     -e 's/^hardcode_libdir_flag_spec=".*"$/hardcode_libdir_flag_spec=""/' \
     -i build-{full,minimal}/libtool
 
-make %{?_smp_mflags} V=1 -C build-minimal
-make %{?_smp_mflags} V=1 -C build-full
+%make_build V=1 -C build-minimal
+%make_build V=1 -C build-full
 
 %check
 # we have to override LD_LIBRARY_PATH because we eliminated rpath
@@ -271,7 +271,7 @@ export LD_LIBRARY_PATH
 
 # compile upstream test-cases
 cd build-full/tests
-make %{?_smp_mflags} V=1
+%make_build V=1
 
 # relax crypto policy for the test-suite to make it pass again (#1610888)
 export OPENSSL_SYSTEM_CIPHERS_OVERRIDE=XXX
@@ -282,14 +282,14 @@ srcdir=../../tests perl -I../../tests ../../tests/runtests.pl -a -p -v '!flaky'
 
 %install
 # install and rename the library that will be packaged as libcurl-minimal
-make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C build-minimal/lib
+%make_install -C build-minimal/lib
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.{la,so}
 for i in ${RPM_BUILD_ROOT}%{_libdir}/*; do
     mv -v $i $i.minimal
 done
 
 # install and rename the executable that will be packaged as curl-minimal
-make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C build-minimal/src
+%make_install -C build-minimal/src
 mv -v ${RPM_BUILD_ROOT}%{_bindir}/curl{,.minimal}
 
 # install libcurl.m4
@@ -298,12 +298,12 @@ install -m 644 docs/libcurl/libcurl.m4 $RPM_BUILD_ROOT%{_datadir}/aclocal
 
 # install the executable and library that will be packaged as curl and libcurl
 cd build-full
-make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install
+%make_install
 
 # install zsh completion for curl
 # (we have to override LD_LIBRARY_PATH because we eliminated rpath)
 LD_LIBRARY_PATH="$RPM_BUILD_ROOT%{_libdir}:$LD_LIBRARY_PATH" \
-    make DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p" install -C scripts
+    %make_install -C scripts
 
 # do not install /usr/share/fish/completions/curl.fish which is also installed
 # by fish-3.0.2-1.module_f31+3716+57207597 and would trigger a conflict
@@ -354,6 +354,10 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Mon Jul 13 2020 Tom Stellard <tstellar@redhat.com> - 7.71.1-3
+- Use make macros
+- https://fedoraproject.org/wiki/Changes/UseMakeBuildInstallMacro
+
 * Fri Jul 03 2020 Kamil Dudka <kdudka@redhat.com> - 7.71.1-2
 - curl: make the --krb option work again (#1833193)
 
