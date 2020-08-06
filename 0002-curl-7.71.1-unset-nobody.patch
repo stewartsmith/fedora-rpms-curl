@@ -1,7 +1,7 @@
 From 750188fc8eb239f51255d6f3510f544377e78ecd Mon Sep 17 00:00:00 2001
 From: Daniel Stenberg <daniel@haxx.se>
 Date: Mon, 27 Jul 2020 11:44:01 +0200
-Subject: [PATCH 1/2] setopt: unset NOBODY switches to GET if still HEAD
+Subject: [PATCH 1/3] setopt: unset NOBODY switches to GET if still HEAD
 
 Unsetting CURLOPT_NOBODY with 0L when doing HTTP has no documented
 action but before 7.71.0 that used to switch back to GET and with this
@@ -38,7 +38,7 @@ index 90edf6a..d621335 100644
 From 44add6f66c7ddec9f002fb52ce8e893a8ca9165d Mon Sep 17 00:00:00 2001
 From: Daniel Stenberg <daniel@haxx.se>
 Date: Mon, 27 Jul 2020 11:54:29 +0200
-Subject: [PATCH 2/2] CURLOPT_NOBODY.3: clarify what setting to 0 means
+Subject: [PATCH 2/3] CURLOPT_NOBODY.3: clarify what setting to 0 means
 
 ... and mention that HTTP with other methods than HEAD might get a body and
 there's no option available to stop that.
@@ -103,6 +103,46 @@ index f720f49..3674dde 100644
 -.BR CURLOPT_REQUEST_TARGET "(3), "
 +.BR CURLOPT_HTTPGET "(3), " CURLOPT_POSTFIELDS "(3), " CURLOPT_UPLOAD "(3), "
 +.BR CURLOPT_REQUEST_TARGET "(3), " CURLOPT_MIMEPOST "(3), "
+-- 
+2.25.4
+
+
+From cc8e488c83254013a0ad1149a77565723aee870b Mon Sep 17 00:00:00 2001
+From: Daniel Stenberg <daniel@haxx.se>
+Date: Mon, 27 Jul 2020 23:59:00 +0200
+Subject: [PATCH 3/3] CURLOPT_NOBODY.3: fix the syntax for referring to options
+
+As test 1140 fails otherwise!
+
+Follow-up to e1bac81cc815
+
+Upstream-commit: 34e5ad21d2cb98475acdbf7a3a6ea973d8c12249
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ docs/libcurl/opts/CURLOPT_NOBODY.3 | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/docs/libcurl/opts/CURLOPT_NOBODY.3 b/docs/libcurl/opts/CURLOPT_NOBODY.3
+index 3674dde..112fb1a 100644
+--- a/docs/libcurl/opts/CURLOPT_NOBODY.3
++++ b/docs/libcurl/opts/CURLOPT_NOBODY.3
+@@ -34,13 +34,13 @@ output when doing what would otherwise be a download. For HTTP(S), this makes
+ libcurl do a HEAD request. For most other protocols it means just not asking
+ to transfer the body data.
+ 
+-For HTTP operations when \fBCURLOPT_NOBODY(3)\fP has been set, unsetting the
++For HTTP operations when \fICURLOPT_NOBODY(3)\fP has been set, unsetting the
+ option (with 0) will make it a GET again - only if the method is still set to
+ be HEAD. The proper way to get back to a GET request is to set
+-\fBCURLOPT_HTTPGET(3)\fP and for other methods, use the POST ur UPLOAD
++\fICURLOPT_HTTPGET(3)\fP and for other methods, use the POST ur UPLOAD
+ options.
+ 
+-Enabling \fBCURLOPT_NOBODY(3)\fP means asking for a download without a body.
++Enabling \fICURLOPT_NOBODY(3)\fP means asking for a download without a body.
+ 
+ If you do a transfer with HTTP that involves a method other than HEAD, you
+ will get a body (unless the resource and server sends a zero byte body for the
 -- 
 2.25.4
 
