@@ -1,15 +1,9 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.71.1
-Release: 5%{?dist}
+Version: 7.72.0
+Release: 1%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
-
-# curl: make the --krb option work again (#1833193)
-Patch1:   0001-curl-7.71.1-tool-krb-opt.patch
-
-# setopt: unset NOBODY switches to GET if still HEAD
-Patch2:   0002-curl-7.71.1-unset-nobody.patch
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -178,8 +172,6 @@ be installed.
 %setup -q
 
 # upstream patches
-%patch1 -p1
-%patch2 -p1
 
 # Fedora patches
 %patch101 -p1
@@ -358,6 +350,10 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Aug 19 2020 Kamil Dudka <kdudka@redhat.com> - 7.72.0-1
+- new upstream release, which fixes the following vulnerability
+    CVE-2020-8231 - libcurl: wrong connect-only connection
+
 * Thu Aug 06 2020 Kamil Dudka <kdudka@redhat.com> - 7.71.1-5
 - setopt: unset NOBODY switches to GET if still HEAD
 
