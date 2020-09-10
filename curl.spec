@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.72.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
@@ -157,7 +157,7 @@ Summary: Conservatively configured build of libcurl for minimal installations
 Requires: openssl-libs%{?_isa} >= 1:%{openssl_version}
 Provides: libcurl = %{version}-%{release}
 Provides: libcurl%{?_isa} = %{version}-%{release}
-Conflicts: libcurl
+Conflicts: libcurl%{?_isa}
 RemovePathPostfixes: .minimal
 # needed for RemovePathPostfixes to work with shared libraries
 %undefine __brp_ldconfig
@@ -350,6 +350,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Thu Sep 10 2020 Jinoh Kang <aurhb20@protonmail.ch> - 7.72.0-2
+- fix multiarch conflicts in libcurl-minimal (#1877671O)
+
 * Wed Aug 19 2020 Kamil Dudka <kdudka@redhat.com> - 7.72.0-1
 - new upstream release, which fixes the following vulnerability
     CVE-2020-8231 - libcurl: wrong connect-only connection
