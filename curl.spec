@@ -351,7 +351,7 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 
 %changelog
 * Thu Sep 10 2020 Jinoh Kang <aurhb20@protonmail.ch> - 7.72.0-2
-- fix multiarch conflicts in libcurl-minimal (#1877671O)
+- fix multiarch conflicts in libcurl-minimal (#1877671)
 
 * Wed Aug 19 2020 Kamil Dudka <kdudka@redhat.com> - 7.72.0-1
 - new upstream release, which fixes the following vulnerability
