@@ -1,3 +1,14 @@
+From 70734612c0f2f6f864e771ab4d2509c903342739 Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Wed, 14 Oct 2020 09:41:28 +0200
+Subject: [PATCH] use localhost6 instead of ip6-localhost in the curl
+ test-suite
+
+---
+ tests/data/test1083 | 6 +++---
+ tests/data/test241  | 8 ++++----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
 diff --git a/tests/data/test1083 b/tests/data/test1083
 index e441278..b0958b6 100644
 --- a/tests/data/test1083
@@ -40,12 +51,15 @@ index 46eae1f..4e1632c 100644
  </precheck>
  </client>
  
-@@ -48,7 +48,7 @@ HTTP-IPv6 GET (using ip6-localhost)
- </strip>
+@@ -45,7 +45,7 @@ HTTP-IPv6 GET (using ip6-localhost)
+ <verify>
  <protocol>
  GET /241 HTTP/1.1
 -Host: ip6-localhost:%HTTP6PORT
 +Host: localhost6:%HTTP6PORT
+ User-Agent: curl/%VERSION
  Accept: */*
  
- </protocol>
+-- 
+2.25.4
+

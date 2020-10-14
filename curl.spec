@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.72.0
-Release: 2%{?dist}
+Version: 7.73.0
+Release: 1%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
@@ -12,7 +12,7 @@ Patch101: 0101-curl-7.32.0-multilib.patch
 Patch102: 0102-curl-7.36.0-debug.patch
 
 # use localhost6 instead of ip6-localhost in the curl test-suite
-Patch104: 0104-curl-7.19.7-localhost6.patch
+Patch104: 0104-curl-7.73.0-localhost6.patch
 
 # prevent valgrind from reporting false positives on x86_64
 Patch105: 0105-curl-7.63.0-lib1560-valgrind.patch
@@ -188,9 +188,7 @@ autoreconf -fiv
 # disable test 1112 (#565305), test 1455 (occasionally fails with 'bind failed
 # with errno 98: Address already in use' in Koji environment), and test 1801
 # <https://github.com/bagder/curl/commit/21e82bd6#commitcomment-12226582>
-# and test 1900, which is flaky and covers a deprecated feature of libcurl
-# <https://github.com/curl/curl/pull/2705>
-printf "1112\n1455\n1801\n1900\n" >> tests/data/DISABLED
+printf "1112\n1455\n1801\n" >> tests/data/DISABLED
 
 # disable test 1319 on ppc64 (server times out)
 %ifarch ppc64
@@ -314,12 +312,11 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %files
 %doc CHANGES
 %doc README
-%doc docs/BUGS
+%doc docs/BUGS.md
 %doc docs/FAQ
 %doc docs/FEATURES
-%doc docs/RESOURCES
 %doc docs/TODO
-%doc docs/TheArtOfHttpScripting
+%doc docs/TheArtOfHttpScripting.md
 %{_bindir}/curl
 %{_mandir}/man1/curl.1*
 %{_datadir}/zsh
@@ -350,6 +347,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Oct 14 2020 Kamil Dudka <kdudka@redhat.com> - 7.73.0-1
+- new upstream release
+
 * Thu Sep 10 2020 Jinoh Kang <aurhb20@protonmail.ch> - 7.72.0-2
 - fix multiarch conflicts in libcurl-minimal (#1877671)
 
