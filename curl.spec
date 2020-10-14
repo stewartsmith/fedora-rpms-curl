@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.73.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
 
@@ -74,6 +74,9 @@ BuildRequires: perl(MIME::Base64)
 BuildRequires: perl(Time::Local)
 BuildRequires: perl(Time::HiRes)
 BuildRequires: perl(vars)
+
+# needed for upstream test 1451
+BuildRequires: python3-impacket
 
 # The test-suite runs automatically through valgrind if valgrind is available
 # on the system.  By not installing valgrind into mock's chroot, we disable
@@ -181,6 +184,7 @@ be installed.
 
 # make tests/*.py use Python 3
 sed -e '1 s|^#!/.*python|#!%{__python3}|' -i tests/*.py
+sed -e 's|^python |%{__python3} |' -i tests/data/test1451
 
 # regenerate the configure script and Makefile.in files
 autoreconf -fiv
@@ -347,6 +351,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Oct 14 2020 Kamil Dudka <kdudka@redhat.com> - 7.73.0-2
+- prevent upstream test 1451 from being skipped
+
 * Wed Oct 14 2020 Kamil Dudka <kdudka@redhat.com> - 7.73.0-1
 - new upstream release
 
