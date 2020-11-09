@@ -3,7 +3,7 @@ Name: curl
 Version: 7.73.0
 Release: 2%{?dist}
 License: MIT
-Source: https://curl.haxx.se/download/%{name}-%{version}.tar.xz
+Source: https://curl.se/download/%{name}-%{version}.tar.xz
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -19,7 +19,7 @@ Patch105: 0105-curl-7.63.0-lib1560-valgrind.patch
 
 Provides: curl-full = %{version}-%{release}
 Provides: webclient
-URL: https://curl.haxx.se/
+URL: https://curl.se/
 BuildRequires: automake
 BuildRequires: brotli-devel
 BuildRequires: coreutils
