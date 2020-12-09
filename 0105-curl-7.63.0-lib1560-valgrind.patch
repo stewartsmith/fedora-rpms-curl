@@ -26,7 +26,7 @@ diff --git a/tests/libtest/Makefile.inc b/tests/libtest/Makefile.inc
 index 080421b..ea3b806 100644
 --- a/tests/libtest/Makefile.inc
 +++ b/tests/libtest/Makefile.inc
-@@ -586,6 +586,7 @@ lib1559_SOURCES = lib1559.c $(SUPPORTFILES) $(TESTUTIL) $(WARNLESS)
+@@ -587,6 +587,7 @@ lib1559_SOURCES = lib1559.c $(SUPPORTFILES) $(TESTUTIL) $(WARNLESS)
  lib1559_LDADD = $(TESTUTIL_LIBS)
  
  lib1560_SOURCES = lib1560.c $(SUPPORTFILES) $(TESTUTIL) $(WARNLESS)

@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.73.0
-Release: 2%{?dist}
+Version: 7.74.0
+Release: 1%{?dist}
 License: MIT
 Source: https://curl.se/download/%{name}-%{version}.tar.xz
 
@@ -318,7 +318,7 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %doc README
 %doc docs/BUGS.md
 %doc docs/FAQ
-%doc docs/FEATURES
+%doc docs/FEATURES.md
 %doc docs/TODO
 %doc docs/TheArtOfHttpScripting.md
 %{_bindir}/curl
@@ -351,6 +351,12 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Dec 09 2020 Kamil Dudka <kdudka@redhat.com> - 7.74.0-1
+- new upstream release, which fixes the following vulnerabilities
+    CVE-2020-8286 - curl: Inferior OCSP verification
+    CVE-2020-8285 - libcurl: FTP wildcard stack overflow
+    CVE-2020-8284 - curl: trusting FTP PASV responses
+
 * Wed Oct 14 2020 Kamil Dudka <kdudka@redhat.com> - 7.73.0-2
 - prevent upstream test 1451 from being skipped
 

@@ -85,7 +85,7 @@ index 2ba9c39..f8f8b00 100644
 +configure_options=@CONFIGURE_OPTIONS@
  
  Name: libcurl
- URL: https://curl.haxx.se/
+ URL: https://curl.se/
 -- 
-2.5.0
+2.26.2
 
