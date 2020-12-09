@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.74.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Source: https://curl.se/download/%{name}-%{version}.tar.xz
 
@@ -39,6 +39,7 @@ BuildRequires: openssh-server
 BuildRequires: openssl-devel
 BuildRequires: perl-interpreter
 BuildRequires: pkgconfig
+BuildRequires: python-unversioned-command
 BuildRequires: python3-devel
 BuildRequires: sed
 BuildRequires: stunnel
@@ -181,10 +182,6 @@ be installed.
 %patch102 -p1
 %patch104 -p1
 %patch105 -p1
-
-# make tests/*.py use Python 3
-sed -e '1 s|^#!/.*python|#!%{__python3}|' -i tests/*.py
-sed -e 's|^python |%{__python3} |' -i tests/data/test1451
 
 # regenerate the configure script and Makefile.in files
 autoreconf -fiv
@@ -351,6 +348,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Dec 09 2020 Kamil Dudka <kdudka@redhat.com> - 7.74.0-2
+- do not rewrite shebangs in test-suite to use python3 explicitly
+
 * Wed Dec 09 2020 Kamil Dudka <kdudka@redhat.com> - 7.74.0-1
 - new upstream release, which fixes the following vulnerabilities
     CVE-2020-8286 - curl: Inferior OCSP verification
