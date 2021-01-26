@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.74.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: MIT
 Source: https://curl.se/download/%{name}-%{version}.tar.xz
 
@@ -42,7 +42,6 @@ BuildRequires: pkgconfig
 BuildRequires: python-unversioned-command
 BuildRequires: python3-devel
 BuildRequires: sed
-BuildRequires: stunnel
 BuildRequires: zlib-devel
 
 # needed to compress content of tool_hugehelp.c after changing curl.1 man page
@@ -87,6 +86,12 @@ BuildRequires: python3-impacket
 # valgrind manually to improve test coverage on any architecture.
 %ifarch x86_64
 BuildRequires: valgrind
+%endif
+
+# stunnel is used by upstream tests but it does not seem to work reliably
+# on s390x and occasionally breaks some tests (mainly 1561 and 1562)
+%ifnarch s390x
+BuildRequires: stunnel
 %endif
 
 # using an older version of libcurl could result in CURLE_UNKNOWN_OPTION
@@ -348,6 +353,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Tue Jan 26 2021 Kamil Dudka <kdudka@redhat.com> - 7.74.0-4
+- do not use stunnel for tests on s390x builds to avoid spurious failures
+
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 7.74.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
