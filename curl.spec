@@ -266,7 +266,7 @@ sed -e 's/^runpath_var=.*/runpath_var=/' \
 
 %check
 # we have to override LD_LIBRARY_PATH because we eliminated rpath
-LD_LIBRARY_PATH="$RPM_BUILD_ROOT%{_libdir}:$LD_LIBRARY_PATH"
+LD_LIBRARY_PATH="${PWD}/build-full/lib/.libs"
 export LD_LIBRARY_PATH
 
 # compile upstream test-cases
