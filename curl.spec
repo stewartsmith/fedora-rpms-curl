@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.75.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Source: https://curl.se/download/%{name}-%{version}.tar.xz
 
@@ -75,8 +75,10 @@ BuildRequires: perl(Time::Local)
 BuildRequires: perl(Time::HiRes)
 BuildRequires: perl(vars)
 
+%if 0%{?fedora}
 # needed for upstream test 1451
 BuildRequires: python3-impacket
+%endif
 
 # The test-suite runs automatically through valgrind if valgrind is available
 # on the system.  By not installing valgrind into mock's chroot, we disable
@@ -353,6 +355,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Tue Feb 23 2021 Kamil Dudka <kdudka@redhat.com> - 7.75.0-2
+- build-require python3-impacket only on Fedora
+
 * Wed Feb 03 2021 Kamil Dudka <kdudka@redhat.com> - 7.75.0-1
 - new upstream release
 
