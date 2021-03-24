@@ -186,9 +186,9 @@ be installed.
 %setup -q
 
 # upstream patches
+%patch1 -p1
 
 # Fedora patches
-%patch1 -p1
 %patch101 -p1
 %patch102 -p1
 %patch104 -p1
