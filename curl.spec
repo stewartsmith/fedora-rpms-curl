@@ -14,9 +14,6 @@ Patch101: 0101-curl-7.32.0-multilib.patch
 # prevent configure script from discarding -g in CFLAGS (#496778)
 Patch102: 0102-curl-7.36.0-debug.patch
 
-# use localhost6 instead of ip6-localhost in the curl test-suite
-Patch104: 0104-curl-7.73.0-localhost6.patch
-
 # prevent valgrind from reporting false positives on x86_64
 Patch105: 0105-curl-7.63.0-lib1560-valgrind.patch
 
@@ -191,11 +188,7 @@ be installed.
 # Fedora patches
 %patch101 -p1
 %patch102 -p1
-%patch104 -p1
 %patch105 -p1
-
-# regenerate the configure script and Makefile.in files
-autoreconf -fiv
 
 # disable test 1112 (#565305), test 1455 (occasionally fails with 'bind failed
 # with errno 98: Address already in use' in Koji environment), and test 1801
@@ -218,7 +211,19 @@ printf "702\n703\n716\n" >> tests/data/DISABLED
 %endif
 
 # adapt test 323 for updated OpenSSL
-sed -e 's/^35$/35,52/' -i tests/data/test323
+sed -e 's|^35$|35,52|' -i tests/data/test323
+
+# use localhost6 instead of ip6-localhost in the curl test-suite
+(
+    # avoid glob expansion in the trace output of `bash -x`
+    { set +x; } 2>/dev/null
+    cmd="sed -e 's|ip6-localhost|localhost6|' -i tests/data/test[0-9]*"
+    printf "+ %s\n" "$cmd" >&2
+    eval "$cmd"
+)
+
+# regenerate the configure script and Makefile.in files
+autoreconf -fiv
 
 %build
 mkdir build-{full,minimal}
