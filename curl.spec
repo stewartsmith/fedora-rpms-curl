@@ -1,6 +1,6 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
-Version: 7.76.0
+Version: 7.76.1
 Release: 1%{?dist}
 License: MIT
 Source: https://curl.se/download/%{name}-%{version}.tar.xz
@@ -360,6 +360,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Apr 14 2021 Kamil Dudka <kdudka@redhat.com> - 7.76.1-1
+- new upstream release
+
 * Wed Mar 31 2021 Kamil Dudka <kdudka@redhat.com> - 7.76.0-1
 - new upstream release, which fixes the following vulnerabilities
     CVE-2021-22890 - TLS 1.3 session ticket proxy host mixup
