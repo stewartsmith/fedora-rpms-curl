@@ -1,0 +1,133 @@
+From 2281afef6757ed66c9e8a9a737aa91cb9e2950ef Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Fri, 30 Apr 2021 18:14:45 +0200
+Subject: [PATCH 1/2] http2: fix resource leaks in set_transfer_url()
+
+... detected by Coverity:
+
+Error: RESOURCE_LEAK (CWE-772):
+lib/http2.c:480: alloc_fn: Storage is returned from allocation function "curl_url". [Note: The source code implementation of the function has been overridden by a builtin model.]
+lib/http2.c:480: var_assign: Assigning: "u" = storage returned from "curl_url()".
+lib/http2.c:486: noescape: Resource "u" is not freed or pointed-to in "curl_url_set". [Note: The source code implementation of the function has been overridden by a builtin model.]
+lib/http2.c:488: leaked_storage: Variable "u" going out of scope leaks the storage it points to.
+
+Error: RESOURCE_LEAK (CWE-772):
+lib/http2.c:480: alloc_fn: Storage is returned from allocation function "curl_url". [Note: The source code implementation of the function has been overridden by a builtin model.]
+lib/http2.c:480: var_assign: Assigning: "u" = storage returned from "curl_url()".
+lib/http2.c:493: noescape: Resource "u" is not freed or pointed-to in "curl_url_set". [Note: The source code implementation of the function has been overridden by a builtin model.]
+lib/http2.c:495: leaked_storage: Variable "u" going out of scope leaks the storage it points to.
+
+Error: RESOURCE_LEAK (CWE-772):
+lib/http2.c:480: alloc_fn: Storage is returned from allocation function "curl_url". [Note: The source code implementation of the function has been overridden by a builtin model.]
+lib/http2.c:480: var_assign: Assigning: "u" = storage returned from "curl_url()".
+lib/http2.c:500: noescape: Resource "u" is not freed or pointed-to in "curl_url_set". [Note: The source code implementation of the function has been overridden by a builtin model.]
+lib/http2.c:502: leaked_storage: Variable "u" going out of scope leaks the storage it points to.
+
+Error: RESOURCE_LEAK (CWE-772):
+lib/http2.c:480: alloc_fn: Storage is returned from allocation function "curl_url". [Note: The source code implementation of the function has been overridden by a builtin model.]
+lib/http2.c:480: var_assign: Assigning: "u" = storage returned from "curl_url()".
+lib/http2.c:505: noescape: Resource "u" is not freed or pointed-to in "curl_url_get". [Note: The source code implementation of the function has been overridden by a builtin model.]
+lib/http2.c:507: leaked_storage: Variable "u" going out of scope leaks the storage it points to.
+
+Closes #6986
+
+Upstream-commit: 31931704707324af4b4edb24cc877829f7e9949e
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ lib/http2.c | 24 +++++++++++++++++-------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
+
+diff --git a/lib/http2.c b/lib/http2.c
+index ce9a0d3..d5ba89b 100644
+--- a/lib/http2.c
++++ b/lib/http2.c
+@@ -500,32 +500,42 @@ static int set_transfer_url(struct Curl_easy *data,
+   CURLU *u = curl_url();
+   CURLUcode uc;
+   char *url;
++  int rc = 0;
+ 
+   v = curl_pushheader_byname(hp, ":scheme");
+   if(v) {
+     uc = curl_url_set(u, CURLUPART_SCHEME, v, 0);
+-    if(uc)
+-      return 1;
++    if(uc) {
++      rc = 1;
++      goto fail;
++    }
+   }
+ 
+   v = curl_pushheader_byname(hp, ":authority");
+   if(v) {
+     uc = curl_url_set(u, CURLUPART_HOST, v, 0);
+-    if(uc)
+-      return 2;
++    if(uc) {
++      rc = 2;
++      goto fail;
++    }
+   }
+ 
+   v = curl_pushheader_byname(hp, ":path");
+   if(v) {
+     uc = curl_url_set(u, CURLUPART_PATH, v, 0);
+-    if(uc)
+-      return 3;
++    if(uc) {
++      rc = 3;
++      goto fail;
++    }
+   }
+ 
+   uc = curl_url_get(u, CURLUPART_URL, &url, 0);
+   if(uc)
+-    return 4;
++    rc = 4;
++  fail:
+   curl_url_cleanup(u);
++  if(rc)
++    return rc;
+ 
+   if(data->state.url_alloc)
+     free(data->state.url);
+-- 
+2.30.2
+
+
+From 92ad72983f8462be1d5a5228672657ddf4d7ed72 Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Fri, 30 Apr 2021 18:18:02 +0200
+Subject: [PATCH 2/2] http2: fix a resource leak in push_promise()
+
+... detected by Coverity:
+
+Error: RESOURCE_LEAK (CWE-772):
+lib/http2.c:532: alloc_fn: Storage is returned from allocation function "duphandle".
+lib/http2.c:532: var_assign: Assigning: "newhandle" = storage returned from "duphandle(data)".
+lib/http2.c:552: noescape: Resource "newhandle" is not freed or pointed-to in "set_transfer_url".
+lib/http2.c:555: leaked_storage: Variable "newhandle" going out of scope leaks the storage it points to.
+
+Closes #6986
+
+Upstream-commit: 3a6058cb976981ec1db870f9657c73c9a1162822
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ lib/http2.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/lib/http2.c b/lib/http2.c
+index d5ba89b..d0f69ea 100644
+--- a/lib/http2.c
++++ b/lib/http2.c
+@@ -581,6 +581,7 @@ static int push_promise(struct Curl_easy *data,
+ 
+     rv = set_transfer_url(newhandle, &heads);
+     if(rv) {
++      (void)Curl_close(&newhandle);
+       rv = CURL_PUSH_DENY;
+       goto fail;
+     }
+-- 
+2.30.2
+
