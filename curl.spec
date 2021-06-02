@@ -1,7 +1,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others)
 Name: curl
 Version: 7.77.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Source: https://curl.se/download/%{name}-%{version}.tar.xz
 
@@ -24,7 +24,6 @@ BuildRequires: gcc
 BuildRequires: groff
 BuildRequires: krb5-devel
 BuildRequires: libidn2-devel
-BuildRequires: libmetalink-devel
 BuildRequires: libnghttp2-devel
 BuildRequires: libpsl-devel
 BuildRequires: libssh-devel
@@ -229,6 +228,7 @@ export common_configure_opts=" \
     --enable-symbol-hiding \
     --enable-ipv6 \
     --enable-threaded-resolver \
+    --without-libmetalink \
     --with-gssapi \
     --with-nghttp2 \
     --with-ssl --with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt"
@@ -244,7 +244,6 @@ export common_configure_opts=" \
         --disable-manual \
         --without-brotli \
         --without-libidn2 \
-        --without-libmetalink \
         --without-libpsl \
         --without-libssh
 )
@@ -258,7 +257,6 @@ export common_configure_opts=" \
         --enable-manual \
         --with-brotli \
         --with-libidn2 \
-        --with-libmetalink \
         --with-libpsl \
         --with-libssh
 )
@@ -360,6 +358,9 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/libcurl.la
 %{_libdir}/libcurl.so.4.[0-9].[0-9].minimal
 
 %changelog
+* Wed Jun 02 2021 Kamil Dudka <kdudka@redhat.com> - 7.77.0-2
+- build the curl tool without metalink support (#1967213)
+
 * Wed May 26 2021 Kamil Dudka <kdudka@redhat.com> - 7.77.0-1
 - new upstream release, which fixes the following vulnerabilities
     CVE-2021-22901 - TLS session caching disaster
