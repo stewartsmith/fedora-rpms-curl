@@ -3,7 +3,12 @@ Name: curl
 Version: 7.77.0
 Release: 2%{?dist}
 License: MIT
-Source: https://curl.se/download/%{name}-%{version}.tar.xz
+Source0: https://curl.se/download/%{name}-%{version}.tar.xz
+Source1: https://curl.se/download/%{name}-%{version}.tar.xz.asc
+# The curl download page ( https://curl.se/download.html ) links
+# to Daniel's address page https://daniel.haxx.se/address.html for the GPG Key,
+# which points to the GPG key as of April 7th 2016 of https://daniel.haxx.se/mykey.asc
+Source2: mykey.asc
 
 # patch making libcurl multilib ready
 Patch101: 0101-curl-7.32.0-multilib.patch
@@ -39,6 +44,9 @@ BuildRequires: python-unversioned-command
 BuildRequires: python3-devel
 BuildRequires: sed
 BuildRequires: zlib-devel
+
+# For gpg verification of source tarball
+BuildRequires: gnupg2
 
 # needed to compress content of tool_hugehelp.c after changing curl.1 man page
 BuildRequires: perl(IO::Compress::Gzip)
@@ -176,6 +184,7 @@ other hand, the package is smaller and requires fewer run-time dependencies to
 be installed.
 
 %prep
+%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
 %setup -q
 
 # upstream patches
